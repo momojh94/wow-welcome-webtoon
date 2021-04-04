@@ -6,6 +6,8 @@ import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.platform.entity.Comments;
+import com.www.core.platform.repository.CommentsDislikeRepository;
+import com.www.core.platform.repository.CommentsLikeRepository;
 import com.www.core.platform.repository.CommentsRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +39,10 @@ public class CommentsServiceTest {
     @Mock
     private CommentsRepository commentsRepository;
     @Mock
+    private CommentsLikeRepository commentsLikeRepository;
+    @Mock
+    private CommentsDislikeRepository commentsDisLikeRepository;
+    @Mock
     private UsersRepository usersRepository;
     @Mock
     private EpisodeRepository episodeRepository;
@@ -49,6 +55,7 @@ public class CommentsServiceTest {
     @BeforeEach
     void setUp() {
         user = Users.builder()
+                .idx(1)
                 .id("id123")
                 .name("철수")
                 .e_pw("1q2w3e4r")
@@ -136,12 +143,104 @@ public class CommentsServiceTest {
     }
 
 
-    /*@Test
+    @DisplayName("댓글 삭제 성공")
+    @Test
     void deleteComments() {
+        //given
+        String content = "댓글 내용";
+        Episode episode = Episode.builder()
+                .ep_no(1)
+                .title("에피소드 이름")
+                .author_comment("작가의 말")
+                .build();
+        Comments comment = Comments.builder()
+                .users(user)
+                .ep(episode)
+                .content(content)
+                .build();
 
+        given(usersRepository.findById(1)).willReturn(Optional.ofNullable(user));
+        given(commentsRepository.findById(1)).willReturn(Optional.ofNullable(comment));
+
+        //when
+        Response<Integer> result = commentsService.deleteComments(1, 1);
+
+        //then
+
+        assertAll(
+                () -> verify(commentsLikeRepository).deleteAllByCommentsIdx(1),
+                () -> verify(commentsDisLikeRepository).deleteAllByCommentsIdx(1),
+                () -> verify(commentsRepository).deleteById(1),
+                () -> assertThat(result.getCode()).isEqualTo(0),
+                () -> assertThat(result.getMsg()).isEqualTo("request complete : delete comment"),
+                () -> assertThat(result.getData()).isEqualTo(null)
+        );
     }
 
+    @DisplayName("댓글 삭제 실패 - 유저가 해당 댓글의 작성자가 아닐 때")
     @Test
+    void deleteCommentsFail_UserIsNotCommenter() {
+        //given
+        String content = "댓글 내용";
+        Episode episode = Episode.builder()
+                .ep_no(1)
+                .title("에피소드 이름")
+                .author_comment("작가의 말")
+                .build();
+        Comments comment = Comments.builder()
+                .users(user)
+                .ep(episode)
+                .content(content)
+                .build();
+        Users otherUser = Users.builder()
+                .idx(2)
+                .id("userid2")
+                .name("짱구")
+                .e_pw("123abc")
+                .gender(0)
+                .email("test2@email.com")
+                .build();
+
+        given(usersRepository.findById(2)).willReturn(Optional.ofNullable(otherUser));
+        given(commentsRepository.findById(1)).willReturn(Optional.ofNullable(comment));
+
+        //when
+        Response<Integer> result = commentsService.deleteComments(2, 1);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getCode()).isEqualTo(22),
+                () -> assertThat(result.getMsg()).isEqualTo("fail : user isn't commenter"),
+                () -> assertThat(result.getData()).isEqualTo(null)
+        );
+    }
+
+    @DisplayName("댓글 삭제 실패 - 삭제하려는 댓글이 없을 때")
+    @Test
+    void deleteCommentsFail_CommentDoesNotExist() {
+        //given
+        String content = "댓글 내용";
+        Episode episode = Episode.builder()
+                .ep_no(1)
+                .title("에피소드 이름")
+                .author_comment("작가의 말")
+                .build();
+
+        given(usersRepository.findById(1)).willReturn(Optional.ofNullable(user));
+        given(commentsRepository.findById(1)).willReturn(Optional.empty());
+
+        //when
+        Response<Integer> result = commentsService.deleteComments(1, 1);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getCode()).isEqualTo(21),
+                () -> assertThat(result.getMsg()).isEqualTo("fail : comment doesn't exist"),
+                () -> assertThat(result.getData()).isEqualTo(null)
+        );
+    }
+
+    /*@Test
     void getCommentsByPageRequest() {
 
     }

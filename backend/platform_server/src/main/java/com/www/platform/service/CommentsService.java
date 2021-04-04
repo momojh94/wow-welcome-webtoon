@@ -80,7 +80,7 @@ public class  CommentsService {
         if(comments.isPresent()){ // 유저가 해당 댓글의 주인이 아닐 때
             if(userIdx != comments.get().getUsers().getIdx()){
                 result.setCode(22);
-                result.setMsg("fail : user isn't comment owner");
+                result.setMsg("fail : user isn't commenter");
             }
             else{   // 댓글 삭제
                 commentsLikeRepository.deleteAllByCommentsIdx(commentsIdx);
@@ -93,7 +93,7 @@ public class  CommentsService {
         else    // 댓글이 이미 없을 때
         {
             result.setCode(21);
-            result.setMsg("fail : comment don't exists");
+            result.setMsg("fail : comment doesn't exist");
         }
 
         return result;
