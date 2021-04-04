@@ -54,7 +54,7 @@ public class  CommentsService {
         }
         else if(!episode.isPresent()){ // 에피소드가 존재하지 않을 때
             result.setCode(20);
-            result.setMsg("fail : episode don't exists");
+            result.setMsg("fail : episode doesn't exist");
         }
         else{   // 댓글 DB 저장
             Comments comments = Comments.builder()
@@ -67,6 +67,7 @@ public class  CommentsService {
             result.setCode(0);
             result.setMsg("request complete : insert comment");
         }
+
         return result;
     }
 
@@ -94,18 +95,6 @@ public class  CommentsService {
             result.setCode(21);
             result.setMsg("fail : comment don't exists");
         }
-
-        return result;
-    }
-
-    @Transactional(readOnly = true)
-    public Response<List<CommentsDto>> findAllDesc() {
-        Response<List<CommentsDto>> result = new Response<List<CommentsDto>>();
-        result.setData(commentsRepository.findAllDesc()
-                .map(CommentsDto::new)
-                .collect(Collectors.toList()));
-        result.setCode(0);
-        result.setMsg("findAllDesc complete");
 
         return result;
     }
