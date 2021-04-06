@@ -333,12 +333,59 @@ public class CommentsServiceTest {
         );
     }
 
-    /*
+    @DisplayName("베스트 댓글 조회 성공")
     @Test
     void getBestComments() {
+        //given
+        int epIdx = 1;
+        List<Comments> bestCommentsList = new ArrayList<Comments>();
+        for (int idx = 0; idx < 5; idx++) {
+            bestCommentsList.add(Comments.builder()
+                    .idx(idx+22)
+                    .users(user)
+                    .ep(episode)
+                    .content("베스트 댓글 내용 " + idx)
+                    .build());
+        }
+        given(episodeRepository.existsById(epIdx)).willReturn(true);
+        given(commentsRepository.findBestCommentsByEpIdx(epIdx)).willReturn(bestCommentsList.stream());
 
+        //when
+        Response<List<CommentsDto>> result = commentsService.getBestComments(epIdx);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getCode()).isEqualTo(0),
+                () -> assertThat(result.getMsg()).isEqualTo("requset complete : get best comments"),
+                () -> assertArrayEquals(bestCommentsList.stream()
+                        .map(Comments::getIdx)
+                        .toArray(Integer[]::new),
+                        result.getData().stream()
+                        .map(CommentsDto::getIdx)
+                        .toArray(Integer[]::new))
+        );
     }
 
+    @DisplayName("베스트 댓글 조회 실패 - 존재하지 않은 에피소드 접근")
+    @Test
+    void getBestComments_Fail_CommentDoesNotExist() {
+        //given
+        int epIdx = 2;
+        given(episodeRepository.existsById(epIdx)).willReturn(false);
+
+        //when
+        Response<List<CommentsDto>> result = commentsService.getBestComments(epIdx);
+
+        //then
+        assertAll(
+                () -> verify(commentsRepository, never()).findBestCommentsByEpIdx(epIdx),
+                () -> assertThat(result.getCode()).isEqualTo(20),
+                () -> assertThat(result.getMsg()).isEqualTo("fail : episode doesn't exist"),
+                () -> assertThat(result.getData()).isNull()
+        );
+    }
+
+    /*
     @Test
     void getMyPageComments() {
 
