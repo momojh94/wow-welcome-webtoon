@@ -41,6 +41,9 @@ public class  CommentsService {
     private UsersRepository usersRepository;
     private EpisodeRepository episodeRepository;
 
+    //한 페이지 내의 최대 댓글 갯수
+    public static final int COMMENTS_COUNT_PER_PAGE = 15;
+
     // 예외 발생시 모든 DB작업 초기화 해주는 어노테이션 ( 완료시에만 커밋해줌 )
     @Transactional
     public Response<Integer> insertComments(int userIdx, int epIdx, String content) {
@@ -99,42 +102,45 @@ public class  CommentsService {
         return result;
     }
 
+    /**
+     * get Comments List by Page number
+     *
+     * @param epIdx episode idx
+     * @param page page number
+     */
     @Transactional(readOnly = true)
     public Response<CommentsResponseDto> getCommentsByPageRequest(int epIdx, int page) {
         Response<CommentsResponseDto> result = new Response<CommentsResponseDto>();
 
         if(!episodeRepository.existsById(epIdx)) {    // 에피소드가 존재하지 않을 때
             result.setCode(20);
-            result.setMsg("fail : episode don't exists");
+            result.setMsg("fail : episode doesn't exist");
         }
         else{
-            // repository에서 Page<entity>로 받은 내용을 Page<dto>로 변환하는 법 아래 참고
-            // https://stackoverflow.com/questions/27557240/getting-a-page-of-dto-objects-from-spring-data-repository
-
             if(page < 1){
                 result.setCode(23);
-                result.setMsg("fail : page is not in valid range");
+                result.setMsg("fail : invalid page number");
                 return result;
             }
 
-            Pageable pageable = PageRequest.of(page - 1, 15, Sort.Direction.DESC, "idx");
+            Pageable pageable = PageRequest.of(page - 1, COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
             Page<Comments> commentsPage = commentsRepository.findAllByEpIdx(pageable, epIdx);
 
-            if(page > commentsPage.getTotalPages() & page != 1){
+            if(page > commentsPage.getTotalPages() && page != 1){
                 result.setCode(23);
-                result.setMsg("fail : page is not in valid range");
+                result.setMsg("fail : invalid page number");
             }
             else{
                 result.setCode(0);
                 result.setMsg("request complete : get comments by page request");
                 CommentsResponseDto commentsResponseDto
                         = CommentsResponseDto.builder()
-                        .comments(commentsPage
-                                .stream()
+                        .comments(commentsPage.stream()
                                 .map(CommentsDto::new)
                                 .collect(Collectors.toList()))
                         .total_pages(commentsPage.getTotalPages())
                         .build();
+
                 result.setData(commentsResponseDto);
             }
         }
