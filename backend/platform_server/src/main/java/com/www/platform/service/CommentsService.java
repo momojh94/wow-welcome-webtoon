@@ -43,6 +43,7 @@ public class  CommentsService {
 
     //한 페이지 내의 최대 댓글 갯수
     public static final int COMMENTS_COUNT_PER_PAGE = 15;
+    public static final int MYPAGE_COMMENTS_COUNT_PER_PAGE = 10;
 
     // 예외 발생시 모든 DB작업 초기화 해주는 어노테이션 ( 완료시에만 커밋해줌 )
     @Transactional
@@ -173,31 +174,29 @@ public class  CommentsService {
 
         if(page < 1){
             result.setCode(23);
-            result.setMsg("fail : page is not in valid range");
+            result.setMsg("fail : invalid page number");
             return result;
         }
 
-        Pageable pageable = PageRequest.of(page - 1, 10, Sort.Direction.DESC, "idx");
+        Pageable pageable = PageRequest.of(page - 1, MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comments> commentsPage = commentsRepository.findAllByUsersIdx(pageable, userIdx);
-        int totalElements = commentsPage.getContent().size();
 
-        if(page > commentsPage.getTotalPages() && page != 1){
+        if (page > commentsPage.getTotalPages() && page != 1) {
             result.setCode(23);
-            result.setMsg("fail : page is not in valid range");
+            result.setMsg("fail : invalid page number");
+            return result;
         }
-        else{
-            List<MyPageCommentsDto> myPageCommentsDtosList = new ArrayList<>(totalElements);
-            for(int i = 0 ; i < totalElements; i++){
-                myPageCommentsDtosList.add(new MyPageCommentsDto(commentsPage.getContent().get(i)));
-            }
 
-            result.setCode(0);
-            result.setMsg("request complete : get my page comments");
-            result.setData(MyPageCommentsResponseDto.builder()
-                    .comments(myPageCommentsDtosList)
-                    .total_pages(commentsPage.getTotalPages())
-                    .build());
-        }
+        MyPageCommentsResponseDto myPageCommentsResponseDto
+                = MyPageCommentsResponseDto.builder()
+                .comments(commentsPage.stream()
+                        .map(MyPageCommentsDto::new)
+                        .collect(Collectors.toList()))
+                .total_pages(commentsPage.getTotalPages())
+                .build();
+        result.setCode(0);
+        result.setMsg("request complete : get my page comments");
+        result.setData(myPageCommentsResponseDto);
         return result;
     }
 }

@@ -4,6 +4,7 @@ import com.www.core.auth.entity.Users;
 import com.www.core.auth.repository.UsersRepository;
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
+import com.www.core.file.entity.Webtoon;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.platform.entity.Comments;
 import com.www.core.platform.repository.CommentsDislikeRepository;
@@ -12,6 +13,8 @@ import com.www.core.platform.repository.CommentsRepository;
 
 import com.www.platform.dto.CommentsDto;
 import com.www.platform.dto.CommentsResponseDto;
+import com.www.platform.dto.MyPageCommentsDto;
+import com.www.platform.dto.MyPageCommentsResponseDto;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -57,6 +60,7 @@ public class CommentsServiceTest {
     private CommentsService commentsService;
 
     private Users user;
+    private Webtoon webtoon;
     private Episode episode;
     private Comments comment;
     private String contentWithinSpecifiedLength = "제한된 길이(200자) 이내의 댓글 내용";
@@ -73,10 +77,23 @@ public class CommentsServiceTest {
                 .email("test@email.com")
                 .build();
 
+        webtoon = Webtoon.builder()
+                .idx(1)
+                .title("웹툰 제목")
+                .toon_type(0)
+                .genre1(0)
+                .genre2(0)
+                .summary("웹툰 한줄 요약")
+                .plot("줄거리")
+                .thumbnail("thumbnail.jpg")
+                .end_flag(0)
+                .build();
+
         episode = Episode.builder()
                 .idx(1)
                 .ep_no(1)
                 .title("에피소드 제목")
+                .webtoon(webtoon)
                 .author_comment("작가의 말")
                 .build();
 
@@ -385,9 +402,96 @@ public class CommentsServiceTest {
         );
     }
 
-    /*
+    @DisplayName("마이 페이지 내가 쓴 댓글 조회 성공")
     @Test
     void getMyPageComments() {
+        //given
+        int page = 2;
+        List<Comments> commentsList = new ArrayList<>();
+        for (int idx = 1; idx <= 17; idx++) {
+            commentsList.add(Comments.builder()
+                    .idx(idx)
+                    .users(user)
+                    .ep(episode)
+                    .content("댓글 내용 " + idx)
+                    .build());
+        }
+        int fromIndex = CommentsService.MYPAGE_COMMENTS_COUNT_PER_PAGE * (page - 1);
+        int toIndex = Math.min(fromIndex + CommentsService.MYPAGE_COMMENTS_COUNT_PER_PAGE, commentsList.size());
+        List<Comments> subList = commentsList.subList(fromIndex, toIndex);
+        Pageable pageable = PageRequest.of(page - 1, CommentsService.MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
+        Page<Comments> commentsPage = new PageImpl<Comments>(subList, pageable, commentsList.size());
 
-    }*/
+        given(commentsRepository.findAllByUsersIdx(pageable, user.getIdx())).willReturn(commentsPage);
+
+        //when
+        Response<MyPageCommentsResponseDto> result = commentsService.getMyPageComments(user.getIdx(), page);
+
+        //then
+        assertAll(
+                () -> assertThat(commentsPage.getPageable().getOffset()).isEqualTo(fromIndex),
+                () -> assertThat(commentsPage.getPageable().getPageNumber()).isEqualTo(page - 1),
+                () -> assertThat(commentsPage.getPageable().getPageSize()).isEqualTo(CommentsService.MYPAGE_COMMENTS_COUNT_PER_PAGE),
+                () -> assertThat(result.getCode()).isEqualTo(0),
+                () -> assertThat(result.getMsg()).isEqualTo("request complete : get my page comments"),
+                () -> assertThat(result.getData().getComments().size()).isEqualTo(commentsPage.getNumberOfElements()),
+                () -> assertThat(result.getData().getTotal_pages()).isEqualTo(commentsPage.getTotalPages()),
+                () -> assertArrayEquals(subList.stream()
+                                .map(Comments::getIdx)
+                                .toArray(Integer[]::new),
+                        result.getData().getComments().stream()
+                                .map(MyPageCommentsDto::getIdx)
+                                .toArray(Integer[]::new))
+        );
+    }
+
+    @DisplayName("마이 페이지 내가 쓴 댓글 조회 실패 - 잘못된 page 값(1보다 작을 때)")
+    @Test
+    void getMyPageComments_Fail_InvalidPageValue() {
+        //given
+        int page = -3;
+        //when
+        Response<MyPageCommentsResponseDto> result = commentsService.getMyPageComments(user.getIdx(), page);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getCode()).isEqualTo(23),
+                () -> assertThat(result.getMsg()).isEqualTo("fail : invalid page number"),
+                () -> assertThat(result.getData()).isNull()
+        );
+    }
+
+    @DisplayName("마이 페이지 내가 쓴 댓글 조회 실패 - 잘못된 page값(1이 아니며, 최대 페이지 수보다 클 때)")
+    @Test
+    void getMyPageComments_Fail_InvalidPageValue2() {
+        //given
+        int page = 10;
+        List<Comments> commentsList = new ArrayList<>();
+        for (int idx = 1; idx <= 33; idx++) {
+            commentsList.add(Comments.builder()
+                    .idx(idx)
+                    .users(user)
+                    .ep(episode)
+                    .content("댓글 내용 ~~~ " + idx)
+                    .build());
+        }
+        List<Comments> emptyList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page - 1, CommentsService.MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
+        Page<Comments> commentsPage = new PageImpl<Comments>(emptyList, pageable, commentsList.size());
+
+        given(commentsRepository.findAllByUsersIdx(pageable, user.getIdx())).willReturn(commentsPage);
+
+        //when
+        Response<MyPageCommentsResponseDto> result = commentsService.getMyPageComments(user.getIdx(), page);
+
+        //then
+        assertAll(
+                () -> assertThat(commentsPage.getPageable().getOffset()).isEqualTo(CommentsService.MYPAGE_COMMENTS_COUNT_PER_PAGE * (page - 1)),
+                () -> assertThat(commentsPage.getPageable().getPageNumber()).isEqualTo(page - 1),
+                () -> assertThat(commentsPage.getPageable().getPageSize()).isEqualTo(CommentsService.MYPAGE_COMMENTS_COUNT_PER_PAGE),
+                () -> assertThat(result.getCode()).isEqualTo(23),
+                () -> assertThat(result.getMsg()).isEqualTo("fail : invalid page number"),
+                () -> assertThat(result.getData()).isNull()
+        );
+    }
 }
