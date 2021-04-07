@@ -51,7 +51,8 @@ public class Users extends BaseTimeEntity {
 	private LocalDateTime login_date;
 
 	@Builder
-	public Users(String id, String e_pw, String name, Date birth, int gender, String email) {
+	public Users(int idx, String id, String e_pw, String name, Date birth, int gender, String email) {
+		this.idx = idx;
 		this.userid = id;
 		this.pw = e_pw;
 		this.name = name;

@@ -18,7 +18,6 @@ public class CommentsController {
     private CommentsService commentsService;
     private CommentsLikeDislikeService commentsLikeDislikeService;
     private TokenChecker tokenChecker;
-    //private Environment env;
 
     @GetMapping("/episodes/{ep_idx}/comments")
     public Response<CommentsResponseDto> getComments(@PathVariable("ep_idx") int epIdx,

@@ -41,10 +41,10 @@ public class Episode extends BaseTimeEntity {
 	//updated_date
 	
 	@Builder
-	public Episode(Webtoon webtoon, String title, int ep_no, String author_comment,
+	public Episode(int idx, Webtoon webtoon, String title, int ep_no, String author_comment,
 				   String thumbnail, String contents, int ep_hits, float rating_avg,
 				   int rating_person_total) {
-		//this.idx = idx;
+		this.idx = idx;
 		this.webtoon = webtoon;
 		//this.webtoon_idx = webtoon_idx;
 		this.title = title;
