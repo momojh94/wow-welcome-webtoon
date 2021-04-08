@@ -33,7 +33,7 @@ public class CommentsLikeDislikeService {
 
         if(!comments.isPresent()){
             result.setCode(21);
-            result.setMsg("fail : comment don't exists");
+            result.setMsg("fail : comment doesn't exist");
         }
         else if(users.get().getIdx() == comments.get().getUsers().getIdx()){
             result.setCode(24);
