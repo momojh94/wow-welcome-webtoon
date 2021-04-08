@@ -33,7 +33,7 @@ public class CommentsLikeDislikeService {
 
         if(!comments.isPresent()){
             result.setCode(21);
-            result.setMsg("fail : comment don't exists");
+            result.setMsg("fail : comment doesn't exist");
         }
         else if(users.get().getIdx() == comments.get().getUsers().getIdx()){
             result.setCode(24);
@@ -87,7 +87,7 @@ public class CommentsLikeDislikeService {
 
         if(!comments.isPresent()){
             result.setCode(21);
-            result.setMsg("fail : comment don't exists");
+            result.setMsg("fail : comment doesn't exist");
         }
         else if(users.get().getIdx() == comments.get().getUsers().getIdx()){ 
             result.setCode(25);
@@ -98,7 +98,7 @@ public class CommentsLikeDislikeService {
 
             if(commentsDislikeRepository.existsByComments_IdxAndUsers_Idx
                     (commentsIdx, usersIdx)){
-                // complete : cancel request like
+                // complete : cancel request dislike
 
                 commentsDislike = commentsDislikeRepository.findByComments_IdxAndUsers_Idx
                         (commentsIdx, usersIdx);
@@ -106,13 +106,13 @@ public class CommentsLikeDislikeService {
                 commentsRepository.updateDislikeCnt(comments.get().getIdx(), -1);
 
                 CommentsLikeDislikeCntResponseDto commentsLikeDislikeCntResponseDto =
-                        new CommentsLikeDislikeCntResponseDto(comments.get().getDislike_cnt() -1);
+                        new CommentsLikeDislikeCntResponseDto(comments.get().getDislike_cnt() - 1);
                 result.setCode(0);
                 result.setMsg("request complete : cancel request dislike");
                 result.setData(commentsLikeDislikeCntResponseDto);
             }
             else{
-                // complete : success request like
+                // complete : success request dislike
                 commentsDislike = CommentsDislike.builder()
                         .users_idx(users.get())
                         .comments_idx(comments.get())
