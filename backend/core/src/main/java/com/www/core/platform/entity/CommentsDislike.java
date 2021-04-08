@@ -27,7 +27,8 @@ public class CommentsDislike {
     private Comments comments;
 
     @Builder
-    public CommentsDislike(Users users_idx, Comments comments_idx){
+    public CommentsDislike(int idx, Users users_idx, Comments comments_idx){
+        this.idx = idx;
         this.users = users_idx;
         this.comments = comments_idx;
     }

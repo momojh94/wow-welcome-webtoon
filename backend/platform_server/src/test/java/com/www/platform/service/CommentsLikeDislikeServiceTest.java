@@ -6,6 +6,7 @@ import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
 import com.www.core.platform.entity.Comments;
+import com.www.core.platform.entity.CommentsDislike;
 import com.www.core.platform.entity.CommentsLike;
 import com.www.core.platform.repository.CommentsDislikeRepository;
 import com.www.core.platform.repository.CommentsLikeRepository;
@@ -76,13 +77,13 @@ public class CommentsLikeDislikeServiceTest {
         commentByOtherUser = Comments.builder()
                 .idx(2)
                 .users(otherUser)
-                .like_cnt(3)
-                .dislike_cnt(2)
+                .like_cnt(13)
+                .dislike_cnt(7)
                 .content("댓글 내용2")
                 .build();
     }
 
-    @DisplayName("좋아요 요청 성공 - 요청이 성공하여 좋아요 수 증가")
+    @DisplayName("좋아요 요청 성공 - 좋아요 요청이 성공하여 좋아요 수 증가")
     @Test
     void requestLike_success() {
         //given
@@ -104,7 +105,7 @@ public class CommentsLikeDislikeServiceTest {
         );
     }
 
-    @DisplayName("좋아요 요청 성공 - 취소 요청이 성공하여 기존의 좋아요 취소, 좋아요 수 감소")
+    @DisplayName("좋아요 요청 성공 - 좋아요 취소 요청이 성공하여 기존의 좋아요 취소, 좋아요 수 감소")
     @Test
     void requestLike_cancle() {
         //given
@@ -135,7 +136,7 @@ public class CommentsLikeDislikeServiceTest {
 
     @DisplayName("좋아요 요청 실패 - 존재하지 않은 댓글 접근")
     @Test
-    void requestLike_failed_commentDoesNotExist() {
+    void requestLike_fail_commentDoesNotExist() {
         //given
         int emptyCommentIdx = 5;
         given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
@@ -154,7 +155,7 @@ public class CommentsLikeDislikeServiceTest {
 
     @DisplayName("좋아요 요청 실패 - 유저 자신이 쓴 댓글에 좋아요 요청 할 때")
     @Test
-    void requestLike_failed_userIsLikeCommenter() {
+    void requestLike_fail_userIsLikeCommenter() {
         //given
         given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(commentsRepository.findById(commentByUser.getIdx())).willReturn(Optional.of(commentByUser));
@@ -166,6 +167,98 @@ public class CommentsLikeDislikeServiceTest {
         assertAll(
                 () -> assertThat(result.getCode()).isEqualTo(24),
                 () -> assertThat(result.getMsg()).isEqualTo("fail : users can't request like on their own comments"),
+                () -> assertThat(result.getData()).isNull()
+        );
+    }
+
+    @DisplayName("싫어요 요청 성공 - 싫어요 요청이 성공하여 싫어요 수 증가")
+    @Test
+    void requestDislike_success() {
+        //given
+        given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
+        given(commentsRepository.findById(commentByOtherUser.getIdx())).willReturn(Optional.of(commentByOtherUser));
+        given(commentsDislikeRepository.existsByComments_IdxAndUsers_Idx(commentByOtherUser.getIdx(), user.getIdx()))
+                .willReturn(false);
+
+        //when
+        Response<CommentsLikeDislikeCntResponseDto> result =
+                commentsLikeDislikeService.requestDislike(user.getIdx(), commentByOtherUser.getIdx());
+
+        //then
+        assertAll(
+                () -> verify(commentsDislikeRepository).save(any(CommentsDislike.class)),
+                () -> verify(commentsRepository).updateDislikeCnt(commentByOtherUser.getIdx(), 1),
+                () -> assertThat(result.getCode()).isEqualTo(0),
+                () -> assertThat(result.getMsg()).isEqualTo("request complete : success request dislike"),
+                () -> assertThat(result.getData().getCnt()).isEqualTo(commentByOtherUser.getDislike_cnt() + 1)
+        );
+    }
+
+    @DisplayName("싫어요 요청 성공 - 싫어요 취소 요청이 성공하여 기존의 싫어요 취소, 싫어요 수 감소")
+    @Test
+    void requestDislike_cancle() {
+        //given
+        CommentsDislike commentsDislike = CommentsDislike.builder()
+                .idx(1)
+                .users_idx(user)
+                .comments_idx(commentByOtherUser)
+                .build();
+        given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
+        given(commentsRepository.findById(commentByOtherUser.getIdx())).willReturn(Optional.of(commentByOtherUser));
+        given(commentsDislikeRepository.existsByComments_IdxAndUsers_Idx(commentByOtherUser.getIdx(), user.getIdx()))
+                .willReturn(true);
+        given(commentsDislikeRepository.findByComments_IdxAndUsers_Idx(commentByOtherUser.getIdx(), user.getIdx()))
+                .willReturn(commentsDislike);
+
+        //when
+        Response<CommentsLikeDislikeCntResponseDto> result =
+                commentsLikeDislikeService.requestDislike(user.getIdx(), commentByOtherUser.getIdx());
+
+        //then
+        assertAll(
+                () -> verify(commentsDislikeRepository).deleteByIdx(commentsDislike.getIdx()),
+                () -> verify(commentsRepository).updateDislikeCnt(commentByOtherUser.getIdx(), -1),
+                () -> assertThat(result.getCode()).isEqualTo(0),
+                () -> assertThat(result.getMsg()).isEqualTo("request complete : cancel request dislike"),
+                () -> assertThat(result.getData().getCnt()).isEqualTo(commentByOtherUser.getDislike_cnt() - 1)
+        );
+    }
+
+    @DisplayName("싫어요 요청 실패 - 존재하지 않은 댓글 접근")
+    @Test
+    void requestDislike_fail_commentDoesNotExist() {
+        //given
+        int emptyCommentIdx = 13;
+        given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
+        given(commentsRepository.findById(emptyCommentIdx)).willReturn(Optional.empty());
+
+        //when
+        Response<CommentsLikeDislikeCntResponseDto> result =
+                commentsLikeDislikeService.requestDislike(user.getIdx(), emptyCommentIdx);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getCode()).isEqualTo(21),
+                () -> assertThat(result.getMsg()).isEqualTo("fail : comment doesn't exist"),
+                () -> assertThat(result.getData()).isNull()
+        );
+    }
+
+    @DisplayName("싫어요 요청 실패 - 유저 자신이 쓴 댓글에 싫어요 요청 할 때")
+    @Test
+    void requestDislike_fail_userIsLikeCommenter() {
+        //given
+        given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
+        given(commentsRepository.findById(commentByUser.getIdx())).willReturn(Optional.of(commentByUser));
+
+        //when
+        Response<CommentsLikeDislikeCntResponseDto> result =
+                commentsLikeDislikeService.requestDislike(user.getIdx(), commentByUser.getIdx());
+
+        //then
+        assertAll(
+                () -> assertThat(result.getCode()).isEqualTo(25),
+                () -> assertThat(result.getMsg()).isEqualTo("fail : users can't request dislike on their own comments"),
                 () -> assertThat(result.getData()).isNull()
         );
     }
