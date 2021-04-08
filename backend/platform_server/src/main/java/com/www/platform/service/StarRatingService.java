@@ -19,25 +19,10 @@ import java.util.Optional;
 @Service
 public class StarRatingService {
 
-    private StarRatingRepository starRatingRepository;
     private UsersRepository usersRepository;
     private EpisodeRepository episodeRepository;
     private WebtoonRepository webtoonRepository;
-
-    /*
-    public Response<StarRatingRequestDto> getEpisodeRating(int epIdx) {
-        Response<StarRatingRequestDto> result = new Response<StarRatingRequestDto>();
-
-        // TODO : episode 존재유무 예외처리
-
-        StarRatingRequestDto starRatingDto =
-                new StarRatingRequestDto(starRatingRepository.getRatingAvgByEpIdx(epIdx));
-        result.setCode(0);
-        result.setMsg("complete : get episode star rating");
-        result.setData(starRatingDto);
-        return result;
-    }
-     */
+    private StarRatingRepository starRatingRepository;
 
     @Transactional
     public Response<EpisodeStarRatingResponseDto> insertStarRating(int epIdx, int usersIdx, float rating) {
@@ -55,7 +40,7 @@ public class StarRatingService {
 
             if(!episode.isPresent()){ // 에피소드가 존재하지 않을 때
                 result.setCode(20);
-                result.setMsg("fail : episode don't exists");
+                result.setMsg("fail : episode doesn't exist");
                 return result;
             }
 

@@ -3,8 +3,6 @@ package com.www.platform.service;
 import com.www.core.auth.entity.Users;
 import com.www.core.auth.repository.UsersRepository;
 import com.www.core.common.Response;
-import com.www.core.file.entity.Episode;
-import com.www.core.file.entity.Webtoon;
 import com.www.core.platform.entity.Comments;
 import com.www.core.platform.entity.CommentsDislike;
 import com.www.core.platform.entity.CommentsLike;
