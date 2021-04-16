@@ -19,6 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.springframework.test.web.servlet.ResultActions;
@@ -31,10 +34,11 @@ import java.util.stream.Collectors;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(controllers = CommentsController.class)
@@ -105,16 +109,34 @@ public class CommentsControllerTest {
                 .willReturn(response);
 
         //when
-        ResultActions result = mockMvc.perform(get("/episodes/{ep_idx}/comments", episodeIdx)
+        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/episodes/{ep_idx}/comments", episodeIdx)
                 .param("page", page)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON));
 
         //then
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("code").value(0))
                 .andExpect(jsonPath("msg").value("request complete : get comments by page request"))
                 .andExpect(jsonPath("data.comments[0].idx").value(5))
-                .andExpect(jsonPath("data.total_pages").value(1));
+                .andExpect(jsonPath("data.total_pages").value(1))
+                .andDo(document("{class-name}/{method-name}",
+                        pathParameters(
+                                parameterWithName("ep_idx").description("에피소드의 idx")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("페이지 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("msg").description("응답 메시지"),
+                                fieldWithPath("data.comments[]").description("댓글 목록").type(JsonFieldType.ARRAY),
+                                fieldWithPath("data.comments.[].idx").description("댓글 기본 idx").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].user_id").description("유저 아이디").type(JsonFieldType.STRING),
+                                fieldWithPath("data.comments.[].like_cnt").description("좋아요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].dislike_cnt").description("싫어요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].content").description("댓글 내용").type(JsonFieldType.STRING),
+                                fieldWithPath("data.comments.[].created_date").description("땟글 생성일").type(JsonFieldType.STRING),
+                                fieldWithPath("data.total_pages").description("총 페이지 수").type(JsonFieldType.NUMBER)
+                        )));
     }
 }
