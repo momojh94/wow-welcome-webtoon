@@ -1,0 +1,154 @@
+package com.www.platform.controller;
+
+import com.www.core.auth.entity.Users;
+import com.www.core.common.Response;
+import com.www.core.common.TokenChecker;
+import com.www.core.file.entity.Episode;
+import com.www.core.platform.entity.Comments;
+import com.www.platform.dto.CommentsDto;
+import com.www.platform.dto.CommentsResponseDto;
+import com.www.platform.service.CommentsLikeDislikeService;
+import com.www.platform.service.CommentsService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+
+@ExtendWith(RestDocumentationExtension.class)
+@WebMvcTest(controllers = CommentsController.class)
+public class CommentsControllerTest {
+
+    private RestDocumentationResultHandler documentationHandler;
+
+    @MockBean
+    private CommentsService commentsService;
+    @MockBean
+    private CommentsLikeDislikeService commentsLikeDislikeService;
+    @MockBean
+    private TokenChecker tokenChecker;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    void setUp(WebApplicationContext context,
+               RestDocumentationContextProvider restDocumentation) {
+        documentationHandler = document("{class-name}/{method-name}",
+                preprocessRequest(prettyPrint(), modifyUris().removePort()),
+                preprocessResponse(prettyPrint()));
+
+        mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                .apply(documentationConfiguration(restDocumentation))
+                .alwaysDo(documentationHandler)
+                .alwaysDo(print())
+                .build();
+    }
+
+    @DisplayName("댓글 페이징 조회")
+    @Test
+    void getComments() throws Exception {
+        //given
+        Users user = Users.builder()
+                .idx(1)
+                .id("id123")
+                .name("철수")
+                .e_pw("1q2w3e4r")
+                .gender(0)
+                .email("test@email.com")
+                .build();
+        Episode episode = Episode.builder()
+                .idx(1)
+                .ep_no(1)
+                .title("에피소드 제목")
+                .author_comment("작가의 말")
+                .build();
+
+        int episodeIdx = 1;
+        String page = "1";
+        int pageNumber = Integer.parseInt(page);
+        List<Comments> commentsList = new ArrayList<>();
+        for (int idx = 3; idx >= 1; idx--) {
+            commentsList.add(Comments.builder()
+                    .idx(idx)
+                    .users(user)
+                    .ep(episode)
+                    .content("댓글 내용 " + idx)
+                    .build());
+        }
+        CommentsResponseDto commentsResponseDto = CommentsResponseDto.builder()
+                .comments(commentsList.stream()
+                        .map(CommentsDto::new)
+                        .collect(Collectors.toList()))
+                .total_pages(1)
+                .build();
+
+        Response<CommentsResponseDto> response = new Response<>();
+        response.setCode(0);
+        response.setMsg("request complete : get comments by page request");
+        response.setData(commentsResponseDto);
+        given(commentsService.getCommentsByPageRequest(episodeIdx, pageNumber))
+                .willReturn(response);
+
+        //when
+        ResultActions result = mockMvc.perform(get("/episodes/{ep_idx}/comments", episodeIdx)
+                .param("page", page)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("code").value(0))
+                .andExpect(jsonPath("msg").value("request complete : get comments by page request"))
+                .andExpect(jsonPath("data.comments[0].idx").value(3))
+                .andExpect(jsonPath("data.total_pages").value(1))
+                .andDo(this.documentationHandler.document(
+                        pathParameters(
+                                parameterWithName("ep_idx").description("에피소드의 idx")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("페이지 번호 (1 이상)")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("msg").description("응답 메시지"),
+                                subsectionWithPath("data").description("응답 데이터"),
+                                fieldWithPath("data.comments[]").description("댓글 목록").type(JsonFieldType.ARRAY),
+                                fieldWithPath("data.comments.[].idx").description("댓글 기본 idx").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].user_id").description("유저 아이디").type(JsonFieldType.STRING),
+                                fieldWithPath("data.comments.[].like_cnt").description("좋아요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].dislike_cnt").description("싫어요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].content").description("댓글 내용").type(JsonFieldType.STRING),
+                                fieldWithPath("data.comments.[].created_date").description("땟글 생성일").type(JsonFieldType.STRING),
+                                fieldWithPath("data.total_pages").description("총 페이지 수").type(JsonFieldType.NUMBER)
+                        )));
+    }
+}

@@ -1,0 +1,47 @@
+= WWW(wow-welcome-webtoon) API Document
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: 목차
+:toclevels: 2
+:sectlinks:
+//:operation-curl-request-title: Example request
+//:operation-http-response-title: Example response
+
+[[introduction-platform]]
+= 플랫폼 서버
+
+Platform Server API 문서
+
+현재 플랫폼 서버 port는 8082를 사용합니다.
+
+
+[[Comments]]
+== 댓글 시스템
+
+[[Comments-get]]
+=== GET 댓글 목록 조회
+페이지 번호에 따른 댓글 조회
+
+operation::Comments-controller-test/get-comments[snippets='http-request,path-parameters,request-parameters,http-response,response-fields']
+
+
+=== GET 베스트 댓글 목록 조회
+
+=== GET 마이페이지 내가 쓴 댓글 조회
+
+=== POST 댓글 등록
+
+=== POST 댓글 좋아요 요청
+
+=== POST 댓글 싫어요 요청
+
+=== DEL 댓글 삭제
+
+
+
+== 별점 시스템
+
+=== POST 회차 별점 주기(등록)
+
