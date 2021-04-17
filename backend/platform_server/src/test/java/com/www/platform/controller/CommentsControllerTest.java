@@ -21,6 +21,8 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,15 +36,21 @@ import java.util.stream.Collectors;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(controllers = CommentsController.class)
 public class CommentsControllerTest {
+
+    private RestDocumentationResultHandler documentationHandler;
 
     @MockBean
     private CommentsService commentsService;
@@ -57,8 +65,13 @@ public class CommentsControllerTest {
     @BeforeEach
     void setUp(WebApplicationContext context,
                RestDocumentationContextProvider restDocumentation) {
+        documentationHandler = document("{class-name}/{method-name}",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()));
+
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocumentation))
+                .alwaysDo(documentationHandler)
                 .alwaysDo(print())
                 .build();
     }
@@ -109,7 +122,7 @@ public class CommentsControllerTest {
                 .willReturn(response);
 
         //when
-        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/episodes/{ep_idx}/comments", episodeIdx)
+        ResultActions result = mockMvc.perform(get("/episodes/{ep_idx}/comments", episodeIdx)
                 .param("page", page)
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -119,7 +132,7 @@ public class CommentsControllerTest {
                 .andExpect(jsonPath("msg").value("request complete : get comments by page request"))
                 .andExpect(jsonPath("data.comments[0].idx").value(5))
                 .andExpect(jsonPath("data.total_pages").value(1))
-                .andDo(document("{class-name}/{method-name}",
+                .andDo(this.documentationHandler.document(
                         pathParameters(
                                 parameterWithName("ep_idx").description("에피소드의 idx")
                         ),
@@ -129,6 +142,7 @@ public class CommentsControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("msg").description("응답 메시지"),
+                                subsectionWithPath("data").description("응답 데이터"),
                                 fieldWithPath("data.comments[]").description("댓글 목록").type(JsonFieldType.ARRAY),
                                 fieldWithPath("data.comments.[].idx").description("댓글 기본 idx").type(JsonFieldType.NUMBER),
                                 fieldWithPath("data.comments.[].user_id").description("유저 아이디").type(JsonFieldType.STRING),
