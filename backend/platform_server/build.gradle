@@ -1,6 +1,6 @@
 plugins {
     // AsciiDoc 파일을 컨버팅하고 Build 폴더에 복사하기 위한 플러그인입니다.
-    id "org.asciidoctor.convert" version "1.5.9.2"
+    id "org.asciidoctor.convert" version "1.5.10"
 }
 
 dependencies {
