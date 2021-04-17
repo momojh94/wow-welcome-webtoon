@@ -36,15 +36,13 @@ import java.util.stream.Collectors;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(controllers = CommentsController.class)
@@ -66,7 +64,7 @@ public class CommentsControllerTest {
     void setUp(WebApplicationContext context,
                RestDocumentationContextProvider restDocumentation) {
         documentationHandler = document("{class-name}/{method-name}",
-                preprocessRequest(prettyPrint()),
+                preprocessRequest(prettyPrint(), modifyUris().removePort()),
                 preprocessResponse(prettyPrint()));
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
@@ -99,7 +97,7 @@ public class CommentsControllerTest {
         String page = "1";
         int pageNumber = Integer.parseInt(page);
         List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 5; idx >= 1; idx--) {
+        for (int idx = 3; idx >= 1; idx--) {
             commentsList.add(Comments.builder()
                     .idx(idx)
                     .users(user)
@@ -130,14 +128,14 @@ public class CommentsControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("code").value(0))
                 .andExpect(jsonPath("msg").value("request complete : get comments by page request"))
-                .andExpect(jsonPath("data.comments[0].idx").value(5))
+                .andExpect(jsonPath("data.comments[0].idx").value(3))
                 .andExpect(jsonPath("data.total_pages").value(1))
                 .andDo(this.documentationHandler.document(
                         pathParameters(
                                 parameterWithName("ep_idx").description("에피소드의 idx")
                         ),
                         requestParameters(
-                                parameterWithName("page").description("페이지 번호")
+                                parameterWithName("page").description("페이지 번호 (1 이상)")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
