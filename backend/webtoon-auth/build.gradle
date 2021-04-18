@@ -1,6 +1,6 @@
 
 dependencies {
-    compile project(':backend:core')
+    compile project(':webtoon-core')
 	compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.security:spring-security-test')
 }

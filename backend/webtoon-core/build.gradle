@@ -1,0 +1,18 @@
+bootJar{
+    enabled = false;
+}
+jar {
+    enabled = true;
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-data-redis')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('io.jsonwebtoken:jjwt-api:0.10.7')
+    compile('org.json:json:20190722')
+
+    runtime('mysql:mysql-connector-java')
+    runtime('io.jsonwebtoken:jjwt-impl:0.10.7',
+            'io.jsonwebtoken:jjwt-jackson:0.10.7')
+}

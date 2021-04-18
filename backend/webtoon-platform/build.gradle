@@ -4,12 +4,9 @@ plugins {
 }
 
 dependencies {
-    compile project(':backend:core')
+    compile project(':webtoon-core')
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation('org.springframework.restdocs:spring-restdocs-mockmvc')
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
 }
 
 ext {
