@@ -19,5 +19,5 @@ public abstract class BaseCreatedTimeEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime created_date;
+    protected LocalDateTime created_date;
 }

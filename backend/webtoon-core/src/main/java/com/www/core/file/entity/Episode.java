@@ -3,6 +3,7 @@ package com.www.core.file.entity;
 import com.www.core.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Entity
-
+@EqualsAndHashCode(callSuper=false)
 public class Episode extends BaseTimeEntity {
 	
 	@Id

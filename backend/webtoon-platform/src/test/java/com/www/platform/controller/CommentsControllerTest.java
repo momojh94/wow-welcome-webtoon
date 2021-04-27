@@ -21,9 +21,7 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,7 +29,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.xml.crypto.Data;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +44,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(controllers = CommentsController.class)
@@ -73,7 +73,7 @@ public class CommentsControllerTest {
     private static final String CODE = "code";
     private static final String MESSAGE = "msg";
     private static final String DATA = "data";
-    private static final String AUTH_HEADER = "Authorization";
+    private static final String AUTH_HEADER = "AUTHORIZATION";
     private static final String ACCESS_TOKEN = "bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkeCI6MiwidXNlcl9uYW1lIjoi6rmA7Ju57YiwIiwiaWF0IjoxNjE5NDM5NDA3LCJleHAiOjE2MTk0NDMwMDd9.uCpvXtkLvhcDZMhfy5mMpo9J9V96SdN_LtDU5Z3as_s";
 
     @BeforeEach
@@ -125,6 +125,7 @@ public class CommentsControllerTest {
                 .users(user)
                 .ep(episode)
                 .content("댓글 내용 1")
+                .created_date(LocalDateTime.of(2021, 4, 22, 05, 32))
                 .build();
 
     }
@@ -142,6 +143,7 @@ public class CommentsControllerTest {
                     .users(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
+                    .created_date(LocalDateTime.of(2021, 4, 22, idx, 32))
                     .build());
         }
         CommentsResponseDto responseData = CommentsResponseDto.builder()
@@ -187,7 +189,7 @@ public class CommentsControllerTest {
                                 fieldWithPath("data.comments.[].like_cnt").description("좋아요 수").type(JsonFieldType.NUMBER),
                                 fieldWithPath("data.comments.[].dislike_cnt").description("싫어요 수").type(JsonFieldType.NUMBER),
                                 fieldWithPath("data.comments.[].content").description("댓글 내용").type(JsonFieldType.STRING),
-                                fieldWithPath("data.comments.[].created_date").description("땟글 생성일").type(JsonFieldType.STRING),
+                                fieldWithPath("data.comments.[].created_date").description("댓글 생성일").type(JsonFieldType.STRING),
                                 fieldWithPath("data.total_pages").description("총 페이지 수").type(JsonFieldType.NUMBER)
                         )));
     }
@@ -205,6 +207,7 @@ public class CommentsControllerTest {
                     .content("댓글 내용 " + idx)
                     .like_cnt(30 - idx)
                     .dislike_cnt(10 + idx)
+                    .created_date(LocalDateTime.of(2021, 4, 22, idx, 32))
                     .build());
         }
         List<CommentsDto> responseData = commentsList.stream()
@@ -228,7 +231,23 @@ public class CommentsControllerTest {
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : get best comments"))
                 .andExpect(jsonPath("data[0].idx").value(3))
-                .andExpect(jsonPath("data[4].idx").value(7));
+                .andExpect(jsonPath("data[4].idx").value(7))
+                .andDo(this.documentationHandler.document(
+                        pathParameters(
+                                parameterWithName("ep_idx").description("에피소드의 idx")
+                        ),
+                        responseFields(
+                                fieldWithPath(CODE).description("응답 코드"),
+                                fieldWithPath(MESSAGE).description("응답 메시지"),
+                                subsectionWithPath(DATA).description("응답 데이터"),
+                                fieldWithPath("data[]").description("베스트 댓글 목록(최대 5개)").type(JsonFieldType.ARRAY),
+                                fieldWithPath("data[].idx").description("댓글 기본 idx").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data[].user_id").description("유저 아이디").type(JsonFieldType.STRING),
+                                fieldWithPath("data[].like_cnt").description("좋아요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data[].dislike_cnt").description("싫어요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data[].content").description("댓글 내용").type(JsonFieldType.STRING),
+                                fieldWithPath("data[].created_date").description("댓글 생성일").type(JsonFieldType.STRING)
+                        )));
     }
 
     @DisplayName("댓글 등록")
@@ -241,7 +260,7 @@ public class CommentsControllerTest {
         Response<Integer> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : insert comment");
-        response.setData(comment.getIdx());
+        response.setData(null);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
@@ -258,7 +277,23 @@ public class CommentsControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : insert comment"))
-                .andExpect(jsonPath(DATA).value(comment.getIdx()));
+                .andExpect(jsonPath(DATA).doesNotExist())
+                .andDo(this.documentationHandler.document(
+                        requestHeaders(
+                                headerWithName(AUTH_HEADER).description("유저의 AccessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("ep_idx").description("에피소드의 idx")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").description("댓글 내용")
+                        ),
+                        responseFields(
+                                fieldWithPath(CODE).description("응답 코드"),
+                                fieldWithPath(MESSAGE).description("응답 메시지"),
+                                subsectionWithPath(DATA).description("응답 데이터")
+                        )));
+
     }
 
     @DisplayName("댓글 삭제")
@@ -268,7 +303,7 @@ public class CommentsControllerTest {
         Response<Integer> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : delete comment");
-        response.setData(comment.getIdx());
+        response.setData(null);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
@@ -284,7 +319,20 @@ public class CommentsControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : delete comment"))
-                .andExpect(jsonPath(DATA).value(comment.getIdx()));
+                .andExpect(jsonPath(DATA).doesNotExist())
+                .andDo(this.documentationHandler.document(
+                        requestHeaders(
+                                headerWithName(AUTH_HEADER).description("유저의 AccessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("cmt_idx").description("댓글의 idx")
+                        ),
+                        responseFields(
+                                fieldWithPath(CODE).description("응답 코드"),
+                                fieldWithPath(MESSAGE).description("응답 메시지"),
+                                subsectionWithPath(DATA).description("응답 데이터")
+                        )));
+
     }
 
     @DisplayName("댓글 좋아요 요청")
@@ -312,7 +360,20 @@ public class CommentsControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : success request like"))
-                .andExpect(jsonPath("data.cnt").value(comment.getLike_cnt() + 1));
+                .andExpect(jsonPath("data.cnt").value(comment.getLike_cnt() + 1))
+                .andDo(this.documentationHandler.document(
+                        requestHeaders(
+                                headerWithName(AUTH_HEADER).description("유저의 AccessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("cmt_idx").description("댓글의 idx")
+                        ),
+                        responseFields(
+                                fieldWithPath(CODE).description("응답 코드"),
+                                fieldWithPath(MESSAGE).description("응답 메시지"),
+                                subsectionWithPath(DATA).description("응답 데이터"),
+                                fieldWithPath("data.cnt").description("좋아요 수").type(JsonFieldType.NUMBER)
+                        )));
     }
 
     @DisplayName("댓글 싫어요 요청")
@@ -340,7 +401,20 @@ public class CommentsControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : success request dislike"))
-                .andExpect(jsonPath("data.cnt").value(comment.getDislike_cnt() + 1));
+                .andExpect(jsonPath("data.cnt").value(comment.getDislike_cnt() + 1))
+                .andDo(this.documentationHandler.document(
+                        requestHeaders(
+                                headerWithName(AUTH_HEADER).description("유저의 AccessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("cmt_idx").description("댓글의 idx")
+                        ),
+                        responseFields(
+                                fieldWithPath(CODE).description("응답 코드"),
+                                fieldWithPath(MESSAGE).description("응답 메시지"),
+                                subsectionWithPath(DATA).description("응답 데이터"),
+                                fieldWithPath("data.cnt").description("싫어요 수").type(JsonFieldType.NUMBER)
+                        )));
     }
 
     @DisplayName("마이페이지 내가쓴 댓글 조회")
@@ -356,6 +430,7 @@ public class CommentsControllerTest {
                     .users(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
+                    .created_date(LocalDateTime.of(2021, 4, 22, idx, 32))
                     .build());
         }
         MyPageCommentsResponseDto responseData
@@ -388,7 +463,29 @@ public class CommentsControllerTest {
                 .andExpect(jsonPath(MESSAGE).value("request complete : get my page comments"))
                 .andExpect(jsonPath("data.comments[0].idx").value(13))
                 .andExpect(jsonPath("data.comments[4].idx").value(9))
-                .andExpect(jsonPath("data.total_pages").value(1));
+                .andExpect(jsonPath("data.total_pages").value(1))
+                .andDo(this.documentationHandler.document(
+                        requestHeaders(
+                                headerWithName(AUTH_HEADER).description("유저의 AccessToken")
+                        ),
+                        requestParameters(
+                                parameterWithName("page").description("페이지 번호 (1 이상)")
+                        ),
+                        responseFields(
+                                fieldWithPath(CODE).description("응답 코드"),
+                                fieldWithPath(MESSAGE).description("응답 메시지"),
+                                subsectionWithPath(DATA).description("응답 데이터"),
+                                fieldWithPath("data.comments[]").description("댓글 목록").type(JsonFieldType.ARRAY),
+                                fieldWithPath("data.comments.[].idx").description("댓글 기본 idx").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].webtoon_thumbnail").description("웹툰 썸네일").type(JsonFieldType.STRING),
+                                fieldWithPath("data.comments.[].webtoon_title").description("웹툰 제목").type(JsonFieldType.STRING),
+                                fieldWithPath("data.comments.[].ep_no").description("에피소드 회차").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].like_cnt").description("좋아요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].dislike_cnt").description("싫어요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].content").description("댓글 내용").type(JsonFieldType.STRING),
+                                fieldWithPath("data.comments.[].created_date").description("댓글 생성일").type(JsonFieldType.STRING),
+                                fieldWithPath("data.total_pages").description("총 페이지 수").type(JsonFieldType.NUMBER)
+                        )));
     }
 }
 

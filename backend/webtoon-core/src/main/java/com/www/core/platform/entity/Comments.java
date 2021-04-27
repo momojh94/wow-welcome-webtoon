@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -38,13 +39,14 @@ public class Comments extends BaseCreatedTimeEntity {
     private String content;
 
     @Builder
-    public Comments(Episode ep, Users users, int like_cnt, int dislike_cnt, int idx, String content){
+    public Comments(Episode ep, Users users, int like_cnt, int dislike_cnt, int idx, String content, LocalDateTime created_date){
         this.ep = ep;
         this.users = users;
         this.like_cnt = like_cnt;
         this.dislike_cnt = dislike_cnt;
         this.idx = idx;
         this.content = content;
+        this.created_date = created_date;
     }
 }
 
