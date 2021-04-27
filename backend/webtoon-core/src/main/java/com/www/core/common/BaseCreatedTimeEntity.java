@@ -10,8 +10,6 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
-// TODO : Core 혹은 Common 이라는 이름으로 모듈 하나 더 만들어서 공통으로 쓰는 것들 관리 해야 할 듯?
-
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
@@ -19,5 +17,5 @@ public abstract class BaseCreatedTimeEntity {
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime created_date;
+    protected LocalDateTime created_date;
 }
