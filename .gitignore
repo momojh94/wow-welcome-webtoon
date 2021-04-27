@@ -106,3 +106,7 @@ thumb
 sketch
 
 # End of https://www.gitignore.io/api/react,eclipse
+gradlew
+gradlew.bat
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
