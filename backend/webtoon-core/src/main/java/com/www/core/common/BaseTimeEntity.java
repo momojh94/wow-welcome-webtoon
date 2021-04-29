@@ -18,5 +18,5 @@ import lombok.Getter;
 public abstract class BaseTimeEntity extends BaseCreatedTimeEntity{
 
     @LastModifiedDate
-    protected LocalDateTime updated_date;
+    protected LocalDateTime updatedDate;
 }

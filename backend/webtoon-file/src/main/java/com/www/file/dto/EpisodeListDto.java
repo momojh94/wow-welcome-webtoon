@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EpisodeListDto {
 	
-	private int idx;
+	private Long idx;
 	private int ep_no;
 	private String title;
 	private String thumnail;
@@ -21,7 +21,7 @@ public class EpisodeListDto {
 	private float rating_avg;
 	
 	@Builder 
-	public EpisodeListDto(int idx, int ep_no, String title, String thumbnail, 
+	public EpisodeListDto(Long idx, int ep_no, String title, String thumbnail, 
 			String author_comment, float rating_avg, LocalDateTime created_date) {
 		this.idx = idx;
 		this.ep_no = ep_no;

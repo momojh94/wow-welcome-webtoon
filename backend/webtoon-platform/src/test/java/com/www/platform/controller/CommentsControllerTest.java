@@ -92,40 +92,40 @@ public class CommentsControllerTest {
         objectMapper = new ObjectMapper();
 
         user = Users.builder()
-                .idx(1)
-                .id("id123")
+                .idx(1L)
+                .account("id123")
                 .name("철수")
-                .e_pw("1q2w3e4r")
-                .gender(0)
+                .pw("1q2w3e4r")
+                .gender((byte) 0)
                 .email("test@email.com")
                 .build();
 
         webtoon = Webtoon.builder()
-                .idx(1)
+                .idx(1L)
                 .title("웹툰 제목")
-                .toon_type(0)
-                .genre1(0)
-                .genre2(0)
+                .toonType((byte) 0)
+                .genre1((byte) 0)
+                .genre2((byte) 0)
                 .summary("웹툰 한줄 요약")
                 .plot("줄거리")
                 .thumbnail("thumbnailTest.jpg")
-                .end_flag(0)
+                .endFlag((byte) 0)
                 .build();
 
         episode = Episode.builder()
-                .idx(1)
-                .ep_no(1)
+                .idx(1L)
+                .epNo(1)
                 .title("에피소드 제목")
                 .webtoon(webtoon)
-                .author_comment("작가의 말")
+                .authorComment("작가의 말")
                 .build();
 
         comment = Comments.builder()
-                .idx(1)
-                .users(user)
+                .idx(1L)
+                .user(user)
                 .ep(episode)
                 .content("댓글 내용 1")
-                .created_date(LocalDateTime.of(2021, 4, 22, 05, 32))
+                .createdDate(LocalDateTime.of(2021, 4, 22, 05, 32))
                 .build();
 
     }
@@ -137,13 +137,13 @@ public class CommentsControllerTest {
         String page = "1";
         int pageNumber = Integer.parseInt(page);
         List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 3; idx >= 1; idx--) {
+        for (Long idx = 3L; idx >= 1L; idx--) {
             commentsList.add(Comments.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
-                    .created_date(LocalDateTime.of(2021, 4, 22, idx, 32))
+                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                     .build());
         }
         CommentsResponseDto responseData = CommentsResponseDto.builder()
@@ -199,15 +199,15 @@ public class CommentsControllerTest {
     void getBestCommnets() throws Exception {
         //given
         List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 3; idx < 8; idx++) {
+        for (Long idx = 3L; idx < 8; idx++) {
             commentsList.add(Comments.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
-                    .like_cnt(30 - idx)
-                    .dislike_cnt(10 + idx)
-                    .created_date(LocalDateTime.of(2021, 4, 22, idx, 32))
+                    .likeCount((int)(30 - idx))
+                    .dislikeCount((int)(10 + idx))
+                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                     .build());
         }
         List<CommentsDto> responseData = commentsList.stream()
@@ -257,7 +257,7 @@ public class CommentsControllerTest {
         String requestBody = objectMapper.writeValueAsString(
                 new CommentsSaveRequestDto(comment.getContent()));
 
-        Response<Integer> response = new Response<>();
+        Response<Long> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : insert comment");
         response.setData(null);
@@ -300,7 +300,7 @@ public class CommentsControllerTest {
     @Test
     void deleteComments() throws Exception {
         //given
-        Response<Integer> response = new Response<>();
+        Response<Long> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : delete comment");
         response.setData(null);
@@ -340,7 +340,7 @@ public class CommentsControllerTest {
     void requestCommentsLike() throws Exception {
         //given
         CommentsLikeDislikeCntResponseDto responseData =
-                new CommentsLikeDislikeCntResponseDto(comment.getLike_cnt() + 1);
+                new CommentsLikeDislikeCntResponseDto(comment.getLikeCount() + 1);
         Response<CommentsLikeDislikeCntResponseDto> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : success request like");
@@ -360,7 +360,7 @@ public class CommentsControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : success request like"))
-                .andExpect(jsonPath("data.cnt").value(comment.getLike_cnt() + 1))
+                .andExpect(jsonPath("data.cnt").value(comment.getLikeCount() + 1))
                 .andDo(this.documentationHandler.document(
                         requestHeaders(
                                 headerWithName(AUTH_HEADER).description("유저의 AccessToken")
@@ -381,7 +381,7 @@ public class CommentsControllerTest {
     void requestCommentsDislike() throws Exception {
         //given
         CommentsLikeDislikeCntResponseDto responseData =
-                new CommentsLikeDislikeCntResponseDto(comment.getDislike_cnt() + 1);
+                new CommentsLikeDislikeCntResponseDto(comment.getDislikeCount() + 1);
         Response<CommentsLikeDislikeCntResponseDto> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : success request dislike");
@@ -401,7 +401,7 @@ public class CommentsControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : success request dislike"))
-                .andExpect(jsonPath("data.cnt").value(comment.getDislike_cnt() + 1))
+                .andExpect(jsonPath("data.cnt").value(comment.getDislikeCount() + 1))
                 .andDo(this.documentationHandler.document(
                         requestHeaders(
                                 headerWithName(AUTH_HEADER).description("유저의 AccessToken")
@@ -424,13 +424,13 @@ public class CommentsControllerTest {
         String page = "1";
         int pageNumber = Integer.parseInt(page);
         List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 13; idx >= 9; idx--) {
+        for (Long idx = 13L; idx >= 9L; idx--) {
             commentsList.add(Comments.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
-                    .created_date(LocalDateTime.of(2021, 4, 22, idx, 32))
+                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                     .build());
         }
         MyPageCommentsResponseDto responseData

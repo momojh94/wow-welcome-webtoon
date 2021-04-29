@@ -11,36 +11,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Stream;
 
-public interface CommentsRepository extends JpaRepository<Comments, Integer> {
+public interface CommentsRepository extends JpaRepository<Comments, Long> {
 
-    @Query("SELECT c " +
-            "FROM Comments c " +
-            "ORDER BY c.idx DESC")
-    Stream<Comments> findAllDesc();
+    Page<Comments> findAllByEpIdx(Pageable pageable, @Param("epIdx") Long epIdx);
 
-    Page<Comments> findAllByEpIdx(Pageable pageable, @Param("ep_idx") int epIdx);
-
-    Page<Comments> findAllByUsersIdx(Pageable pageable, @Param("users_idx") int userIdx);
+    Page<Comments> findAllByUserIdx(Pageable pageable, @Param("userIdx") Long userIdx);
 
     @Query(nativeQuery = true,
             value = "SELECT * " +
                     "FROM Comments c " +
-                    "WHERE c.like_cnt >= c.dislike_cnt + 5 AND c.ep_idx = :ep_idx " +
-                    "ORDER BY (c.like_cnt - c.dislike_cnt) DESC, c.like_cnt DESC " +
+                    "WHERE c.like_count >= c.dislike_count + 5 AND c.ep_idx = :epIdx " +
+                    "ORDER BY (c.like_count - c.dislike_count) DESC, c.like_count DESC " +
                     "LIMIT 5")
-    Stream<Comments> findBestCommentsByEpIdx(@Param("ep_idx") int epIdx);
+    Stream<Comments> findBestCommentsByEpIdx(@Param("epIdx") Long epIdx);
 
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query("UPDATE Comments c " +
-            "SET c.like_cnt = c.like_cnt + :add_cnt " +
-            "WHERE c.idx = :comments_idx")
-    void updateLikeCnt(@Param("comments_idx") int commentsIdx, @Param("add_cnt") int addCnt);
+            "SET c.likeCount = c.likeCount + :addCnt " +
+            "WHERE c.idx = :commentIdx")
+    void updateLikeCount(@Param("commentIdx") Long commentIdx, @Param("addCnt") int addCnt);
 
     @Modifying(clearAutomatically = true)
     @Transactional
     @Query("UPDATE Comments c " +
-            "SET c.dislike_cnt = c.dislike_cnt + :add_cnt " +
-            "WHERE c.idx = :comments_idx")
-    void updateDislikeCnt(@Param("comments_idx") int commentsIdx, @Param("add_cnt") int addCnt);
+            "SET c.dislikeCount = c.dislikeCount + :addCnt " +
+            "WHERE c.idx = :commentIdx")
+    void updateDislikeCount(@Param("commentIdx") Long commentIdx, @Param("addCnt") int addCnt);
 }

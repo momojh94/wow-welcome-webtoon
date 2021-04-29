@@ -1,25 +1,14 @@
 package com.www.core.auth.entity;
 
-import java.sql.Date;
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 import com.www.core.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
-/**
- * Users Entity (DB User info table mapping)
- * 
- * @author bjiso
- *
- */
+import javax.persistence.*;
+import java.sql.Date;
+
 @NoArgsConstructor
 @Getter
 @Entity
@@ -27,12 +16,13 @@ public class Users extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int idx;
+	private Long idx;
 
 	@Column(length = 20, nullable = false)
-	private String userid;
+	private String account;
 
 	@Column(length = 64, nullable = false)
+	@Type(type = "char")
 	private String pw;
 
 	@Column(length = 12, nullable = false)
@@ -42,19 +32,16 @@ public class Users extends BaseTimeEntity {
 	private Date birth;
 
 	@Column(nullable = false)
-	private int gender;
+	private byte gender;
 
 	@Column(nullable = false, length = 45)
 	private String email;
 
-	@Column
-	private LocalDateTime login_date;
-
 	@Builder
-	public Users(int idx, String id, String e_pw, String name, Date birth, int gender, String email) {
+	public Users(Long idx, String account, String pw, String name, Date birth, byte gender, String email) {
 		this.idx = idx;
-		this.userid = id;
-		this.pw = e_pw;
+		this.account = account;
+		this.pw = pw;
 		this.name = name;
 		this.birth = birth;
 		this.gender = gender;

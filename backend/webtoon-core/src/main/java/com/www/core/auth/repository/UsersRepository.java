@@ -15,32 +15,33 @@ import java.time.LocalDateTime;
  * @author bjiso
  *
  */
-public interface UsersRepository extends JpaRepository<Users, Integer>{
+public interface UsersRepository extends JpaRepository<Users, Long> {
 
-	Users findByUserid(String userid);
-	Users findByIdx(int idx);
+	Users findByAccount(String account);
+	Users findByIdx(Long idx);
 	
-	boolean existsByUserid(String userid);
+	boolean existsByAccount(String account);
 	boolean existsByEmail(String email);
 	
 	@Modifying
 	@Transactional
-	@Query("UPDATE Users SET login_date = :logindate WHERE idx = :idx")
-	int updateLoginDate(@Param("logindate") LocalDateTime login_date, @Param("idx") int idx);
+	@Query("UPDATE Users SET login_date = :loginDate WHERE idx = :idx")
+	int updateLoginDate(@Param("loginDate") LocalDateTime loginDate, @Param("idx") Long idx);
 	
 	@Modifying
 	@Transactional
 	@Query("UPDATE Users "
 			+ "SET "
-			+ "pw = :encoded_pw,"
+			+ "pw = :encodedPw,"
 			+ "gender = :gender,"
 			+ "name = :name,"
 			+ "birth = :birth "
 			+ "WHERE idx = :idx")
-	int updateUserInfo(@Param("encoded_pw") String encoded_pw, @Param("gender")int gender, @Param("name")String name,@Param("birth")Date birth,@Param("idx")int user_idx);
+	int updateUserInfo(@Param("encodedPw") String encodedPw, @Param("gender") int gender,
+					   @Param("name") String name, @Param("birth") Date birth, @Param("idx") Long userIdx);
 	
 	@Modifying
 	@Transactional
-	@Query("UPDATE Users SET updated_date = :updated_date WHERE idx = :idx")
-	int updateUpdatedDate(@Param("updated_date") LocalDateTime updated_date, @Param("idx") int idx);
+	@Query("UPDATE Users SET updated_date = :updatedDate WHERE idx = :idx")
+	int updateUpdatedDate(@Param("updatedDate") LocalDateTime updatedDate, @Param("idx") Long idx);
 }

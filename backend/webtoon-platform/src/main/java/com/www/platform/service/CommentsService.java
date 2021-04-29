@@ -7,7 +7,6 @@ import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.platform.entity.Comments;
-import com.www.core.platform.entity.CommentsDislike;
 import com.www.core.platform.repository.CommentsDislikeRepository;
 import com.www.core.platform.repository.CommentsLikeRepository;
 import com.www.core.platform.repository.CommentsRepository;
@@ -47,8 +46,8 @@ public class  CommentsService {
 
     // 예외 발생시 모든 DB작업 초기화 해주는 어노테이션 ( 완료시에만 커밋해줌 )
     @Transactional
-    public Response<Integer> insertComments(int userIdx, int epIdx, String content) {
-        Response<Integer> result = new Response<Integer>();
+    public Response<Long> insertComments(Long userIdx, Long epIdx, String content) {
+        Response<Long> result = new Response<Long>();
         Optional<Users> user = usersRepository.findById(userIdx);
         Optional<Episode> episode = episodeRepository.findById(epIdx);
 
@@ -62,11 +61,11 @@ public class  CommentsService {
         }
         else{   // 댓글 DB 저장
             Comments comments = Comments.builder()
-                    .users(user.get())
+                    .user(user.get())
                     .ep(episode.get())
                     .content(content)
                     .build();
-            int entityIdx = commentsRepository.save(comments).getIdx();
+            commentsRepository.save(comments);
 
             result.setCode(0);
             result.setMsg("request complete : insert comment");
@@ -76,20 +75,20 @@ public class  CommentsService {
     }
 
     @Transactional
-    public Response<Integer> deleteComments(int userIdx, int commentsIdx) {
-        Response<Integer> result = new Response<Integer>();
+    public Response<Long> deleteComments(Long userIdx, Long commentIdx) {
+        Response<Long> result = new Response<Long>();
         Optional<Users> users = usersRepository.findById(userIdx);
-        Optional<Comments> comments = commentsRepository.findById(commentsIdx);
+        Optional<Comments> comments = commentsRepository.findById(commentIdx);
 
         if(comments.isPresent()){ // 유저가 해당 댓글의 주인이 아닐 때
-            if(userIdx != comments.get().getUsers().getIdx()){
+            if(userIdx != comments.get().getUser().getIdx()){
                 result.setCode(22);
                 result.setMsg("fail : user isn't commenter");
             }
             else{   // 댓글 삭제
-                commentsLikeRepository.deleteAllByCommentsIdx(commentsIdx);
-                commentsDislikeRepository.deleteAllByCommentsIdx(commentsIdx);
-                commentsRepository.deleteById(commentsIdx);
+                commentsLikeRepository.deleteAllByCommentIdx(commentIdx);
+                commentsDislikeRepository.deleteAllBycommentIdx(commentIdx);
+                commentsRepository.deleteById(commentIdx);
                 result.setCode(0);
                 result.setMsg("request complete : delete comment");
             }
@@ -110,7 +109,7 @@ public class  CommentsService {
      * @param page page number
      */
     @Transactional(readOnly = true)
-    public Response<CommentsResponseDto> getCommentsByPageRequest(int epIdx, int page) {
+    public Response<CommentsResponseDto> getCommentsByPageRequest(Long epIdx, int page) {
         Response<CommentsResponseDto> result = new Response<CommentsResponseDto>();
 
         if(!episodeRepository.existsById(epIdx)) {    // 에피소드가 존재하지 않을 때
@@ -150,7 +149,7 @@ public class  CommentsService {
     }
 
     @Transactional(readOnly = true)
-    public Response<List<CommentsDto>> getBestComments(int epIdx) {
+    public Response<List<CommentsDto>> getBestComments(Long epIdx) {
         Response<List<CommentsDto>> result = new Response<List<CommentsDto>>();
 
         if(!episodeRepository.existsById(epIdx)) {  // 에피소드가 존재하지 않을 때
@@ -169,7 +168,7 @@ public class  CommentsService {
     }
 
     @Transactional(readOnly = true)
-    public Response<MyPageCommentsResponseDto> getMyPageComments(int userIdx, int page){
+    public Response<MyPageCommentsResponseDto> getMyPageComments(Long userIdx, int page){
         Response<MyPageCommentsResponseDto> result = new Response<MyPageCommentsResponseDto>();
 
         if(page < 1){
@@ -179,7 +178,7 @@ public class  CommentsService {
         }
 
         Pageable pageable = PageRequest.of(page - 1, MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
-        Page<Comments> commentsPage = commentsRepository.findAllByUsersIdx(pageable, userIdx);
+        Page<Comments> commentsPage = commentsRepository.findAllByUserIdx(pageable, userIdx);
 
         if (page > commentsPage.getTotalPages() && page != 1) {
             result.setCode(23);

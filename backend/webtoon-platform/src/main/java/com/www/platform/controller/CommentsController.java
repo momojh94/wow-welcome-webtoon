@@ -6,7 +6,6 @@ import com.www.platform.dto.*;
 import com.www.platform.service.CommentsLikeDislikeService;
 import com.www.platform.service.CommentsService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,22 +18,22 @@ public class CommentsController {
     private CommentsLikeDislikeService commentsLikeDislikeService;
     private TokenChecker tokenChecker;
 
-    @GetMapping("/episodes/{ep_idx}/comments")
-    public Response<CommentsResponseDto> getComments(@PathVariable("ep_idx") int epIdx,
+    @GetMapping("/episodes/{epIdx}/comments")
+    public Response<CommentsResponseDto> getComments(@PathVariable("epIdx") Long epIdx,
                                                      @RequestParam("page") int page) {
         return commentsService.getCommentsByPageRequest(epIdx, page);
     }
 
-    @PostMapping("/episodes/{ep_idx}/comments")
-    public Response<Integer> insertComments(@RequestHeader("Authorization") String AccessToken,
-                                            @PathVariable("ep_idx")int epIdx,
-                                            @RequestBody CommentsSaveRequestDto dto) {
-        Response<Integer> result = new Response<Integer>();
+    @PostMapping("/episodes/{epIdx}/comments")
+    public Response<Long> insertComments(@RequestHeader("Authorization") String AccessToken,
+                                         @PathVariable("epIdx") Long epIdx,
+                                         @RequestBody CommentsSaveRequestDto dto) {
+        Response<Long> result = new Response<Long>();
 
-        switch(tokenChecker.validateToken(AccessToken)) {
+        switch (tokenChecker.validateToken(AccessToken)) {
             case 0: // 유효한 토큰
-                int userIdx = tokenChecker.getUserIdx(AccessToken);
-                if(-1 == userIdx){
+                Long userIdx = tokenChecker.getUserIdx(AccessToken);
+                if (-1 == userIdx) {
                     result.setCode(42);
                     result.setMsg("access denied : maybe captured or faked token");
                     break;
@@ -54,15 +53,15 @@ public class CommentsController {
         return result;
     }
 
-    @DeleteMapping("/comments/{cmt_idx}")
-    public Response<Integer> deleteComments(@RequestHeader("Authorization") String AccessToken,
-                                            @PathVariable("cmt_idx") int commentIdx){
-        Response<Integer> result = new Response<Integer>();
+    @DeleteMapping("/comments/{cmtIdx}")
+    public Response<Long> deleteComments(@RequestHeader("Authorization") String AccessToken,
+                                         @PathVariable("cmtIdx") Long commentIdx) {
+        Response<Long> result = new Response<Long>();
 
-        switch(tokenChecker.validateToken(AccessToken)) {
+        switch (tokenChecker.validateToken(AccessToken)) {
             case 0: // 유효한 토큰
-                int userIdx = tokenChecker.getUserIdx(AccessToken);
-                if(-1 == userIdx){
+                Long userIdx = tokenChecker.getUserIdx(AccessToken);
+                if (-1 == userIdx) {
                     result.setCode(42);
                     result.setMsg("access denied : maybe captured or faked token");
                     break;
@@ -82,20 +81,20 @@ public class CommentsController {
         return result;
     }
 
-    @GetMapping("/episodes/{ep_idx}/comments/best")
-    public Response<List<CommentsDto>> getBestComments(@PathVariable("ep_idx") int epIdx) {
+    @GetMapping("/episodes/{epIdx}/comments/best")
+    public Response<List<CommentsDto>> getBestComments(@PathVariable("epIdx") Long epIdx) {
         return commentsService.getBestComments(epIdx);
     }
 
-    @PostMapping("/comments/{cmt_idx}/like")
+    @PostMapping("/comments/{cmtIdx}/like")
     public Response<CommentsLikeDislikeCntResponseDto> requestCommentsLike(@RequestHeader("Authorization") String AccessToken,
-                                                                           @PathVariable("cmt_idx") int commentIdx){
+                                                                           @PathVariable("cmtIdx") Long commentIdx) {
         Response<CommentsLikeDislikeCntResponseDto> result = new Response<CommentsLikeDislikeCntResponseDto>();
 
-        switch(tokenChecker.validateToken(AccessToken)) {
+        switch (tokenChecker.validateToken(AccessToken)) {
             case 0: // 유효한 토큰
-                int userIdx = tokenChecker.getUserIdx(AccessToken);
-                if(-1 == userIdx){
+                Long userIdx = tokenChecker.getUserIdx(AccessToken);
+                if (-1 == userIdx) {
                     result.setCode(42);
                     result.setMsg("access denied : maybe captured or faked token");
                     break;
@@ -115,15 +114,15 @@ public class CommentsController {
         return result;
     }
 
-    @PostMapping("/comments/{cmt_idx}/dislike")
+    @PostMapping("/comments/{cmtIdx}/dislike")
     public Response<CommentsLikeDislikeCntResponseDto> requestCommentsDislike(@RequestHeader("Authorization") String AccessToken,
-                                                                              @PathVariable("cmt_idx") int commentIdx){
+                                                                              @PathVariable("cmtIdx") Long commentIdx) {
         Response<CommentsLikeDislikeCntResponseDto> result = new Response<CommentsLikeDislikeCntResponseDto>();
 
-        switch(tokenChecker.validateToken(AccessToken)) {
+        switch (tokenChecker.validateToken(AccessToken)) {
             case 0: // 유효한 토큰
-                int userIdx = tokenChecker.getUserIdx(AccessToken);
-                if(-1 == userIdx){
+                Long userIdx = tokenChecker.getUserIdx(AccessToken);
+                if (-1 == userIdx) {
                     result.setCode(42);
                     result.setMsg("access denied : maybe captured or faked token");
                     break;
@@ -150,7 +149,7 @@ public class CommentsController {
 
         switch(tokenChecker.validateToken(AccessToken)) {
             case 0: // 유효한 토큰
-                int userIdx = tokenChecker.getUserIdx(AccessToken);
+                Long userIdx = tokenChecker.getUserIdx(AccessToken);
                 if(-1 == userIdx){
                     result.setCode(42);
                     result.setMsg("access denied : maybe captured or faked token");

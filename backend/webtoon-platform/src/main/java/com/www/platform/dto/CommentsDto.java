@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Getter
 public class CommentsDto {
-    private Integer idx;
+    private Long idx;
     private String user_id;
     private int like_cnt;
     private int dislike_cnt;
@@ -18,11 +18,11 @@ public class CommentsDto {
 
     public CommentsDto(Comments entity) {
         idx = entity.getIdx();
-        user_id = entity.getUsers().getUserid();
-        like_cnt = entity.getLike_cnt();
-        dislike_cnt = entity.getDislike_cnt();
+        user_id = entity.getUser().getAccount();
+        like_cnt = entity.getLikeCount();
+        dislike_cnt = entity.getDislikeCount();
         content = entity.getContent();
-        created_date = toStringDateTime(entity.getCreated_date());
+        created_date = toStringDateTime(entity.getCreatedDate());
     }
 
     private String toStringDateTime(LocalDateTime localDateTime) {

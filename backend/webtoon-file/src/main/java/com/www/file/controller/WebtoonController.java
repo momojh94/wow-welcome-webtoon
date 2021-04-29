@@ -1,32 +1,17 @@
 package com.www.file.controller;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
+import com.www.core.common.Response;
+import com.www.core.common.TokenChecker;
 import com.www.file.dto.WebtoonDto;
-import com.www.file.dto.WebtoonListDto;
 import com.www.file.dto.WebtoonPage;
 import com.www.file.service.EpisodeService;
 import com.www.file.service.WebtoonService;
-
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.www.file.dto.EpisodeDto;
-import com.www.file.dto.EpisodeListDto;
-import com.www.file.dto.EpisodePage;
-import com.www.core.common.*;
+import java.io.IOException;
 
 @RestController
 @AllArgsConstructor
@@ -41,13 +26,13 @@ public class WebtoonController {
 	//새 웹툰 등록
 	@PostMapping("/myTitleDetail")
 	public Response<WebtoonDto> createWebtoon(@RequestHeader("Authorization") String AccessToken,
-			@RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("toon_type") int toon_type, 
-			@RequestParam("genre1") int genre1, @RequestParam("genre2") int genre2, @RequestParam("summary") String summary,
-			@RequestParam("plot") String plot, @RequestParam("end_flag") int end_flag) throws IOException {
+											  @RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("toon_type") byte toon_type,
+											  @RequestParam("genre1") byte genre1, @RequestParam("genre2") byte genre2, @RequestParam("summary") String summary,
+											  @RequestParam("plot") String plot, @RequestParam("end_flag") byte end_flag) throws IOException {
 		WebtoonDto webtoonDto = new WebtoonDto(title,toon_type,genre1,genre2,summary,plot,end_flag);
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		int n = tokenChecker.validateToken(AccessToken);
-		int user_idx = tokenChecker.getUserIdx(AccessToken);
+		Long user_idx = tokenChecker.getUserIdx(AccessToken);
 		switch(n) {
 		case 0: //유효한 토큰
 			return webtoonService.createWebtoon(file, webtoonDto, user_idx);
@@ -71,7 +56,7 @@ public class WebtoonController {
 		
 		Response<WebtoonPage> res = new Response<WebtoonPage>();
 		int n = tokenChecker.validateToken(AccessToken);
-		int user_idx = tokenChecker.getUserIdx(AccessToken);
+		Long user_idx = tokenChecker.getUserIdx(AccessToken);
 		
 		switch(n) {
 		case 0: //유효한 토큰
@@ -101,10 +86,10 @@ public class WebtoonController {
 	
 	//내 웹툰 정보 수정
 	@PutMapping("/myTitleDetail/{idx}")
-	public Response<WebtoonDto> editWebtoon(@RequestHeader("Authorization") String AccessToken, @PathVariable("idx") int idx,
-			@RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("toon_type") int toon_type, 
-			@RequestParam("genre1") int genre1, @RequestParam("genre2") int genre2, @RequestParam("summary") String summary,
-			@RequestParam("plot") String plot, @RequestParam("end_flag") int end_flag) throws IOException {
+	public Response<WebtoonDto> editWebtoon(@RequestHeader("Authorization") String AccessToken, @PathVariable("idx") Long idx,
+											@RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("toon_type") byte toon_type,
+											@RequestParam("genre1") byte genre1, @RequestParam("genre2") byte genre2, @RequestParam("summary") String summary,
+											@RequestParam("plot") String plot, @RequestParam("end_flag") byte end_flag) throws IOException {
 		
 		WebtoonDto webtoonDto = new WebtoonDto(title,toon_type,genre1,genre2,summary,plot,end_flag);
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
@@ -128,7 +113,7 @@ public class WebtoonController {
 	
 	//기존 웹툰 정보 가져오기 
 	@GetMapping("/myTitleDetail/{idx}")
-	public Response<WebtoonDto> GetOriginalWebtoon(@RequestHeader("Authorization") String AccessToken, @PathVariable("idx") int idx) throws IOException {
+	public Response<WebtoonDto> GetOriginalWebtoon(@RequestHeader("Authorization") String AccessToken, @PathVariable("idx") Long idx) throws IOException {
 		
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		int n = tokenChecker.validateToken(AccessToken);
@@ -150,12 +135,12 @@ public class WebtoonController {
 	}
 	//내 웹툰 삭제 
 	@DeleteMapping("/myArticleList/{idx}")
-	public Response<Integer> deleteWebtoon(@RequestHeader("Authorization") String AccessToken,
-			@PathVariable("idx") int idx){
+	public Response<Long> deleteWebtoon(@RequestHeader("Authorization") String AccessToken,
+			@PathVariable("idx") Long idx){
 		
-		Response<Integer> res = new Response<Integer>();
+		Response<Long> res = new Response<Long>();
 		int tk = tokenChecker.validateToken(AccessToken);
-		int user_idx = tokenChecker.getUserIdx(AccessToken);
+		Long user_idx = tokenChecker.getUserIdx(AccessToken);
 		switch(tk) {
 		case 0: 
 			return  webtoonService.deleteWebtoon(idx, user_idx);

@@ -25,34 +25,34 @@ public class CommentsLikeDislikeService {
     private CommentsDislikeRepository commentsDislikeRepository;
 
     @Transactional
-    public Response<CommentsLikeDislikeCntResponseDto> requestLike(int usersIdx, int commentsIdx) {
+    public Response<CommentsLikeDislikeCntResponseDto> requestLike(Long userIdx, Long commentIdx) {
         Response<CommentsLikeDislikeCntResponseDto> result = new Response<CommentsLikeDislikeCntResponseDto>();
 
-        Optional<Users> users = usersRepository.findById(usersIdx);
-        Optional<Comments> comments = commentsRepository.findById(commentsIdx);
+        Optional<Users> users = usersRepository.findById(userIdx);
+        Optional<Comments> comments = commentsRepository.findById(commentIdx);
 
         if(!comments.isPresent()){
             result.setCode(21);
             result.setMsg("fail : comment doesn't exist");
         }
-        else if(users.get().getIdx() == comments.get().getUsers().getIdx()){
+        else if(users.get().getIdx() == comments.get().getUser().getIdx()){
             result.setCode(24);
             result.setMsg("fail : users can't request like on their own comments");
         }
         else{
             CommentsLike commentsLike;
 
-            if(commentsLikeRepository.existsByComments_IdxAndUsers_Idx
-                    (commentsIdx, usersIdx)){
+            if(commentsLikeRepository.existsByCommentIdxAndUserIdx
+                    (commentIdx, userIdx)){
                 // complete : cancel request like
 
-                commentsLike = commentsLikeRepository.findByComments_IdxAndUsers_Idx
-                        (commentsIdx, usersIdx);
+                commentsLike = commentsLikeRepository.findByCommentIdxAndUserIdx
+                        (commentIdx, userIdx);
                 commentsLikeRepository.deleteByIdx(commentsLike.getIdx());
-                commentsRepository.updateLikeCnt(comments.get().getIdx(), -1);
+                commentsRepository.updateLikeCount(comments.get().getIdx(), -1);
 
                 CommentsLikeDislikeCntResponseDto commentsLikeDislikeCntResponseDto =
-                        new CommentsLikeDislikeCntResponseDto(comments.get().getLike_cnt() - 1);
+                        new CommentsLikeDislikeCntResponseDto(comments.get().getLikeCount() - 1);
                 result.setCode(0);
                 result.setMsg("request complete : cancel request like");
                 result.setData(commentsLikeDislikeCntResponseDto);
@@ -60,14 +60,14 @@ public class CommentsLikeDislikeService {
             else{
                 // complete : success request like
                 commentsLike = CommentsLike.builder()
-                        .users_idx(users.get())
-                        .comments_idx(comments.get())
+                        .user(users.get())
+                        .comment(comments.get())
                         .build();
                 commentsLikeRepository.save(commentsLike);
-                commentsRepository.updateLikeCnt(comments.get().getIdx(), 1);
+                commentsRepository.updateLikeCount(comments.get().getIdx(), 1);
 
                 CommentsLikeDislikeCntResponseDto commentsLikeDislikeCntResponseDto =
-                        new CommentsLikeDislikeCntResponseDto(comments.get().getLike_cnt() + 1);
+                        new CommentsLikeDislikeCntResponseDto(comments.get().getLikeCount() + 1);
 
                 result.setCode(0);
                 result.setMsg("request complete : success request like");
@@ -79,34 +79,34 @@ public class CommentsLikeDislikeService {
 
 
     @Transactional
-    public Response<CommentsLikeDislikeCntResponseDto> requestDislike(int usersIdx, int commentsIdx) {
+    public Response<CommentsLikeDislikeCntResponseDto> requestDislike(Long userIdx, Long commentIdx) {
         Response<CommentsLikeDislikeCntResponseDto> result = new Response<CommentsLikeDislikeCntResponseDto>();
 
-        Optional<Users> users = usersRepository.findById(usersIdx);
-        Optional<Comments> comments = commentsRepository.findById(commentsIdx);
+        Optional<Users> users = usersRepository.findById(userIdx);
+        Optional<Comments> comments = commentsRepository.findById(commentIdx);
 
         if(!comments.isPresent()){
             result.setCode(21);
             result.setMsg("fail : comment doesn't exist");
         }
-        else if(users.get().getIdx() == comments.get().getUsers().getIdx()){ 
+        else if(users.get().getIdx() == comments.get().getUser().getIdx()){
             result.setCode(25);
             result.setMsg("fail : users can't request dislike on their own comments");
         }
         else{
             CommentsDislike commentsDislike;
 
-            if(commentsDislikeRepository.existsByComments_IdxAndUsers_Idx
-                    (commentsIdx, usersIdx)){
+            if(commentsDislikeRepository.existsByCommentIdxAndUserIdx
+                    (commentIdx, userIdx)){
                 // complete : cancel request dislike
 
-                commentsDislike = commentsDislikeRepository.findByComments_IdxAndUsers_Idx
-                        (commentsIdx, usersIdx);
+                commentsDislike = commentsDislikeRepository.findByCommentIdxAndUserIdx
+                        (commentIdx, userIdx);
                 commentsDislikeRepository.deleteByIdx(commentsDislike.getIdx());
-                commentsRepository.updateDislikeCnt(comments.get().getIdx(), -1);
+                commentsRepository.updateDislikeCount(comments.get().getIdx(), -1);
 
                 CommentsLikeDislikeCntResponseDto commentsLikeDislikeCntResponseDto =
-                        new CommentsLikeDislikeCntResponseDto(comments.get().getDislike_cnt() - 1);
+                        new CommentsLikeDislikeCntResponseDto(comments.get().getDislikeCount() - 1);
                 result.setCode(0);
                 result.setMsg("request complete : cancel request dislike");
                 result.setData(commentsLikeDislikeCntResponseDto);
@@ -114,14 +114,14 @@ public class CommentsLikeDislikeService {
             else{
                 // complete : success request dislike
                 commentsDislike = CommentsDislike.builder()
-                        .users_idx(users.get())
-                        .comments_idx(comments.get())
+                        .user(users.get())
+                        .comment(comments.get())
                         .build();
                 commentsDislikeRepository.save(commentsDislike);
-                commentsRepository.updateDislikeCnt(comments.get().getIdx(), 1);
+                commentsRepository.updateDislikeCount(comments.get().getIdx(), 1);
 
                 CommentsLikeDislikeCntResponseDto commentsLikeDislikeCntResponseDto =
-                        new CommentsLikeDislikeCntResponseDto(comments.get().getDislike_cnt() + 1);
+                        new CommentsLikeDislikeCntResponseDto(comments.get().getDislikeCount() + 1);
                 result.setCode(0);
                 result.setMsg("request complete : success request dislike");
                 result.setData(commentsLikeDislikeCntResponseDto);

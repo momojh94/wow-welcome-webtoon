@@ -13,8 +13,6 @@ import com.www.auth.dto.UserRegisterDto;
 import com.www.core.auth.entity.Users;
 import com.www.core.auth.repository.UsersRepository;
 
-import com.www.auth.service.JwtTokenProvider;
-
 import lombok.AllArgsConstructor;
 
 @Service
@@ -32,7 +30,7 @@ public class UserService {
 	 */
 	public int register(UserRegisterDto user) {
 		// id 중복체크
-		if (userRepository.existsByUserid(user.getUserid())) {
+		if (userRepository.existsByAccount(user.getUserid())) {
 			return 1; //insert fail
 		}
 		// email 중복체크
@@ -56,16 +54,16 @@ public class UserService {
 		Tokens tokens = new Tokens();
 		// user login
 		// id not exist
-		if (!userRepository.existsByUserid(user.getUserid())) {
+		if (!userRepository.existsByAccount(user.getUserid())) {
 			return tokens; 
 		}
 		// pw matching
-		Users info = userRepository.findByUserid(user.getUserid());
+		Users info = userRepository.findByAccount(user.getUserid());
 		if (passwordEncoder.matches(user.getPw(), info.getPw())) {
 			System.out.println("============"+info.getName());
 			tokens.setAccessToken(jwtTokenProvider.createAccessToken(info.getIdx(),info.getName()));
 			System.out.println("access token:"+tokens.getAccessToken());
-			tokens.setRefreshToken(jwtTokenProvider.createRefreshToken(info.getUserid()));
+			tokens.setRefreshToken(jwtTokenProvider.createRefreshToken(info.getAccount()));
             System.out.println("refresh token:"+tokens.getRefreshToken());
 			//login date time
             LocalDateTime now = LocalDateTime.now();
@@ -79,14 +77,15 @@ public class UserService {
 	 * @param info
 	 * @return
 	 */
-	public int modifyInfo(int user_idx,UserInfoModifiedDto info) {
+	public int modifyInfo(Long userIdx,UserInfoModifiedDto info) {
 		//pw encoding
 		String encoded_pw = passwordEncoder.encode(info.getPw());
 		//update
-		int update_result = userRepository.updateUserInfo(encoded_pw, info.getGender(), info.getName(), info.getBirth(),user_idx);
+		int update_result = userRepository.updateUserInfo(encoded_pw, info.getGender(),
+				info.getName(), info.getBirth(), userIdx);
 		LocalDateTime now = LocalDateTime.now();
 		if(update_result==1)
-			userRepository.updateUpdatedDate(now, user_idx);
+			userRepository.updateUpdatedDate(now, userIdx);
 		return update_result;
 	}
 	
@@ -95,13 +94,13 @@ public class UserService {
 	 * @param user_idx
 	 * @return
 	 */
-	public void deleteInfo(int user_idx) {
+	public void deleteInfo(Long user_idx) {
 		userRepository.deleteById(user_idx);
 	}
 	
 	public UserDto getUserDto(String user_id) {
 		UserDto userDto = new UserDto();
-		Users info = userRepository.findByUserid(user_id);
+		Users info = userRepository.findByAccount(user_id);
 		userDto.setBirth(info.getBirth());
 		userDto.setGender(info.getGender());
 		userDto.setName(info.getName());

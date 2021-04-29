@@ -19,7 +19,7 @@ public class Comments extends BaseCreatedTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idx;
+    private Long idx;
 
     @ManyToOne
     @JoinColumn(nullable = false)
@@ -27,26 +27,27 @@ public class Comments extends BaseCreatedTimeEntity {
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Users users;
+    private Users user;
 
     @Column(nullable = false)
-    private int like_cnt;
+    private int likeCount;
 
     @Column(nullable = false)
-    private int dislike_cnt;
+    private int dislikeCount;
 
     @Column(columnDefinition = "TEXT", nullable = false, length = 300)
     private String content;
 
     @Builder
-    public Comments(Episode ep, Users users, int like_cnt, int dislike_cnt, int idx, String content, LocalDateTime created_date){
+    public Comments(Episode ep, Users user, int likeCount, int dislikeCount,
+                    Long idx, String content, LocalDateTime createdDate){
         this.ep = ep;
-        this.users = users;
-        this.like_cnt = like_cnt;
-        this.dislike_cnt = dislike_cnt;
+        this.user = user;
+        this.likeCount = likeCount;
+        this.dislikeCount = dislikeCount;
         this.idx = idx;
         this.content = content;
-        this.created_date = created_date;
+        this.createdDate = createdDate;
     }
 }
 

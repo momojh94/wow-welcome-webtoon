@@ -25,17 +25,17 @@ public class StarRatingService {
     private StarRatingRepository starRatingRepository;
 
     @Transactional
-    public Response<EpisodeStarRatingResponseDto> insertStarRating(int epIdx, int usersIdx, float rating) {
+    public Response<EpisodeStarRatingResponseDto> insertStarRating(Long epIdx, Long userIdx, float rating) {
         Response<EpisodeStarRatingResponseDto> result = new Response<EpisodeStarRatingResponseDto>();
 
-        if(starRatingRepository.existsByEpIdxAndUsersIdx(epIdx, usersIdx))
+        if(starRatingRepository.existsByEpIdxAndUserIdx(epIdx, userIdx))
         {
             result.setCode(26);
             result.setMsg("fail : have already given star rating");
         }
         else
         {
-            Optional<Users> user = usersRepository.findById(usersIdx);
+            Optional<Users> user = usersRepository.findById(userIdx);
             Optional<Episode> episode = episodeRepository.findById(epIdx);
 
             if(!episode.isPresent()){ // 에피소드가 존재하지 않을 때
@@ -45,7 +45,7 @@ public class StarRatingService {
             }
 
             StarRating starRating = StarRating.builder()
-                    .users(user.get())
+                    .user(user.get())
                     .ep(episode.get())
                     .rating(rating)
                     .build();
@@ -58,8 +58,8 @@ public class StarRatingService {
 
             EpisodeStarRatingResponseDto episodeStarRatingResponseDto
                     = EpisodeStarRatingResponseDto.builder()
-                    .rating(episode.get().getRating_avg())
-                    .person_total(episode.get().getRating_person_total())
+                    .rating(episode.get().getRatingAvg())
+                    .person_total(episode.get().getRatingPersonTotal())
                     .build();
 
             result.setCode(0);

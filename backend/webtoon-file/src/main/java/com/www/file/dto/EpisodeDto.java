@@ -1,17 +1,10 @@
 package com.www.file.dto;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-
-
+import com.www.core.file.entity.Episode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-
-import com.www.core.file.entity.*;
 
 
 @Getter
@@ -32,9 +25,9 @@ public class EpisodeDto {
 	}
 	public Episode toEntity() {
 		Episode build = Episode.builder()
-				.ep_no(ep_no)
+				.epNo(ep_no)
 				.title(title)
-				.author_comment(author_comment)
+				.authorComment(author_comment)
 				.thumbnail(thumbnail)
 				.contents(contents)
 				.build();

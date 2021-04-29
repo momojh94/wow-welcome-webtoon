@@ -1,7 +1,6 @@
 package com.www.platform.dto;
 
 import com.www.core.platform.entity.Comments;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -11,7 +10,7 @@ import java.util.Optional;
 @Getter
 public class MyPageCommentsDto {
 
-    private int idx;
+    private Long idx;
     private String webtoon_thumbnail;
     private String webtoon_title;
     private int ep_no;
@@ -24,11 +23,11 @@ public class MyPageCommentsDto {
         idx = entity.getIdx();
         webtoon_thumbnail = "http://localhost:8081/static/web_thumbnail/" + entity.getEp().getWebtoon().getThumbnail();
         webtoon_title = entity.getEp().getWebtoon().getTitle();
-        ep_no = entity.getEp().getEp_no();
-        like_cnt = entity.getLike_cnt();
-        dislike_cnt = entity.getDislike_cnt();
+        ep_no = entity.getEp().getEpNo();
+        like_cnt = entity.getLikeCount();
+        dislike_cnt = entity.getDislikeCount();
         content = entity.getContent();
-        created_date = toStringDateTime(entity.getCreated_date());
+        created_date = toStringDateTime(entity.getCreatedDate());
     }
 
     private String toStringDateTime(LocalDateTime localDateTime) {

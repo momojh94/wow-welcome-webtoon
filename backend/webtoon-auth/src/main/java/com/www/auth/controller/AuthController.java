@@ -1,31 +1,14 @@
 package com.www.auth.controller;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONObject;
-import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.www.auth.dto.Response;
-import com.www.auth.dto.Tokens;
-import com.www.auth.dto.UserDto;
-import com.www.auth.dto.UserInfoDto;
-import com.www.auth.dto.UserInfoModifiedDto;
-import com.www.auth.dto.UserLoginDto;
-import com.www.auth.dto.UserRegisterDto;
+import com.www.auth.dto.*;
 import com.www.auth.service.JwtTokenProvider;
 import com.www.auth.service.UserService;
-
 import lombok.AllArgsConstructor;
+import org.json.JSONObject;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * User Register, Login API
@@ -104,7 +87,7 @@ public class AuthController {
 	 */
 	@DeleteMapping("/{idx}/token")
 	public Response<String> Logout(@RequestHeader("Authorization") String AccessToken, @RequestBody String data,
-			@PathVariable("idx") int useridx) {
+			@PathVariable("idx") Long useridx) {
 
 		Response<String> result = new Response<String>();
 		// access token bearer split
@@ -147,7 +130,7 @@ public class AuthController {
 	 */
 	@PostMapping("/{idx}/token")
 	public Response<String> ReissueToken(@RequestHeader("Authorization") String AccessToken, @RequestBody String data,
-			@PathVariable("idx") int useridx, HttpServletResponse response) {
+										 @PathVariable("idx") Long useridx, HttpServletResponse response) {
 		Response<String> result = new Response<String>();
 		// access token bearer split
 		AccessToken = AccessToken.substring(7);
@@ -187,13 +170,13 @@ public class AuthController {
 	 * 회원정보수정 (/users/{user_idx})
 	 * 
 	 * @param AccessToken
-	 * @param useridx
+	 * @param userIdx
 	 * @param userinfo
 	 * @return
 	 */
 	@PutMapping("/{idx}")
 	public Response<String> modifyUserInfo(@RequestHeader("Authorization") String AccessToken,
-			@PathVariable("idx") int useridx, @RequestBody UserInfoModifiedDto userinfo) {
+			@PathVariable("idx") Long userIdx, @RequestBody UserInfoModifiedDto userinfo) {
 		Response<String> result = new Response<String>();
 		// access token bearer split
 		AccessToken = AccessToken.substring(7);
@@ -209,7 +192,7 @@ public class AuthController {
 			result.setMsg("access denied : maybe captured or faked token");
 			return result;
 		case 0:
-			if (useridx != jwtTokenProvider.getUserIdx(AccessToken)) {
+			if (userIdx != jwtTokenProvider.getUserIdx(AccessToken)) {
 				result.setCode(42);
 				result.setMsg("access denied : maybe captured or faked token");
 				return result;
@@ -217,7 +200,7 @@ public class AuthController {
 			break;
 		}
 		// user info update
-		int update_result = userService.modifyInfo(useridx, userinfo);
+		int update_result = userService.modifyInfo(userIdx, userinfo);
 		if (update_result == 1) {
 			result.setCode(0);
 			result.setMsg("request complete : modify the user info");
@@ -237,7 +220,7 @@ public class AuthController {
 	 */
 	@DeleteMapping("/{idx}")
 	public Response<String> Withdraw(@RequestHeader("Authorization") String AccessToken,
-			@PathVariable("idx") int useridx) {
+			@PathVariable("idx") Long useridx) {
 		Response<String> result = new Response<String>();
 		// access token bearer split
 		AccessToken = AccessToken.substring(7);

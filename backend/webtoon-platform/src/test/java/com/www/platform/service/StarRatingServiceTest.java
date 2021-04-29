@@ -46,32 +46,32 @@ public class StarRatingServiceTest {
     @BeforeEach
     void beforeEach() {
         user = Users.builder()
-                .idx(1)
-                .id("id1")
+                .idx(1L)
+                .account("id1")
                 .name("철수")
-                .e_pw("1q2w3e4r")
-                .gender(0)
+                .pw("1q2w3e4r")
+                .gender((byte) 0)
                 .email("test@email.com")
                 .build();
 
         webtoon = Webtoon.builder()
-                .idx(1)
+                .idx(1L)
                 .title("웹툰 제목")
-                .toon_type(0)
-                .genre1(0)
-                .genre2(0)
+                .toonType((byte) 0)
+                .genre1((byte) 0)
+                .genre2((byte) 0)
                 .summary("웹툰 한줄 요약")
                 .plot("줄거리")
                 .thumbnail("thumbnail.jpg")
-                .end_flag(0)
+                .endFlag((byte) 0)
                 .build();
 
         episode = Episode.builder()
-                .idx(1)
-                .ep_no(1)
+                .idx(1L)
+                .epNo(1)
                 .title("에피소드 제목")
                 .webtoon(webtoon)
-                .author_comment("작가의 말")
+                .authorComment("작가의 말")
                 .build();
     }
 
@@ -80,7 +80,7 @@ public class StarRatingServiceTest {
     void insertStarRating () {
         //given
         float rating = 8;
-        given(starRatingRepository.existsByEpIdxAndUsersIdx(episode.getIdx(), user.getIdx()))
+        given(starRatingRepository.existsByEpIdxAndUserIdx(episode.getIdx(), user.getIdx()))
                 .willReturn(false);
         given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(episodeRepository.findById(episode.getIdx())).willReturn(Optional.of(episode));
@@ -105,8 +105,8 @@ public class StarRatingServiceTest {
     void insertStarRating_fail_episodeDoesNotExist() {
         //given
         float rating = 7;
-        int emptyEpisodeIdx = 22;
-        given(starRatingRepository.existsByEpIdxAndUsersIdx(emptyEpisodeIdx, user.getIdx()))
+        Long emptyEpisodeIdx = 22L;
+        given(starRatingRepository.existsByEpIdxAndUserIdx(emptyEpisodeIdx, user.getIdx()))
                 .willReturn(false);
         given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(episodeRepository.findById(emptyEpisodeIdx)).willReturn(Optional.empty());
@@ -128,7 +128,7 @@ public class StarRatingServiceTest {
     void insertStarRating_fail_HaveAlreadyGivenStarRating() {
         //given
         float rating = 5;
-        given(starRatingRepository.existsByEpIdxAndUsersIdx(episode.getIdx(), user.getIdx()))
+        given(starRatingRepository.existsByEpIdxAndUserIdx(episode.getIdx(), user.getIdx()))
                 .willReturn(true);
 
         //when

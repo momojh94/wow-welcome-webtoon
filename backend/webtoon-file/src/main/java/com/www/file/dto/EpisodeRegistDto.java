@@ -21,9 +21,9 @@ public class EpisodeRegistDto extends EpisodeDto {
 	}
 	public Episode toEntity() {
 		Episode build = Episode.builder()
-				.ep_no(getEp_no())
+				.epNo(getEp_no())
 				.title(getTitle())
-				.author_comment(getAuthor_comment())
+				.authorComment(getAuthor_comment())
 				.thumbnail(getThumbnail())
 				.contents(getContents())
 				.webtoon(webtoon)

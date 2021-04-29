@@ -12,28 +12,28 @@ import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Entity(name = "star_rating")
+@Entity
 public class StarRating {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idx;
+    private Long idx;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "ep_idx", nullable = false)
     private Episode ep;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private Users users;
+    @JoinColumn(name = "users_idx", nullable = false)
+    private Users user;
 
     @Column(nullable = false)
     private float rating;
 
     @Builder
-    public StarRating(Episode ep, Users users, float rating){
+    public StarRating(Episode ep, Users user, float rating){
         this.ep = ep;
-        this.users = users;
+        this.user = user;
         this.rating = rating;
     }
 }

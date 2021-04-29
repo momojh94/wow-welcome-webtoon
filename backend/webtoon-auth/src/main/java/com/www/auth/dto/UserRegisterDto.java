@@ -21,9 +21,9 @@ public class UserRegisterDto extends UserDto{
 	
 	public Users toEntity(String e_pw) {
 		return Users.builder()
-				.id(getUserid())
+				.account(getUserid())
 				.name(getName())
-				.e_pw(e_pw)
+				.pw(e_pw)
 				.birth(getBirth())
 				.gender(getGender())
 				.email(getEmail())

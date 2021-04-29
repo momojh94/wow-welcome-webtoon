@@ -10,12 +10,13 @@ import com.www.core.platform.entity.Comments;
 import com.www.core.platform.repository.CommentsDislikeRepository;
 import com.www.core.platform.repository.CommentsLikeRepository;
 import com.www.core.platform.repository.CommentsRepository;
-
 import com.www.platform.dto.CommentsDto;
 import com.www.platform.dto.CommentsResponseDto;
 import com.www.platform.dto.MyPageCommentsDto;
 import com.www.platform.dto.MyPageCommentsResponseDto;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,14 +24,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.BDDMockito.*;
 
 
@@ -44,15 +43,18 @@ mock 객체 생성
 
 @ExtendWith(MockitoExtension.class)
 public class CommentsServiceTest {
-
     @Mock
     private CommentsRepository commentsRepository;
+
     @Mock
     private CommentsLikeRepository commentsLikeRepository;
+
     @Mock
     private CommentsDislikeRepository commentsDisLikeRepository;
+
     @Mock
     private UsersRepository usersRepository;
+
     @Mock
     private EpisodeRepository episodeRepository;
 
@@ -69,37 +71,37 @@ public class CommentsServiceTest {
     @BeforeEach
     void beforeEach() {
         user = Users.builder()
-                .idx(1)
-                .id("id123")
+                .idx(1L)
+                .account("id123")
                 .name("철수")
-                .e_pw("1q2w3e4r")
-                .gender(0)
+                .pw("1q2w3e4r")
+                .gender((byte) 0)
                 .email("test@email.com")
                 .build();
 
         webtoon = Webtoon.builder()
-                .idx(1)
+                .idx(1L)
                 .title("웹툰 제목")
-                .toon_type(0)
-                .genre1(0)
-                .genre2(0)
+                .toonType((byte) 0)
+                .genre1((byte) 0)
+                .genre2((byte) 0)
                 .summary("웹툰 한줄 요약")
                 .plot("줄거리")
                 .thumbnail("thumbnail.jpg")
-                .end_flag(0)
+                .endFlag((byte) 0)
                 .build();
 
         episode = Episode.builder()
-                .idx(1)
-                .ep_no(1)
+                .idx(1L)
+                .epNo(1)
                 .title("에피소드 제목")
                 .webtoon(webtoon)
-                .author_comment("작가의 말")
+                .authorComment("작가의 말")
                 .build();
 
         comment = Comments.builder()
-                .idx(1)
-                .users(user)
+                .idx(1L)
+                .user(user)
                 .ep(episode)
                 .content(contentWithinSpecifiedLength)
                 .build();
@@ -120,7 +122,7 @@ public class CommentsServiceTest {
         given(commentsRepository.save(any(Comments.class))).willReturn(comment);
 
         //when
-        Response<Integer> result = commentsService.insertComments(user.getIdx(), episode.getIdx(), contentWithinSpecifiedLength);
+        Response<Long> result = commentsService.insertComments(user.getIdx(), episode.getIdx(), contentWithinSpecifiedLength);
 
         //then
         assertAll(
@@ -136,10 +138,10 @@ public class CommentsServiceTest {
     void insertComments_Fail_EpisodeDoesNotExist() {
         //given
         given(usersRepository.findById(user.getIdx())).willReturn(Optional.ofNullable(user));
-        given(episodeRepository.findById(2)).willReturn(Optional.empty());
+        given(episodeRepository.findById(2L)).willReturn(Optional.empty());
 
         //when
-        Response<Integer> result = commentsService.insertComments(user.getIdx(), 2, contentWithinSpecifiedLength);
+        Response<Long> result = commentsService.insertComments(user.getIdx(), 2L, contentWithinSpecifiedLength);
 
         //then
         assertAll(
@@ -160,7 +162,7 @@ public class CommentsServiceTest {
         given(episodeRepository.findById(episode.getIdx())).willReturn(Optional.ofNullable(episode));
 
         //when
-        Response<Integer> result = commentsService.insertComments(user.getIdx(), episode.getIdx(), contentExceedingSpecifiedLength);
+        Response<Long> result = commentsService.insertComments(user.getIdx(), episode.getIdx(), contentExceedingSpecifiedLength);
 
         //then
         assertAll(
@@ -181,13 +183,13 @@ public class CommentsServiceTest {
         given(commentsRepository.findById(comment.getIdx())).willReturn(Optional.ofNullable(comment));
 
         //when
-        Response<Integer> result = commentsService.deleteComments(user.getIdx(), comment.getIdx());
+        Response<Long> result = commentsService.deleteComments(user.getIdx(), comment.getIdx());
 
         //then
         assertAll(
-                () -> verify(commentsLikeRepository).deleteAllByCommentsIdx(1),
-                () -> verify(commentsDisLikeRepository).deleteAllByCommentsIdx(1),
-                () -> verify(commentsRepository).deleteById(1),
+                () -> verify(commentsLikeRepository).deleteAllByCommentIdx(1L),
+                () -> verify(commentsDisLikeRepository).deleteAllBycommentIdx(1L),
+                () -> verify(commentsRepository).deleteById(1L),
                 () -> assertThat(result.getCode()).isEqualTo(0),
                 () -> assertThat(result.getMsg()).isEqualTo("request complete : delete comment"),
                 () -> assertThat(result.getData()).isNull()
@@ -199,23 +201,23 @@ public class CommentsServiceTest {
     void deleteComments_Fail_UserIsNotCommenter() {
         //given
         Users otherUser = Users.builder()
-                .idx(2)
-                .id("userid2")
+                .idx(2L)
+                .account("userid2")
                 .name("짱구")
-                .e_pw("123abc")
-                .gender(0)
+                .pw("123abc")
+                .gender((byte) 0)
                 .email("test2@email.com")
                 .build();
 
-        given(usersRepository.findById(otherUser.getIdx())).willReturn(Optional.ofNullable(otherUser));
+        given(usersRepository.findById(otherUser.getIdx())).willReturn(Optional.of(otherUser));
         given(commentsRepository.findById(comment.getIdx())).willReturn(Optional.ofNullable(comment));
 
         //when
-        Response<Integer> result = commentsService.deleteComments(otherUser.getIdx(), comment.getIdx());
+        Response<Long> result = commentsService.deleteComments(otherUser.getIdx(), comment.getIdx());
 
         //then
         assertAll(
-                () -> assertThat(otherUser.getIdx()).isNotEqualTo(comment.getUsers().getIdx()),
+                () -> assertThat(otherUser.getIdx()).isNotEqualTo(comment.getUser().getIdx()),
                 () -> assertThat(result.getCode()).isEqualTo(22),
                 () -> assertThat(result.getMsg()).isEqualTo("fail : user isn't commenter"),
                 () -> assertThat(result.getData()).isNull()
@@ -230,7 +232,7 @@ public class CommentsServiceTest {
         given(commentsRepository.findById(comment.getIdx())).willReturn(Optional.empty());
 
         //when
-        Response<Integer> result = commentsService.deleteComments(user.getIdx(), comment.getIdx());
+        Response<Long> result = commentsService.deleteComments(user.getIdx(), comment.getIdx());
 
         //then
         assertAll(
@@ -246,10 +248,10 @@ public class CommentsServiceTest {
         //given
         int page = 2;
         List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 1; idx <= 33; idx++) {
+        for (Long idx = 1L; idx <= 33L; idx++) {
             commentsList.add(Comments.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
                     .build());
@@ -258,7 +260,7 @@ public class CommentsServiceTest {
         int toIndex = fromIndex + CommentsService.COMMENTS_COUNT_PER_PAGE;
         List<Comments> subList = commentsList.subList(fromIndex, toIndex);
         Pageable pageable = PageRequest.of(page - 1, CommentsService.COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
-        Page<Comments> commentsPage = new PageImpl<Comments>(subList, pageable, commentsList.size());
+        Page<Comments> commentsPage = new PageImpl<>(subList, pageable, commentsList.size());
 
         given(episodeRepository.existsById(episode.getIdx())).willReturn(true);
         given(commentsRepository.findAllByEpIdx(pageable, episode.getIdx())).willReturn(commentsPage);
@@ -283,8 +285,8 @@ public class CommentsServiceTest {
     void getCommentsByPageRequest_Fail_EpisodeDoesNotExist() {
         //given
         int page = 1;
-        int epIdx = 2;
-        given(episodeRepository.existsById(2)).willReturn(false);
+        Long epIdx = 2L;
+        given(episodeRepository.existsById(2L)).willReturn(false);
 
         //when
         Response<CommentsResponseDto> result = commentsService.getCommentsByPageRequest(epIdx, page);
@@ -321,10 +323,10 @@ public class CommentsServiceTest {
         //given
         int page = 7;
         List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 1; idx <= 33; idx++) {
+        for (Long idx = 1L; idx <= 33L; idx++) {
             commentsList.add(Comments.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 ~~~ " + idx)
                     .build());
@@ -354,12 +356,12 @@ public class CommentsServiceTest {
     @Test
     void getBestComments() {
         //given
-        int epIdx = 1;
+        Long epIdx = 1L;
         List<Comments> bestCommentsList = new ArrayList<Comments>();
-        for (int idx = 0; idx < 5; idx++) {
+        for (Long idx = 0L; idx < 5; idx++) {
             bestCommentsList.add(Comments.builder()
                     .idx(idx+22)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("베스트 댓글 내용 " + idx)
                     .build());
@@ -376,10 +378,10 @@ public class CommentsServiceTest {
                 () -> assertThat(result.getMsg()).isEqualTo("requset complete : get best comments"),
                 () -> assertArrayEquals(bestCommentsList.stream()
                         .map(Comments::getIdx)
-                        .toArray(Integer[]::new),
+                        .toArray(Long[]::new),
                         result.getData().stream()
                         .map(CommentsDto::getIdx)
-                        .toArray(Integer[]::new))
+                        .toArray(Long[]::new))
         );
     }
 
@@ -387,7 +389,7 @@ public class CommentsServiceTest {
     @Test
     void getBestComments_Fail_CommentDoesNotExist() {
         //given
-        int epIdx = 2;
+        Long epIdx = 2L;
         given(episodeRepository.existsById(epIdx)).willReturn(false);
 
         //when
@@ -408,10 +410,10 @@ public class CommentsServiceTest {
         //given
         int page = 2;
         List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 1; idx <= 17; idx++) {
+        for (Long idx = 1L; idx <= 17L; idx++) {
             commentsList.add(Comments.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
                     .build());
@@ -422,7 +424,7 @@ public class CommentsServiceTest {
         Pageable pageable = PageRequest.of(page - 1, CommentsService.MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comments> commentsPage = new PageImpl<Comments>(subList, pageable, commentsList.size());
 
-        given(commentsRepository.findAllByUsersIdx(pageable, user.getIdx())).willReturn(commentsPage);
+        given(commentsRepository.findAllByUserIdx(pageable, user.getIdx())).willReturn(commentsPage);
 
         //when
         Response<MyPageCommentsResponseDto> result = commentsService.getMyPageComments(user.getIdx(), page);
@@ -438,10 +440,10 @@ public class CommentsServiceTest {
                 () -> assertThat(result.getData().getTotal_pages()).isEqualTo(commentsPage.getTotalPages()),
                 () -> assertArrayEquals(subList.stream()
                                 .map(Comments::getIdx)
-                                .toArray(Integer[]::new),
+                                .toArray(Long[]::new),
                         result.getData().getComments().stream()
                                 .map(MyPageCommentsDto::getIdx)
-                                .toArray(Integer[]::new))
+                                .toArray(Long[]::new))
         );
     }
 
@@ -467,10 +469,10 @@ public class CommentsServiceTest {
         //given
         int page = 10;
         List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 1; idx <= 33; idx++) {
+        for (Long idx = 1L; idx <= 33L; idx++) {
             commentsList.add(Comments.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 ~~~ " + idx)
                     .build());
@@ -479,7 +481,7 @@ public class CommentsServiceTest {
         Pageable pageable = PageRequest.of(page - 1, CommentsService.MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comments> commentsPage = new PageImpl<Comments>(emptyList, pageable, commentsList.size());
 
-        given(commentsRepository.findAllByUsersIdx(pageable, user.getIdx())).willReturn(commentsPage);
+        given(commentsRepository.findAllByUserIdx(pageable, user.getIdx())).willReturn(commentsPage);
 
         //when
         Response<MyPageCommentsResponseDto> result = commentsService.getMyPageComments(user.getIdx(), page);

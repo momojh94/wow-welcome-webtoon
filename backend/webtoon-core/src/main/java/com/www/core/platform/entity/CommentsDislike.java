@@ -11,25 +11,25 @@ import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Entity(name = "comments_dislike")
+@Entity
 public class CommentsDislike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idx;
+    private Long idx;
 
     @ManyToOne
-    @JoinColumn
-    private Users users;
+    @JoinColumn(name = "users_idx")
+    private Users user;
 
     @ManyToOne
-    @JoinColumn
-    private Comments comments;
+    @JoinColumn(name = "comments_idx")
+    private Comments comment;
 
     @Builder
-    public CommentsDislike(int idx, Users users_idx, Comments comments_idx){
+    public CommentsDislike(Long idx, Users user, Comments comment){
         this.idx = idx;
-        this.users = users_idx;
-        this.comments = comments_idx;
+        this.user = user;
+        this.comment = comment;
     }
 }

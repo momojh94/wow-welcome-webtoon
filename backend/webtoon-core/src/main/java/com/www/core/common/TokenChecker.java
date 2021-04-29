@@ -1,11 +1,10 @@
 package com.www.core.common;
 
-import java.util.Date;
-
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 /**
@@ -23,16 +22,16 @@ public class TokenChecker {
 	 * @param token
 	 * @return user_idx (만료된 토큰이라도 형식이 유효한 토큰이라면 idx 반환)
 	 */
-	public int getUserIdx(String token) {
+	public Long getUserIdx(String token) {
 		try {
 			// access token bearer split
 			token = token.substring(7);
-			return (int) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("user_idx");
+			return (Long) Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("user_idx");
 			//return Integer.parseInt(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("user_idx").toString());
 		} catch (ExpiredJwtException e) { //만료된 token이라도 user idx 반환
-			return (int) e.getClaims().get("user_idx");
+			return (Long) e.getClaims().get("user_idx");
 		} catch (Exception e) {
-			return -1; //error
+			return -1L; //error
 		}
 	}
 

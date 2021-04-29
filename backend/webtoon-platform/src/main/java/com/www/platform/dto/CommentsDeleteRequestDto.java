@@ -9,12 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CommentsDeleteRequestDto {
-    private int idx;
-    private int users_idx;
+    private Long idx;
+    private int account;
 
     @Builder
-    public CommentsDeleteRequestDto(int idx, int users_idx) {
+    public CommentsDeleteRequestDto(Long idx, int account) {
         this.idx = idx;
-        this.users_idx = users_idx;
+        this.account = account;
     }
 }

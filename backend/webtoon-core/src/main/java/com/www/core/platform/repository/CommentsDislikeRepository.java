@@ -7,18 +7,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface CommentsDislikeRepository extends JpaRepository<CommentsDislike, Integer> {
-    boolean existsByComments_IdxAndUsers_Idx(int comments_idx, int users_idx);
+public interface CommentsDislikeRepository extends JpaRepository<CommentsDislike, Long> {
+    boolean existsByCommentIdxAndUserIdx(Long commentIdx, Long userIdx);
 
-    CommentsDislike findByComments_IdxAndUsers_Idx(int comments_idx, int users_idx);
+    CommentsDislike findByCommentIdxAndUserIdx(Long commentIdx, Long userIdx);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM comments_dislike " +
+    @Query("DELETE FROM CommentsDislike " +
             "WHERE idx = :idx")
-    void deleteByIdx(@Param("idx") int idx);
+    void deleteByIdx(@Param("idx") Long idx);
 
     @Modifying
     @Transactional
-    void deleteAllByCommentsIdx(@Param("comments_idx") int commentsIdx);
+    void deleteAllBycommentIdx(@Param("commentIdx") Long commentIdx);
 }

@@ -1,15 +1,14 @@
 package com.www.file.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.transaction.Transactional;
-
+import com.www.core.auth.entity.Users;
+import com.www.core.auth.repository.UsersRepository;
+import com.www.core.common.Response;
+import com.www.core.file.entity.Episode;
+import com.www.core.file.entity.Webtoon;
+import com.www.core.file.repository.WebtoonRepository;
+import com.www.file.dto.WebtoonDto;
+import com.www.file.dto.WebtoonListDto;
+import com.www.file.dto.WebtoonPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -18,15 +17,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.www.core.file.entity.*;
-import com.www.core.file.repository.*;
-import com.www.core.auth.entity.Users;
-import com.www.core.auth.repository.UsersRepository;
-import com.www.core.common.Response;
-import com.www.file.dto.EpisodeListDto;
-import com.www.file.dto.WebtoonDto;
-import com.www.file.dto.WebtoonListDto;
-import com.www.file.dto.WebtoonPage;
+import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -77,7 +75,7 @@ public class WebtoonService {
 	}
 	
 	@Transactional
-	public Response<WebtoonDto> createWebtoon(MultipartFile file, WebtoonDto webtoonDto, int user_idx) throws IOException {
+	public Response<WebtoonDto> createWebtoon(MultipartFile file, WebtoonDto webtoonDto, Long user_idx) throws IOException {
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		System.out.println(user_idx);
 		
@@ -101,13 +99,13 @@ public class WebtoonService {
 			
 			Webtoon webtoon = Webtoon.builder()
 					.title(webtoonDto.getTitle())
-					.toon_type(webtoonDto.getToon_type())
+					.toonType(webtoonDto.getToon_type())
 					.genre1(webtoonDto.getGenre1())
 					.genre2(webtoonDto.getGenre2())
 					.summary(webtoonDto.getSummary())
 					.plot(webtoonDto.getPlot())
-					.end_flag(webtoonDto.getEnd_flag())
-					.users(user)
+					.endFlag(webtoonDto.getEnd_flag())
+					.user(user)
 					.thumbnail(fileName)
 					.build();
 			webtoonRepository.save(webtoon);
@@ -119,9 +117,9 @@ public class WebtoonService {
 	}
 	
 	@Transactional
-	public WebtoonPage getWebtoonList(Integer pageNum, Response<WebtoonPage> res, int user_idx) {
+	public WebtoonPage getWebtoonList(Integer pageNum, Response<WebtoonPage> res, Long user_idx) {
 		Pageable pageable = PageRequest.of(pageNum-1, PAGE_WEBTOON_COUNT);
-		Page<Webtoon> page = webtoonRepository.findAllByUsersIdx(pageable, user_idx);	
+		Page<Webtoon> page = webtoonRepository.findAllByUserIdx(pageable, user_idx);
 	    List<WebtoonListDto> webtoonListDto = new ArrayList<>();
 		WebtoonPage webtoonPage = null;
 		int totalpages = page.getTotalPages();
@@ -135,7 +133,7 @@ public class WebtoonService {
 						.idx(webtoon.getIdx())
 						.title(webtoon.getTitle())
 						.thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail())
-						.created_date(webtoon.getCreated_date())
+						.created_date(webtoon.getCreatedDate())
 						
 						.build();
 				
@@ -145,13 +143,13 @@ public class WebtoonService {
 				//회차가 1개 이상 등록된 경우 가장 최신 회차의 업데이트 시간으로 설정
 				if(!episodeList.isEmpty()) {
 		        	Episode e = episodeList.get(episodeList.size()-1);
-		        	LocalDateTime lastUpdate = e.getUpdated_date();
+		        	LocalDateTime lastUpdate = e.getUpdatedDate();
 		        	webtoonDto.setLast_updated(lastUpdate);
 		        }
 		        
 		        //회차가 등록되어있지 않은 경우 웹툰 생성시간으로 설정
 		        else {
-		        	webtoonDto.setLast_updated(webtoon.getCreated_date());
+		        	webtoonDto.setLast_updated(webtoon.getCreatedDate());
 		        }
 				webtoonListDto.add(webtoonDto);
 			}
@@ -171,7 +169,7 @@ public class WebtoonService {
 	
 	
 	@Transactional
-	public Response<WebtoonDto> editWebtoon(int idx, MultipartFile file, WebtoonDto webtoonDto) throws IOException {
+	public Response<WebtoonDto> editWebtoon(Long idx, MultipartFile file, WebtoonDto webtoonDto) throws IOException {
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		
 		if(!webtoonRepository.existsById(idx)) {
@@ -188,13 +186,13 @@ public class WebtoonService {
 			Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(idx);
 	        Webtoon webtoon = WebtoonEntityWrapper.get();
 	        
-	        webtoon.setEnd_flag(webtoonDto.getEnd_flag());
+	        webtoon.setEndFlag(webtoonDto.getEnd_flag());
 	        webtoon.setGenre1(webtoonDto.getGenre1());
 	        webtoon.setGenre2(webtoonDto.getGenre2());
 	        webtoon.setPlot(webtoonDto.getPlot());
 	        webtoon.setSummary(webtoonDto.getSummary());
 	        webtoon.setTitle(webtoonDto.getTitle());
-	        webtoon.setToon_type(webtoonDto.getToon_type());
+	        webtoon.setToonType(webtoonDto.getToon_type());
 	        
 	        if(!file.isEmpty()) {
 	        	UUID uuid = UUID.randomUUID();
@@ -213,8 +211,8 @@ public class WebtoonService {
 		}
 	}
 	
-	public Response<Integer> deleteWebtoon(int idx, int user_idx) {
-		Response<Integer> res = new Response<Integer>();
+	public Response<Long> deleteWebtoon(Long idx, Long user_idx) {
+		Response<Long> res = new Response<Long>();
         //해당 웹툰 idx가 유효한지 체크
 		System.out.println("*****웹툰 삭제 idx 체크 : " + idx);
         if(!webtoonRepository.existsById(idx)) {
@@ -224,7 +222,7 @@ public class WebtoonService {
         else {
         	Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(idx);
             Webtoon webtoon = WebtoonEntityWrapper.get();
-            if(webtoon.getUsers().getIdx() != user_idx) {
+            if(webtoon.getUser().getIdx() != user_idx) {
             	res.setMsg("delete fail: user do not have authority");
             	res.setCode(1);
             }
@@ -238,7 +236,7 @@ public class WebtoonService {
         
 	}
 	
-	public Response<WebtoonDto> getWebtoonInfo(int idx){
+	public Response<WebtoonDto> getWebtoonInfo(Long idx){
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		
 		if(!webtoonRepository.existsById(idx)) {
@@ -251,12 +249,12 @@ public class WebtoonService {
         
 		WebtoonDto webtoonDto = WebtoonDto.builder()
 				.title(webtoon.getTitle())
-				.toon_type(webtoon.getToon_type())
+				.toon_type(webtoon.getToonType())
 				.genre1(webtoon.getGenre1())
 				.genre2(webtoon.getGenre2())
 				.summary(webtoon.getSummary())
 				.plot(webtoon.getPlot())
-				.end_flag(webtoon.getEnd_flag())
+				.end_flag(webtoon.getEndFlag())
 				.thumbnail(webtoon.getThumbnail())
 				.build();
 		res.setData(webtoonDto);
