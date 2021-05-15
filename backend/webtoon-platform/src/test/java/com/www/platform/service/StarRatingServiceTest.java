@@ -1,7 +1,8 @@
 package com.www.platform.service;
 
-import com.www.core.auth.entity.Users;
-import com.www.core.auth.repository.UsersRepository;
+import com.www.core.auth.Gender;
+import com.www.core.auth.entity.User;
+import com.www.core.auth.repository.UserRepository;
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
@@ -20,15 +21,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class StarRatingServiceTest {
 
     @Mock
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
     @Mock
     private EpisodeRepository episodeRepository;
     @Mock
@@ -39,18 +40,18 @@ public class StarRatingServiceTest {
     @InjectMocks
     private StarRatingService starRatingService;
 
-    private Users user;
+    private User user;
     private Webtoon webtoon;
     private Episode episode;
 
     @BeforeEach
     void beforeEach() {
-        user = Users.builder()
+        user = User.builder()
                 .idx(1L)
                 .account("id1")
                 .name("철수")
                 .pw("1q2w3e4r")
-                .gender((byte) 0)
+                .gender(Gender.MALE)
                 .email("test@email.com")
                 .build();
 
@@ -82,7 +83,7 @@ public class StarRatingServiceTest {
         float rating = 8;
         given(starRatingRepository.existsByEpIdxAndUserIdx(episode.getIdx(), user.getIdx()))
                 .willReturn(false);
-        given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
+        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(episodeRepository.findById(episode.getIdx())).willReturn(Optional.of(episode));
 
         //when
@@ -108,7 +109,7 @@ public class StarRatingServiceTest {
         Long emptyEpisodeIdx = 22L;
         given(starRatingRepository.existsByEpIdxAndUserIdx(emptyEpisodeIdx, user.getIdx()))
                 .willReturn(false);
-        given(usersRepository.findById(user.getIdx())).willReturn(Optional.of(user));
+        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(episodeRepository.findById(emptyEpisodeIdx)).willReturn(Optional.empty());
 
         //when

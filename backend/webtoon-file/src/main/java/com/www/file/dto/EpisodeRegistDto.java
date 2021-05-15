@@ -12,25 +12,23 @@ public class EpisodeRegistDto extends EpisodeDto {
 	private Webtoon webtoon;
 	
 	public EpisodeRegistDto(EpisodeDto p, Webtoon webtoon) {
-		setAuthor_comment(p.getAuthor_comment());
+		setAuthorComment(p.getAuthorComment());
 		setContents(p.getContents());
-		setEp_no(p.getEp_no());
+		setEpNo(p.getEpNo());
 		setThumbnail(p.getThumbnail());
 		setTitle(p.getTitle());
 		this.webtoon = webtoon;
 	}
+
 	public Episode toEntity() {
 		Episode build = Episode.builder()
-				.epNo(getEp_no())
+				.epNo(getEpNo())
 				.title(getTitle())
-				.authorComment(getAuthor_comment())
+				.authorComment(getAuthorComment())
 				.thumbnail(getThumbnail())
 				.contents(getContents())
 				.webtoon(webtoon)
 				.build();
 		return build;
 	}
-	
-	
-
 }

@@ -1,24 +1,24 @@
 package com.www.core.platform.repository;
 
-import com.www.core.platform.entity.CommentsDislike;
+import com.www.core.platform.entity.CommentLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface CommentsDislikeRepository extends JpaRepository<CommentsDislike, Long> {
+public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> {
     boolean existsByCommentIdxAndUserIdx(Long commentIdx, Long userIdx);
 
-    CommentsDislike findByCommentIdxAndUserIdx(Long commentIdx, Long userIdx);
+    CommentLike findByCommentIdxAndUserIdx(Long commentIdx, Long userIdx);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM CommentsDislike " +
+    @Query("DELETE FROM CommentLike " +
             "WHERE idx = :idx")
     void deleteByIdx(@Param("idx") Long idx);
 
     @Modifying
     @Transactional
-    void deleteAllBycommentIdx(@Param("commentIdx") Long commentIdx);
+    void deleteAllByCommentIdx(@Param("commentIdx") Long commentIdx);
 }

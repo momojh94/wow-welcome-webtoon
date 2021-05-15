@@ -1,6 +1,6 @@
 package com.www.platform.dto;
 
-import com.www.core.platform.entity.Comments;
+import com.www.core.platform.entity.Comment;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -8,21 +8,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Getter
-public class CommentsDto {
+public class CommentDto {
     private Long idx;
-    private String user_id;
-    private int like_cnt;
-    private int dislike_cnt;
+    private String account;
+    private int likeCount;
+    private int dislikeCount;
     private String content;
-    private String created_date;
+    private String createdDate;
 
-    public CommentsDto(Comments entity) {
+    public CommentDto(Comment entity) {
         idx = entity.getIdx();
-        user_id = entity.getUser().getAccount();
-        like_cnt = entity.getLikeCount();
-        dislike_cnt = entity.getDislikeCount();
+        account = entity.getUser().getAccount();
+        likeCount = entity.getLikeCount();
+        dislikeCount = entity.getDislikeCount();
         content = entity.getContent();
-        created_date = toStringDateTime(entity.getCreatedDate());
+        createdDate = toStringDateTime(entity.getCreatedDate());
     }
 
     private String toStringDateTime(LocalDateTime localDateTime) {

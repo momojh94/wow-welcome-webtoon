@@ -1,6 +1,6 @@
 package com.www.auth.dto;
 
-import com.www.core.auth.entity.Users;
+import com.www.core.auth.entity.User;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,12 +16,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UserRegisterDto extends UserDto{
-	
 	private String pw;
 	
-	public Users toEntity(String e_pw) {
-		return Users.builder()
-				.account(getUserid())
+	public User toEntity(String e_pw) {
+		return User.builder()
+				.account(getAccount())
 				.name(getName())
 				.pw(e_pw)
 				.birth(getBirth())

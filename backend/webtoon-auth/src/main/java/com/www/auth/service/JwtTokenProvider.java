@@ -12,7 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import com.www.core.auth.repository.UsersRepository;
+import com.www.core.auth.repository.UserRepository;
 
 import io.jsonwebtoken.*;
 
@@ -30,7 +30,7 @@ public class JwtTokenProvider {
 	@Autowired
 	RedisTemplate<String, Object> redisTemplate;
 	@Autowired
-	UsersRepository usersRepository;
+    UserRepository userRepository;
 
 	// access jwt 발급
 	public String createAccessToken(Long user_idx, String user_name) {
@@ -111,7 +111,7 @@ public class JwtTokenProvider {
 		if (accessT_valid < 2 && refreshT_valid < 2 && getUserIdx(accessT) == idx) {
 			try {
 				ValueOperations<String, Object> vop = redisTemplate.opsForValue();
-				String redis_T = (String) vop.get(usersRepository.findByIdx(idx).getAccount());
+				String redis_T = (String) vop.get(userRepository.findByIdx(idx).getAccount());
 				System.out.println("redis refresh token: " + redis_T);
 
 				if (redis_T == null)
@@ -135,7 +135,7 @@ public class JwtTokenProvider {
 	// redis refresh token 체크 
 	public void expireToken(Long idx) {
 		try {
-			redisTemplate.delete(usersRepository.findByIdx(idx).getAccount());
+			redisTemplate.delete(userRepository.findByIdx(idx).getAccount());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}

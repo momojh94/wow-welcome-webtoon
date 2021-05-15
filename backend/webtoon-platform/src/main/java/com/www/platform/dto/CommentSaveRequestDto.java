@@ -12,11 +12,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CommentsSaveRequestDto {
+public class CommentSaveRequestDto {
     private String content;
 
     @Builder
-    public CommentsSaveRequestDto(String content) {
+    public CommentSaveRequestDto(String content) {
         this.content = content;
     }
 }

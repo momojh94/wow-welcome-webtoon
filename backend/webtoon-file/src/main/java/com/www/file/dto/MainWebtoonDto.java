@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MainWebtoonDto {
-	
 	private Long idx;
 	private String title;
 	private String author;

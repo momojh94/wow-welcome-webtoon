@@ -14,11 +14,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EpisodeStarRatingResponseDto {
     float rating;
-    int person_total;
+    int personTotal;
 
     @Builder
-    public EpisodeStarRatingResponseDto(float rating, int person_total) {
+    public EpisodeStarRatingResponseDto(float rating, int personTotal) {
         this.rating = rating;
-        this.person_total = person_total;
+        this.personTotal = personTotal;
     }
 }

@@ -1,5 +1,6 @@
 package com.www.auth.dto;
 
+import com.www.core.auth.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,17 +14,14 @@ import java.sql.Date;
  *
  */
 
-//controller dto
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-	//private Long idx;
-	private String userid;
+	private String account;
 	private String name;
 	private Date birth;
-	private byte gender;
+	private Gender gender;
 	private String email;
-
 }

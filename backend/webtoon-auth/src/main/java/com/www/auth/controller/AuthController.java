@@ -68,7 +68,7 @@ public class AuthController {
 			result.setCode(0);
 			result.setMsg("login complete");
 			// json return
-			UserInfoDto info = new UserInfoDto(userService.getUserDto(userlogin.getUserid()), tokens.getRefreshToken());
+			UserInfoDto info = new UserInfoDto(userService.getUserDto(userlogin.getAccount()), tokens.getRefreshToken());
 			result.setData(info);
 			response.addHeader(HttpHeaders.AUTHORIZATION, "bearer " + tokens.getAccessToken());
 		} else { // 로그인 실패

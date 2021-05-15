@@ -58,7 +58,7 @@ public class EpisodeService {
 			return;
 		}
 		
-		if(episodeDto.getAuthor_comment()==null) {
+		if(episodeDto.getAuthorComment()==null) {
 			res.setCode(15);
 			res.setMsg("insert fail: need to register author_comment");
 			return;
@@ -81,7 +81,7 @@ public class EpisodeService {
 	    if(totalpages==0) totalpages=1;
 	    System.out.println("*****회차 목록 출력 idx 체크 : "+ idx);
 	    
-	    episodePage.setTotalpage(totalpages);
+	    episodePage.setTotalPages(totalpages);
 	    if(!webtoonRepository.existsById(idx)) {
 	    	System.out.println("존재하지 않음");
 	    	
@@ -97,11 +97,11 @@ public class EpisodeService {
 				res.setMsg("fail: user do not match");
 				return res;
 			}
-	        episodePage.setWebtoon_title(webtoon.getTitle());
+	        episodePage.setWebtoonTitle(webtoon.getTitle());
 	        episodePage.setPlot(webtoon.getPlot());
 	        episodePage.setId(webtoon.getUser().getAccount());
 	        episodePage.setWriter(webtoon.getUser().getName());
-	        episodePage.setWebtoon_thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail());
+	        episodePage.setWebtoonThumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail());
 	        System.out.println("5");
 	    }
 	    
@@ -111,16 +111,16 @@ public class EpisodeService {
 		    for(Episode episode : episodeList) {
 		    	EpisodeListDto episodeDto = EpisodeListDto.builder()
 		    			.idx(episode.getIdx())
-		    			.ep_no(episode.getEpNo())
+		    			.epNo(episode.getEpNo())
 		    			.title(episode.getTitle())
-		    			.rating_avg(episode.getRatingAvg())
+		    			.ratingAvg(episode.getRatingAvg())
 		    			.thumbnail("http://localhost:8081/static/ep_thumbnail/"+episode.getThumbnail())
-		    			.author_comment(episode.getAuthorComment())
-		    			.created_date(episode.getCreatedDate())
+		    			.authorComment(episode.getAuthorComment())
+		    			.createdDate(episode.getCreatedDate())
 		    			.build();
 		    	episodeDtoList.add(episodeDto);
 		    }
-		    episodePage.setEpisodelist(episodeDtoList);
+		    episodePage.setEpisodes(episodeDtoList);
 		    res.setData(episodePage);
 		    res.setCode(0);
 		    res.setMsg("show complete");
@@ -159,12 +159,12 @@ public class EpisodeService {
         if(!episodeList.isEmpty()) {
         	Episode e = episodeList.get(episodeList.size()-1);
         	lastno = e.getEpNo();
-        	episodeDto.setEp_no(lastno+1);
+        	episodeDto.setEpNo(lastno+1);
         }
         
         //첫 회차 등록시
         else {
-        	episodeDto.setEp_no(1);
+        	episodeDto.setEpNo(1);
         }
          
         UUID uuid1 = UUID.randomUUID();
@@ -222,7 +222,7 @@ public class EpisodeService {
 		}
 		
         checkCondition(thumbnail, manuscripts, episodeDto, res);
-        episode.setAuthorComment(episodeDto.getAuthor_comment());
+        episode.setAuthorComment(episodeDto.getAuthorComment());
         episode.setTitle(episodeDto.getTitle());
         
         UUID uuid1 = UUID.randomUUID();
@@ -307,9 +307,9 @@ public class EpisodeService {
 		}
 		
 		EpisodeDto episodeDto = EpisodeDto.builder()
-				.ep_no(episode.getEpNo())
+				.epNo(episode.getEpNo())
 				.title(episode.getTitle())
-				.author_comment(episode.getAuthorComment())
+				.authorComment(episode.getAuthorComment())
 				.thumbnail(episode.getThumbnail())
 				.contents(episode.getContents())
 				.build();

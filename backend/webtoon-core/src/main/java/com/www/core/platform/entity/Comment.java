@@ -1,6 +1,6 @@
 package com.www.core.platform.entity;
 
-import com.www.core.auth.entity.Users;
+import com.www.core.auth.entity.User;
 import com.www.core.common.BaseCreatedTimeEntity;
 import com.www.core.file.entity.Episode;
 
@@ -15,19 +15,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class Comments extends BaseCreatedTimeEntity {
+public class Comment extends BaseCreatedTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "ep_idx")
     private Episode ep;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
-    private Users user;
+    @JoinColumn(nullable = false, name = "user_idx")
+    private User user;
 
     @Column(nullable = false)
     private int likeCount;
@@ -39,8 +39,8 @@ public class Comments extends BaseCreatedTimeEntity {
     private String content;
 
     @Builder
-    public Comments(Episode ep, Users user, int likeCount, int dislikeCount,
-                    Long idx, String content, LocalDateTime createdDate){
+    public Comment(Episode ep, User user, int likeCount, int dislikeCount,
+                   Long idx, String content, LocalDateTime createdDate){
         this.ep = ep;
         this.user = user;
         this.likeCount = likeCount;

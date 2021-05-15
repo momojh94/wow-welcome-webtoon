@@ -1,6 +1,6 @@
 package com.www.file.service;
 
-import com.www.core.auth.repository.UsersRepository;
+import com.www.core.auth.repository.UserRepository;
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
@@ -25,7 +25,7 @@ public class MainService {
 	@Autowired
 	private WebtoonRepository webtoonRepository;
 	@Autowired
-	private UsersRepository usersRepository;
+	private UserRepository userRepository;
 	@Autowired
 	private EpisodeRepository episodeRepository;
 	
@@ -120,15 +120,15 @@ public class MainService {
 		episodeRepository.save(episode);
 		
 		EpisodeContents episodeContents = EpisodeContents.builder()
-				.webtoon_title(webtoon.getTitle())
+				.webtoonTitle(webtoon.getTitle())
 				.title(episode.getTitle())
-				.author_comment(episode.getAuthorComment())
+				.authorComment(episode.getAuthorComment())
 				.author(webtoon.getUser().getName())
 				.summary(webtoon.getSummary())
 				.thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail())
-				.rating_person_total(episode.getRatingPersonTotal())
-				.rating_avg(episode.getRatingAvg())
-				.ep_hits(episode.getHits())
+				.ratingPersonTotal(episode.getRatingPersonTotal())
+				.ratingAvg(episode.getRatingAvg())
+				.epHits(episode.getHits())
 				.build();
 		
 		String content = episode.getContents();

@@ -1,18 +1,18 @@
 package com.www.file.dto;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
 public class WebtoonPage {
-	private List<WebtoonListDto> webtoonlist;
-	private int totalpage;
+	private List<WebtoonListDto> webtoons;
+	private int totalPages;
 	
-	public WebtoonPage(List<WebtoonListDto> webtoonlist, int totalpage) {
-		this.webtoonlist = webtoonlist;
-		this.totalpage = totalpage;
+	public WebtoonPage(List<WebtoonListDto> webtoons, int totalPages) {
+		this.webtoons = webtoons;
+		this.totalPages = totalPages;
 	}
 }

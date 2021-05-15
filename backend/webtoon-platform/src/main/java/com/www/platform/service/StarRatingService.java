@@ -1,7 +1,7 @@
 package com.www.platform.service;
 
-import com.www.core.auth.entity.Users;
-import com.www.core.auth.repository.UsersRepository;
+import com.www.core.auth.entity.User;
+import com.www.core.auth.repository.UserRepository;
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.repository.EpisodeRepository;
@@ -18,8 +18,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Service
 public class StarRatingService {
-
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
     private EpisodeRepository episodeRepository;
     private WebtoonRepository webtoonRepository;
     private StarRatingRepository starRatingRepository;
@@ -35,7 +34,7 @@ public class StarRatingService {
         }
         else
         {
-            Optional<Users> user = usersRepository.findById(userIdx);
+            Optional<User> user = userRepository.findById(userIdx);
             Optional<Episode> episode = episodeRepository.findById(epIdx);
 
             if(!episode.isPresent()){ // 에피소드가 존재하지 않을 때
@@ -59,7 +58,7 @@ public class StarRatingService {
             EpisodeStarRatingResponseDto episodeStarRatingResponseDto
                     = EpisodeStarRatingResponseDto.builder()
                     .rating(episode.get().getRatingAvg())
-                    .person_total(episode.get().getRatingPersonTotal())
+                    .personTotal(episode.get().getRatingPersonTotal())
                     .build();
 
             result.setCode(0);

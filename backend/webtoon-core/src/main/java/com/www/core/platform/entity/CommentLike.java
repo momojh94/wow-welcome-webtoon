@@ -1,6 +1,6 @@
 package com.www.core.platform.entity;
 
-import com.www.core.auth.entity.Users;
+import com.www.core.auth.entity.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,22 +11,22 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class CommentsLike {
+public class CommentLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
     @ManyToOne
-    @JoinColumn(name = "users_idx")
-    private Users user;
+    @JoinColumn(name = "user_idx")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "comments_idx")
-    private Comments comment;
+    @JoinColumn(name = "comment_idx")
+    private Comment comment;
 
     @Builder
-    public CommentsLike(Long idx, Users user, Comments comment){
+    public CommentLike(Long idx, User user, Comment comment){
         this.idx = idx;
         this.user = user;
         this.comment = comment;

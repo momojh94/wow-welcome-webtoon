@@ -10,8 +10,8 @@ import com.www.auth.dto.UserDto;
 import com.www.auth.dto.UserInfoModifiedDto;
 import com.www.auth.dto.UserLoginDto;
 import com.www.auth.dto.UserRegisterDto;
-import com.www.core.auth.entity.Users;
-import com.www.core.auth.repository.UsersRepository;
+import com.www.core.auth.entity.User;
+import com.www.core.auth.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserService {
 
-	UsersRepository userRepository;
+	UserRepository userRepository;
 	PasswordEncoder passwordEncoder;
 	JwtTokenProvider jwtTokenProvider;
 
@@ -30,7 +30,7 @@ public class UserService {
 	 */
 	public int register(UserRegisterDto user) {
 		// id 중복체크
-		if (userRepository.existsByAccount(user.getUserid())) {
+		if (userRepository.existsByAccount(user.getAccount())) {
 			return 1; //insert fail
 		}
 		// email 중복체크
@@ -54,11 +54,11 @@ public class UserService {
 		Tokens tokens = new Tokens();
 		// user login
 		// id not exist
-		if (!userRepository.existsByAccount(user.getUserid())) {
+		if (!userRepository.existsByAccount(user.getAccount())) {
 			return tokens; 
 		}
 		// pw matching
-		Users info = userRepository.findByAccount(user.getUserid());
+		User info = userRepository.findByAccount(user.getAccount());
 		if (passwordEncoder.matches(user.getPw(), info.getPw())) {
 			System.out.println("============"+info.getName());
 			tokens.setAccessToken(jwtTokenProvider.createAccessToken(info.getIdx(),info.getName()));
@@ -100,11 +100,11 @@ public class UserService {
 	
 	public UserDto getUserDto(String user_id) {
 		UserDto userDto = new UserDto();
-		Users info = userRepository.findByAccount(user_id);
+		User info = userRepository.findByAccount(user_id);
 		userDto.setBirth(info.getBirth());
 		userDto.setGender(info.getGender());
 		userDto.setName(info.getName());
-		userDto.setUserid(user_id);
+		userDto.setAccount(user_id);
 		userDto.setEmail(info.getEmail());
 		return userDto;
 	}

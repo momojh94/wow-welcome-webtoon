@@ -1,6 +1,6 @@
 package com.www.core.platform.entity;
 
-import com.www.core.auth.entity.Users;
+import com.www.core.auth.entity.User;
 import com.www.core.file.entity.Episode;
 
 import lombok.AccessLevel;
@@ -24,14 +24,14 @@ public class StarRating {
     private Episode ep;
 
     @ManyToOne
-    @JoinColumn(name = "users_idx", nullable = false)
-    private Users user;
+    @JoinColumn(name = "user_idx", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private float rating;
 
     @Builder
-    public StarRating(Episode ep, Users user, float rating){
+    public StarRating(Episode ep, User user, float rating){
         this.ep = ep;
         this.user = user;
         this.rating = rating;

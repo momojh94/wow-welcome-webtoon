@@ -1,6 +1,6 @@
 package com.www.core.file.entity;
 
-import com.www.core.auth.entity.Users;
+import com.www.core.auth.entity.User;
 import com.www.core.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,13 +58,13 @@ public class Webtoon extends BaseTimeEntity {
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
 	@ManyToOne
-	@JoinColumn(name = "users_idx")
-	private Users user;
+	@JoinColumn(name = "user_idx")
+	private User user;
 	
 	@Builder
 	public Webtoon(Long idx, String title, byte toonType, byte genre1, byte genre2,
-				   String summary, String plot, String thumbnail, byte endFlag,
-				   Users user, float ratingAvg) {
+                   String summary, String plot, String thumbnail, byte endFlag,
+                   User user, float ratingAvg) {
 		this.idx = idx;
 		this.title = title;
 		this.toonType = toonType;
@@ -77,5 +77,4 @@ public class Webtoon extends BaseTimeEntity {
 		this.user = user;
 		this.ratingAvg = ratingAvg;
 	}
-
 }

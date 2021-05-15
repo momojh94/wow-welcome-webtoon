@@ -1,6 +1,8 @@
 package com.www.core.auth.entity;
 
+import com.www.core.auth.Gender;
 import com.www.core.common.BaseTimeEntity;
+import com.www.core.common.EnumAttributeConverter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ import java.sql.Date;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Users extends BaseTimeEntity {
+public class User extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,13 +34,14 @@ public class Users extends BaseTimeEntity {
 	private Date birth;
 
 	@Column(nullable = false)
-	private byte gender;
+	@Convert(converter = EnumAttributeConverter.class)
+	private Gender gender;
 
 	@Column(nullable = false, length = 45)
 	private String email;
 
 	@Builder
-	public Users(Long idx, String account, String pw, String name, Date birth, byte gender, String email) {
+	public User(Long idx, String account, String pw, String name, Date birth, Gender gender, String email) {
 		this.idx = idx;
 		this.account = account;
 		this.pw = pw;

@@ -1,7 +1,7 @@
 package com.www.file.service;
 
-import com.www.core.auth.entity.Users;
-import com.www.core.auth.repository.UsersRepository;
+import com.www.core.auth.entity.User;
+import com.www.core.auth.repository.UserRepository;
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
@@ -32,7 +32,7 @@ public class WebtoonService {
 	
 	private WebtoonRepository webtoonRepository;
 	@Autowired
-	private UsersRepository usersRepository;
+	private UserRepository userRepository;
 	
 	//한 블럭 내 최대 페이지 번호 수
 	private static final int BLOCK_PAGE_NUM_COUNT = 5;
@@ -78,9 +78,8 @@ public class WebtoonService {
 	public Response<WebtoonDto> createWebtoon(MultipartFile file, WebtoonDto webtoonDto, Long user_idx) throws IOException {
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		System.out.println(user_idx);
-		
-		Optional<Users> users = usersRepository.findById(user_idx);
-		Users user = users.get();
+		Optional<User> users = userRepository.findById(user_idx);
+		User user = users.get();
 		//필수 조건 체크
 		checkCondition(file,webtoonDto,res);
 		if(res.getCode()!=0)
@@ -99,12 +98,12 @@ public class WebtoonService {
 			
 			Webtoon webtoon = Webtoon.builder()
 					.title(webtoonDto.getTitle())
-					.toonType(webtoonDto.getToon_type())
+					.toonType(webtoonDto.getToonType())
 					.genre1(webtoonDto.getGenre1())
 					.genre2(webtoonDto.getGenre2())
 					.summary(webtoonDto.getSummary())
 					.plot(webtoonDto.getPlot())
-					.endFlag(webtoonDto.getEnd_flag())
+					.endFlag(webtoonDto.getEndFlag())
 					.user(user)
 					.thumbnail(fileName)
 					.build();
@@ -133,8 +132,7 @@ public class WebtoonService {
 						.idx(webtoon.getIdx())
 						.title(webtoon.getTitle())
 						.thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail())
-						.created_date(webtoon.getCreatedDate())
-						
+						.createdDate(webtoon.getCreatedDate())
 						.build();
 				
 				List<Episode> episodeList = webtoon.getEpisodes();
@@ -144,12 +142,12 @@ public class WebtoonService {
 				if(!episodeList.isEmpty()) {
 		        	Episode e = episodeList.get(episodeList.size()-1);
 		        	LocalDateTime lastUpdate = e.getUpdatedDate();
-		        	webtoonDto.setLast_updated(lastUpdate);
+		        	webtoonDto.setLastUpdated(lastUpdate);
 		        }
 		        
 		        //회차가 등록되어있지 않은 경우 웹툰 생성시간으로 설정
 		        else {
-		        	webtoonDto.setLast_updated(webtoon.getCreatedDate());
+		        	webtoonDto.setLastUpdated(webtoon.getCreatedDate());
 		        }
 				webtoonListDto.add(webtoonDto);
 			}
@@ -186,13 +184,13 @@ public class WebtoonService {
 			Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(idx);
 	        Webtoon webtoon = WebtoonEntityWrapper.get();
 	        
-	        webtoon.setEndFlag(webtoonDto.getEnd_flag());
+	        webtoon.setEndFlag(webtoonDto.getEndFlag());
 	        webtoon.setGenre1(webtoonDto.getGenre1());
 	        webtoon.setGenre2(webtoonDto.getGenre2());
 	        webtoon.setPlot(webtoonDto.getPlot());
 	        webtoon.setSummary(webtoonDto.getSummary());
 	        webtoon.setTitle(webtoonDto.getTitle());
-	        webtoon.setToonType(webtoonDto.getToon_type());
+	        webtoon.setToonType(webtoonDto.getToonType());
 	        
 	        if(!file.isEmpty()) {
 	        	UUID uuid = UUID.randomUUID();
@@ -249,12 +247,12 @@ public class WebtoonService {
         
 		WebtoonDto webtoonDto = WebtoonDto.builder()
 				.title(webtoon.getTitle())
-				.toon_type(webtoon.getToonType())
+				.toonType(webtoon.getToonType())
 				.genre1(webtoon.getGenre1())
 				.genre2(webtoon.getGenre2())
 				.summary(webtoon.getSummary())
 				.plot(webtoon.getPlot())
-				.end_flag(webtoon.getEndFlag())
+				.endFlag(webtoon.getEndFlag())
 				.thumbnail(webtoon.getThumbnail())
 				.build();
 		res.setData(webtoonDto);

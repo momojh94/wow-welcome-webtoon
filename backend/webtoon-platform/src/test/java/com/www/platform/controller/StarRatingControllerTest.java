@@ -1,12 +1,13 @@
 package com.www.platform.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.www.core.auth.entity.Users;
+import com.www.core.auth.Gender;
+import com.www.core.auth.entity.User;
 import com.www.core.common.Response;
 import com.www.core.common.TokenChecker;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
-import com.www.core.platform.entity.Comments;
+import com.www.core.platform.entity.Comment;
 import com.www.platform.dto.*;
 import com.www.platform.service.StarRatingService;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,10 +59,10 @@ public class StarRatingControllerTest {
     private ObjectMapper objectMapper;
 
     private RestDocumentationResultHandler documentationHandler;
-    private Users user;
+    private User user;
     private Webtoon webtoon;
     private Episode episode;
-    private Comments comment;
+    private Comment comment;
 
     private static final String CODE = "code";
     private static final String MESSAGE = "msg";
@@ -84,12 +85,12 @@ public class StarRatingControllerTest {
 
         objectMapper = new ObjectMapper();
 
-        user = Users.builder()
+        user = User.builder()
                 .idx(1L)
                 .account("id123")
                 .name("철수")
                 .pw("1q2w3e4r")
-                .gender((byte) 0)
+                .gender(Gender.MALE)
                 .email("test@email.com")
                 .build();
 
@@ -114,7 +115,7 @@ public class StarRatingControllerTest {
                 .authorComment("작가의 말")
                 .build();
 
-        comment = Comments.builder()
+        comment = Comment.builder()
                 .idx(1L)
                 .user(user)
                 .ep(episode)
@@ -133,7 +134,7 @@ public class StarRatingControllerTest {
         EpisodeStarRatingResponseDto responseData =
                 EpisodeStarRatingResponseDto.builder()
                         .rating(3.66667f)
-                        .person_total(3)
+                        .personTotal(3)
                         .build();
 
         Response<EpisodeStarRatingResponseDto> response = new Response<>();
@@ -157,7 +158,7 @@ public class StarRatingControllerTest {
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : insert star rating"))
                 .andExpect(jsonPath("data.rating").value(responseData.getRating()))
-                .andExpect(jsonPath("data.person_total").value(responseData.getPerson_total()))
+                .andExpect(jsonPath("data.person_total").value(responseData.getPersonTotal()))
                 .andDo(this.documentationHandler.document(
                         requestHeaders(
                                 headerWithName(AUTH_HEADER).description("유저의 AccessToken")

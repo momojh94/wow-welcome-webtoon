@@ -13,11 +13,10 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class UserInfoDto extends UserDto{
-
 	String token;
 	
 	public UserInfoDto(UserDto dto,String token) {
-		super(dto.getUserid(),dto.getName(),dto.getBirth(),dto.getGender(),dto.getEmail());
+		super(dto.getAccount(),dto.getName(),dto.getBirth(),dto.getGender(),dto.getEmail());
 		this.token = token;
 	}
 }
