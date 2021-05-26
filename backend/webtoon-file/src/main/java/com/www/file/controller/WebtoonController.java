@@ -2,6 +2,8 @@ package com.www.file.controller;
 
 import com.www.core.common.Response;
 import com.www.core.common.TokenChecker;
+import com.www.core.file.enums.StoryGenre;
+import com.www.core.file.enums.StoryType;
 import com.www.file.dto.WebtoonDto;
 import com.www.file.dto.WebtoonPage;
 import com.www.file.service.EpisodeService;
@@ -26,10 +28,10 @@ public class WebtoonController {
 	//새 웹툰 등록
 	@PostMapping("/myTitleDetail")
 	public Response<WebtoonDto> createWebtoon(@RequestHeader("Authorization") String AccessToken,
-											  @RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("toon_type") byte toon_type,
-											  @RequestParam("genre1") byte genre1, @RequestParam("genre2") byte genre2, @RequestParam("summary") String summary,
-											  @RequestParam("plot") String plot, @RequestParam("end_flag") byte end_flag) throws IOException {
-		WebtoonDto webtoonDto = new WebtoonDto(title,toon_type,genre1,genre2,summary,plot,end_flag);
+											  @RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("toon_type") StoryType storyType,
+											  @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
+											  @RequestParam("plot") String plot, @RequestParam("endFlag") byte endFlag) throws IOException {
+		WebtoonDto webtoonDto = new WebtoonDto(title, storyType, storyGenre1, storyGenre2, summary, plot, endFlag);
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		int n = tokenChecker.validateToken(AccessToken);
 		Long user_idx = tokenChecker.getUserIdx(AccessToken);

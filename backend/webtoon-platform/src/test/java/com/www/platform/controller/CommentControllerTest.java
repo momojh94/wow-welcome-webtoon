@@ -1,7 +1,7 @@
 package com.www.platform.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.www.core.auth.Gender;
+import com.www.core.auth.enums.Gender;
 import com.www.core.auth.entity.User;
 import com.www.core.common.Response;
 import com.www.core.common.TokenChecker;

@@ -1,7 +1,7 @@
 package com.www.auth.dto;
 
+import com.www.core.auth.enums.Gender;
 import com.www.core.auth.entity.User;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,16 +17,19 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserRegisterDto extends UserDto{
 	private String pw;
+
+	public void setGender(Gender gender) {
+		super.gender = gender;
+	}
 	
-	public User toEntity(String e_pw) {
+	public User toEntity(String ePw) {
 		return User.builder()
 				.account(getAccount())
 				.name(getName())
-				.pw(e_pw)
+				.pw(ePw)
 				.birth(getBirth())
 				.gender(getGender())
 				.email(getEmail())
 				.build();
 	}
-	
 }

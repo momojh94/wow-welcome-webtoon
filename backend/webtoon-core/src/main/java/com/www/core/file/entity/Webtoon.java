@@ -2,6 +2,9 @@ package com.www.core.file.entity;
 
 import com.www.core.auth.entity.User;
 import com.www.core.common.BaseTimeEntity;
+import com.www.core.file.enums.EndFlag;
+import com.www.core.file.enums.StoryGenre;
+import com.www.core.file.enums.StoryType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,13 +29,13 @@ public class Webtoon extends BaseTimeEntity {
 	private String title;
 
 	@Column
-	private byte toonType;
+	private StoryType storyType;
 
 	@Column
-	private byte genre1;
+	private StoryGenre storyGenre1;
 
 	@Column
-	private byte genre2;
+	private StoryGenre storyGenre2;
 
 	@Column
 	private String summary;
@@ -46,7 +49,7 @@ public class Webtoon extends BaseTimeEntity {
 	private String thumbnail;
 
 	@Column
-	private byte endFlag;
+	private EndFlag endFlag;
 
 	@Column
 	private float ratingAvg;
@@ -54,7 +57,7 @@ public class Webtoon extends BaseTimeEntity {
 	@Column 
 	private Long hits;
 
-	@OneToMany(fetch=FetchType.EAGER,  orphanRemoval = true , cascade = CascadeType.REMOVE, mappedBy = "webtoon")
+	@OneToMany(fetch=FetchType.EAGER, orphanRemoval = true , cascade = CascadeType.REMOVE, mappedBy = "webtoon")
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
 	@ManyToOne
@@ -62,14 +65,14 @@ public class Webtoon extends BaseTimeEntity {
 	private User user;
 	
 	@Builder
-	public Webtoon(Long idx, String title, byte toonType, byte genre1, byte genre2,
-                   String summary, String plot, String thumbnail, byte endFlag,
-                   User user, float ratingAvg) {
+	public Webtoon(Long idx, String title, StoryType storyType, StoryGenre storyGenre1, StoryGenre storyGenre2,
+				   String summary, String plot, String thumbnail, EndFlag endFlag,
+				   User user, float ratingAvg) {
 		this.idx = idx;
 		this.title = title;
-		this.toonType = toonType;
-		this.genre1 = genre1;
-		this.genre2 = genre2;
+		this.storyType = storyType;
+		this.storyGenre1 = storyGenre1;
+		this.storyGenre2 = storyGenre2;
 		this.summary = summary;
 		this.plot = plot;
 		this.thumbnail = thumbnail;

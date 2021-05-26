@@ -1,6 +1,6 @@
 package com.www.platform.service;
 
-import com.www.core.auth.Gender;
+import com.www.core.auth.enums.Gender;
 import com.www.core.auth.entity.User;
 import com.www.core.auth.repository.UserRepository;
 import com.www.core.common.Response;

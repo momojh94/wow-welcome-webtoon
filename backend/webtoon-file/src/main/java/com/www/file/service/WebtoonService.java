@@ -185,12 +185,12 @@ public class WebtoonService {
 	        Webtoon webtoon = WebtoonEntityWrapper.get();
 	        
 	        webtoon.setEndFlag(webtoonDto.getEndFlag());
-	        webtoon.setGenre1(webtoonDto.getGenre1());
-	        webtoon.setGenre2(webtoonDto.getGenre2());
+	        webtoon.setStoryGenre1(webtoonDto.getGenre1());
+	        webtoon.setStoryGenre2(webtoonDto.getGenre2());
 	        webtoon.setPlot(webtoonDto.getPlot());
 	        webtoon.setSummary(webtoonDto.getSummary());
 	        webtoon.setTitle(webtoonDto.getTitle());
-	        webtoon.setToonType(webtoonDto.getToonType());
+	        webtoon.setStoryType(webtoonDto.getToonType());
 	        
 	        if(!file.isEmpty()) {
 	        	UUID uuid = UUID.randomUUID();
@@ -247,9 +247,9 @@ public class WebtoonService {
         
 		WebtoonDto webtoonDto = WebtoonDto.builder()
 				.title(webtoon.getTitle())
-				.toonType(webtoon.getToonType())
-				.genre1(webtoon.getGenre1())
-				.genre2(webtoon.getGenre2())
+				.toonType(webtoon.getStoryType())
+				.genre1(webtoon.getStoryGenre1())
+				.genre2(webtoon.getStoryGenre2())
 				.summary(webtoon.getSummary())
 				.plot(webtoon.getPlot())
 				.endFlag(webtoon.getEndFlag())

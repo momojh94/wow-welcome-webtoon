@@ -1,19 +1,13 @@
 package com.www.auth.service;
 
-import java.time.LocalDateTime;
-
+import com.www.auth.dto.*;
+import com.www.core.auth.entity.User;
+import com.www.core.auth.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.www.auth.dto.Tokens;
-import com.www.auth.dto.UserDto;
-import com.www.auth.dto.UserInfoModifiedDto;
-import com.www.auth.dto.UserLoginDto;
-import com.www.auth.dto.UserRegisterDto;
-import com.www.core.auth.entity.User;
-import com.www.core.auth.repository.UserRepository;
-
-import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
@@ -39,7 +33,7 @@ public class UserService {
 		}
 		// pw encoding
 		String encodedpw = passwordEncoder.encode(user.getPw());
-		// insert
+
 		userRepository.save(user.toEntity(encodedpw));
 		// insert complete
 		return 0; 

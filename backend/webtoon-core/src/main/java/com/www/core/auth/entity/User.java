@@ -1,12 +1,11 @@
 package com.www.core.auth.entity;
 
-import com.www.core.auth.Gender;
+import com.www.core.auth.enums.Gender;
+import com.www.core.auth.enums.GenderConverter;
 import com.www.core.common.BaseTimeEntity;
-import com.www.core.common.EnumAttributeConverter;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -24,7 +23,6 @@ public class User extends BaseTimeEntity {
 	private String account;
 
 	@Column(length = 64, nullable = false)
-	@Type(type = "char")
 	private String pw;
 
 	@Column(length = 12, nullable = false)
@@ -34,7 +32,7 @@ public class User extends BaseTimeEntity {
 	private Date birth;
 
 	@Column(nullable = false)
-	@Convert(converter = EnumAttributeConverter.class)
+	@Convert(converter = GenderConverter.class)
 	private Gender gender;
 
 	@Column(nullable = false, length = 45)

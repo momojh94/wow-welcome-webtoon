@@ -1,6 +1,6 @@
 package com.www.auth.dto;
 
-import com.www.core.auth.Gender;
+import com.www.core.auth.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +22,6 @@ public class UserDto {
 	private String account;
 	private String name;
 	private Date birth;
-	private Gender gender;
+	protected Gender gender;
 	private String email;
 }
