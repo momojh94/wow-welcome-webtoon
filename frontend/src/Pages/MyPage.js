@@ -86,8 +86,8 @@ export default function MyPage() {
             .then(result => {
                 console.log(result)
                 if (result.code == 0) {
-                    setMyWebtoons(result.data.webtoonlist);
-                    setPageNum(result.data.totalpage);
+                    setMyWebtoons(result.data.webtoons);
+                    setPageNum(result.data.total_pages);
                 }
                 else if(result.code==44){
                     ReToken.ReToken()

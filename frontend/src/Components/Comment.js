@@ -25,7 +25,7 @@ class Comment extends Component {
             .then(result => {
                 console.log(result)
                 if (result.code == 0) {
-                    this.setState({ goodNum: result.data.cnt });
+                    this.setState({ goodNum: result.data.count });
                 }
                 else if (result.code == 21) {
                     alert("[ERROR 21] 잘못된 접근입니다, 관리자에게 문의하세요.")
@@ -71,7 +71,7 @@ class Comment extends Component {
             .then(result => {
                 console.log(result)
                 if (result.code == 0) {
-                    this.setState({ badNum: result.data.cnt })
+                    this.setState({ badNum: result.data.count })
                 }
                 else if (result.code == 21) {
                     alert("[ERROR 21] 잘못된 접근입니다, 관리자에게 문의하세요.")

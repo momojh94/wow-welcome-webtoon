@@ -8,29 +8,28 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class EpisodeContents {
-	
-	private String webtoon_title;
+	private String webtoonTitle;
 	private String title;
 	private String author;
 	private String summary;
 	private String thumbnail;
-	private String author_comment;
-	private int rating_person_total;
-	private float rating_avg;
-	private int ep_hits;
+	private String authorComment;
+	private int ratingPersonTotal;
+	private float ratingAvg;
+	private int epHits;
 	private String[] contents;
 	
 	@Builder
-	public EpisodeContents(String webtoon_title, String title, String author, String summary, String thumbnail, 
-			String author_comment, int rating_person_total, float rating_avg, int ep_hits) {
-		this.webtoon_title = webtoon_title;
+	public EpisodeContents(String webtoonTitle, String title, String author, String summary, String thumbnail,
+						   String authorComment, int ratingPersonTotal, float ratingAvg, int epHits) {
+		this.webtoonTitle = webtoonTitle;
 		this.title = title;
-		this.author_comment = author_comment;
+		this.authorComment = authorComment;
 		this.author = author;
 		this.summary = summary;
 		this.thumbnail = thumbnail;
-		this.rating_person_total = rating_person_total;
-		this.rating_avg = rating_avg;
-		this.ep_hits = ep_hits;
+		this.ratingPersonTotal = ratingPersonTotal;
+		this.ratingAvg = ratingAvg;
+		this.epHits = epHits;
 	}
 }

@@ -225,8 +225,8 @@ export default function Comment() {
                                             {myComment.content}
                                         </div>
                                     </TableCell>
-                                    <TableCell align="center">{myComment.like_cnt}</TableCell>
-                                    <TableCell align="center">{myComment.dislike_cnt}</TableCell>
+                                    <TableCell align="center">{myComment.like_count}</TableCell>
+                                    <TableCell align="center">{myComment.dislike_count}</TableCell>
                                     <TableCell align="center">{myComment.created_date}</TableCell>
                                     <TableCell align="center">
                                         <Button variant="contained" color="primary" onClick={() => deleteComment(myComment.idx)} >

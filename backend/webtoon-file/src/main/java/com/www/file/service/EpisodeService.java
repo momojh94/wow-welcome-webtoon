@@ -1,27 +1,28 @@
 package com.www.file.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.transaction.Transactional;
-
+import com.www.core.common.Response;
+import com.www.core.file.entity.Episode;
+import com.www.core.file.entity.Webtoon;
+import com.www.core.file.repository.EpisodeRepository;
+import com.www.core.file.repository.WebtoonRepository;
+import com.www.file.dto.EpisodeDto;
+import com.www.file.dto.EpisodeListDto;
+import com.www.file.dto.EpisodePage;
+import com.www.file.dto.EpisodeRegistDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.www.core.file.entity.*;
-import com.www.core.file.repository.*;
-import com.www.file.dto.EpisodeDto;
-import com.www.file.dto.EpisodeListDto;
-import com.www.file.dto.EpisodePage;
-import com.www.file.dto.EpisodeRegistDto;
-import com.www.core.common.Response;
+
+import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
@@ -57,7 +58,7 @@ public class EpisodeService {
 			return;
 		}
 		
-		if(episodeDto.getAuthor_comment()==null) {
+		if(episodeDto.getAuthorComment()==null) {
 			res.setCode(15);
 			res.setMsg("insert fail: need to register author_comment");
 			return;
@@ -68,7 +69,7 @@ public class EpisodeService {
 	}
 	
 	@Transactional
-	public Response<EpisodePage> getEpisodeList(int idx, Integer pageNum, int user_idx) {
+	public Response<EpisodePage> getEpisodeList(Long idx, Integer pageNum, Long userIdx) {
 		
 		Response<EpisodePage> res = new Response<EpisodePage>();
 		EpisodePage episodePage = new EpisodePage();
@@ -80,7 +81,7 @@ public class EpisodeService {
 	    if(totalpages==0) totalpages=1;
 	    System.out.println("*****회차 목록 출력 idx 체크 : "+ idx);
 	    
-	    episodePage.setTotalpage(totalpages);
+	    episodePage.setTotalPages(totalpages);
 	    if(!webtoonRepository.existsById(idx)) {
 	    	System.out.println("존재하지 않음");
 	    	
@@ -89,18 +90,18 @@ public class EpisodeService {
 	    	//웹툰 정보 기입
 		    Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(idx);
 	        Webtoon webtoon = WebtoonEntityWrapper.get();
-	        
-	        if(webtoon.getUsers().getIdx()!=user_idx && user_idx!=-1) {
-	        	System.out.println("작가 일치 X");
-	        	res.setCode(1);
-	        	res.setMsg("fail: user do not match");
-	        	return res;
-	        }
-	        episodePage.setWebtoon_title(webtoon.getTitle());
+
+			if (webtoon.getUser().getIdx() != userIdx && userIdx != -1) {
+				System.out.println("작가 일치 X");
+				res.setCode(1);
+				res.setMsg("fail: user do not match");
+				return res;
+			}
+	        episodePage.setWebtoonTitle(webtoon.getTitle());
 	        episodePage.setPlot(webtoon.getPlot());
-	        episodePage.setId(webtoon.getUsers().getUserid());
-	        episodePage.setWriter(webtoon.getUsers().getName());
-	        episodePage.setWebtoon_thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail());
+	        episodePage.setId(webtoon.getUser().getAccount());
+	        episodePage.setWriter(webtoon.getUser().getName());
+	        episodePage.setWebtoonThumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail());
 	        System.out.println("5");
 	    }
 	    
@@ -110,16 +111,16 @@ public class EpisodeService {
 		    for(Episode episode : episodeList) {
 		    	EpisodeListDto episodeDto = EpisodeListDto.builder()
 		    			.idx(episode.getIdx())
-		    			.ep_no(episode.getEp_no())
+		    			.epNo(episode.getEpNo())
 		    			.title(episode.getTitle())
-		    			.rating_avg(episode.getRating_avg())
+		    			.ratingAvg(episode.getRatingAvg())
 		    			.thumbnail("http://localhost:8081/static/ep_thumbnail/"+episode.getThumbnail())
-		    			.author_comment(episode.getAuthor_comment())
-		    			.created_date(episode.getCreated_date())
+		    			.authorComment(episode.getAuthorComment())
+		    			.createdDate(episode.getCreatedDate())
 		    			.build();
 		    	episodeDtoList.add(episodeDto);
 		    }
-		    episodePage.setEpisodelist(episodeDtoList);
+		    episodePage.setEpisodes(episodeDtoList);
 		    res.setData(episodePage);
 		    res.setCode(0);
 		    res.setMsg("show complete");
@@ -136,19 +137,19 @@ public class EpisodeService {
 	
 	
 	@Transactional
-	public Response<EpisodeDto> addEpisode(int webtoon_idx, MultipartFile thumbnail, MultipartFile[] manuscripts, EpisodeDto episodeDto) throws IllegalStateException, IOException {
+	public Response<EpisodeDto> addEpisode(Long webtoonIdx, MultipartFile thumbnail, MultipartFile[] manuscripts, EpisodeDto episodeDto) throws IllegalStateException, IOException {
 		
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
 		
 		//유효한 웹툰 idx가 아닌경우 
-		if(!webtoonRepository.existsById(webtoon_idx)) {
+		if(!webtoonRepository.existsById(webtoonIdx)) {
 			res.setCode(1);
 			res.setMsg("fail: Webtoon do not exists");
 			return res;
         }
 		
 		checkCondition(thumbnail, manuscripts, episodeDto, res);
-		Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(webtoon_idx);
+		Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(webtoonIdx);
         Webtoon webtoon = WebtoonEntityWrapper.get();
         
         int lastno;
@@ -157,13 +158,13 @@ public class EpisodeService {
         //첫 회차 등록이 아닐 시 가장 마지막 회차 번호 +1
         if(!episodeList.isEmpty()) {
         	Episode e = episodeList.get(episodeList.size()-1);
-        	lastno = e.getEp_no();
-        	episodeDto.setEp_no(lastno+1);
+        	lastno = e.getEpNo();
+        	episodeDto.setEpNo(lastno+1);
         }
         
         //첫 회차 등록시
         else {
-        	episodeDto.setEp_no(1);
+        	episodeDto.setEpNo(1);
         }
          
         UUID uuid1 = UUID.randomUUID();
@@ -198,16 +199,16 @@ public class EpisodeService {
 		return res;
 	}
 	
-	public Response<EpisodeDto> editEpisode(int webtoon_idx,int no, MultipartFile thumbnail, MultipartFile[] manuscripts, EpisodeDto episodeDto) throws IllegalStateException, IOException {
+	public Response<EpisodeDto> editEpisode(Long webtoonIdx, Long no, MultipartFile thumbnail, MultipartFile[] manuscripts, EpisodeDto episodeDto) throws IllegalStateException, IOException {
 		
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
-		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoon_idx);
+		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoonIdx);
 		Webtoon webtoon = webtoonWrapper.get();
 		List<Episode> epList = webtoon.getEpisodes();
 		Episode episode = new Episode();
 		
 		for(Episode ep : epList) {
-			if(no == ep.getEp_no()) {
+			if(no == ep.getEpNo()) {
 				episode = ep;
 				break;
 			}
@@ -221,7 +222,7 @@ public class EpisodeService {
 		}
 		
         checkCondition(thumbnail, manuscripts, episodeDto, res);
-        episode.setAuthor_comment(episodeDto.getAuthor_comment());
+        episode.setAuthorComment(episodeDto.getAuthorComment());
         episode.setTitle(episodeDto.getTitle());
         
         UUID uuid1 = UUID.randomUUID();
@@ -254,11 +255,11 @@ public class EpisodeService {
         return res;
 	}
 	
-	public Response<Integer> deleteEpisode(int webtoon_idx, int ep_no, int user_idx) {
-		Response<Integer> res = new Response<Integer>();
-		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoon_idx);
+	public Response<Long> deleteEpisode(Long webtoonIdx, int epNo, Long userIdx) {
+		Response<Long> res = new Response<Long>();
+		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoonIdx);
 		Webtoon webtoon = webtoonWrapper.get();
-		if(webtoon.getUsers().getIdx() != user_idx) {
+		if(webtoon.getUser().getIdx() != userIdx) {
 			res.setCode(1);
 			res.setMsg("delete fail: user do not have authority");
 			return res;
@@ -267,7 +268,7 @@ public class EpisodeService {
 		Episode episode = new Episode();
 		
 		for(Episode ep : epList) {
-			if(ep_no == ep.getEp_no()) {
+			if(epNo == ep.getEpNo()) {
 				episode = ep;
 				break;
 			}
@@ -289,26 +290,26 @@ public class EpisodeService {
         
 	}
 
-	public Response<EpisodeDto> getEpisodeInfo(int webtoon_idx, int no){
+	public Response<EpisodeDto> getEpisodeInfo(Long webtoonIdx, int no){
 		
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
 		
-		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoon_idx);
+		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoonIdx);
 		Webtoon webtoon = webtoonWrapper.get();
 		List<Episode> epList = webtoon.getEpisodes();
 		Episode episode = new Episode();
 		
 		for(Episode ep : epList) {
-			if(no == ep.getEp_no()) {
+			if(no == ep.getEpNo()) {
 				episode = ep;
 				break;
 			}
 		}
 		
 		EpisodeDto episodeDto = EpisodeDto.builder()
-				.ep_no(episode.getEp_no())
+				.epNo(episode.getEpNo())
 				.title(episode.getTitle())
-				.author_comment(episode.getAuthor_comment())
+				.authorComment(episode.getAuthorComment())
 				.thumbnail(episode.getThumbnail())
 				.contents(episode.getContents())
 				.build();

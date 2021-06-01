@@ -2,7 +2,6 @@ package com.www.auth.service;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -11,15 +10,11 @@ import javax.xml.bind.DatatypeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.www.core.auth.entity.Users;
-import com.www.core.auth.repository.UsersRepository;
+import com.www.core.auth.repository.UserRepository;
 
 import io.jsonwebtoken.*;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Service
 public class JwtTokenProvider {
@@ -35,10 +30,10 @@ public class JwtTokenProvider {
 	@Autowired
 	RedisTemplate<String, Object> redisTemplate;
 	@Autowired
-	UsersRepository usersRepository;
+    UserRepository userRepository;
 
 	// access jwt 발급
-	public String createAccessToken(int user_idx, String user_name) {
+	public String createAccessToken(Long user_idx, String user_name) {
 		// payload
 		Claims claims = Jwts.claims();
 		claims.put("user_idx", user_idx);
@@ -109,14 +104,14 @@ public class JwtTokenProvider {
 	}
 
 	// refresh token
-	public int checkRefreshToken(String accessT, String refreshT, int idx) {
+	public int checkRefreshToken(String accessT, String refreshT, Long idx) {
 		int accessT_valid = validateToken(accessT);
 		int refreshT_valid = validateToken(refreshT);
 		System.out.println("accessT idx : "+getUserIdx(accessT));
 		if (accessT_valid < 2 && refreshT_valid < 2 && getUserIdx(accessT) == idx) {
 			try {
 				ValueOperations<String, Object> vop = redisTemplate.opsForValue();
-				String redis_T = (String) vop.get(usersRepository.findByIdx(idx).getUserid());
+				String redis_T = (String) vop.get(userRepository.findByIdx(idx).getAccount());
 				System.out.println("redis refresh token: " + redis_T);
 
 				if (redis_T == null)
@@ -138,9 +133,9 @@ public class JwtTokenProvider {
 	}
 
 	// redis refresh token 체크 
-	public void expireToken(int idx) {
+	public void expireToken(Long idx) {
 		try {
-			redisTemplate.delete(usersRepository.findByIdx(idx).getUserid());
+			redisTemplate.delete(userRepository.findByIdx(idx).getAccount());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}

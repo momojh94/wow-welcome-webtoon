@@ -1,8 +1,11 @@
 package com.www.file.dto;
 
-import com.www.core.auth.entity.Users;
+import com.www.core.auth.entity.User;
 import com.www.core.file.entity.*;
 
+import com.www.core.file.enums.EndFlag;
+import com.www.core.file.enums.StoryGenre;
+import com.www.core.file.enums.StoryType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,55 +15,51 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class WebtoonDto {
-	//private int idx;
-	//private int users_idx;
 	private String title;
-	private int toon_type;
-	private int genre1;
-	private int genre2;
+	private StoryType storyType;
+	private StoryGenre storyGenre1;
+	private StoryGenre storyGenre2;
 	private String summary;
 	private String plot;
 	private String thumbnail;
-	private int end_flag;
-	//private LocalDateTime created_date;
-	//private LocalDateTime updated_date;
-	//private List<Episode> episodes;
-	private Users users;
-	public WebtoonDto(String title, int toon_type, int genre1, int genre2, String summary, String plot, int end_flag) {
+	private EndFlag endFlag;
+	private User user;
+
+	public WebtoonDto(String title, StoryType storyType, StoryGenre storyGenre1, StoryGenre storyGenre2,
+					  String summary, String plot, EndFlag endFlag) {
 		this.title = title;
-		this.toon_type = toon_type;
-		this.genre1 = genre1;
-		this.genre2 = genre2;
+		this.storyType = storyType;
+		this.storyGenre1 = storyGenre1;
+		this.storyGenre2 = storyGenre2;
 		this.summary = summary;
 		this.plot = plot;
-		this.end_flag = end_flag;
+		this.endFlag = endFlag;
 	}
+
 	public Webtoon toEntity() {
 		Webtoon build = Webtoon.builder()
 				.title(title)
-				.toon_type(toon_type)
-				.genre1(genre1)
-				.genre2(genre2)
+				.storyType(storyType)
+				.storyGenre1(storyGenre1)
+				.storyGenre2(storyGenre2)
 				.summary(summary)
 				.plot(plot)
 				.thumbnail(thumbnail)
-				.end_flag(end_flag)
+				.endFlag(endFlag)
 				.build();
 		return build;
 	}
 	
 	@Builder
-	public WebtoonDto(String title, int toon_type, int genre1, int genre2, String summary, String plot, 
-			String thumbnail, int end_flag) {
+	public WebtoonDto(String title, StoryType storyType, StoryGenre storyGenre1, StoryGenre storyGenre2, String summary, String plot,
+					  String thumbnail, EndFlag endFlag) {
 		this.title = title;
-		this.toon_type =toon_type;
-		this.genre1 = genre1;
-		this.genre2 = genre2;
+		this.storyType = storyType;
+		this.storyGenre1 = storyGenre1;
+		this.storyGenre2 = storyGenre2;
 		this.summary = summary;
 		this.plot = plot;
 		this.thumbnail = thumbnail;
-		this.end_flag = end_flag;
+		this.endFlag = endFlag;
 	}
-	
-
 }

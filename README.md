@@ -2,15 +2,16 @@
 
 목차
 
-- [Repository 설명](#repository-설명)
-- [프로젝트 설명](#프로젝트-설명)
-- [기술 스택](#기술-스택)
-- [아키텍처](#아키텍처)
-- [데이터베이스](#데이터베이스)
-- [API 문서](#api-문서)
-- [프로젝트 개선 내용 정리](#프로젝트-개선-내용-정리)
-  - [개선 내용](#개선-내용)
-  - [추가된 내용](#추가된-내용)
+
+  - [Repository 설명](#repository-설명)
+  - [프로젝트 설명](#프로젝트-설명)
+  - [기술 스택](#기술-스택)
+  - [아키텍처](#아키텍처)
+  - [데이터베이스](#데이터베이스)
+  - [API 문서](#api-문서)
+  - [프로젝트 개선 내용 정리](#프로젝트-개선-내용-정리)
+    - [개선 내용](#개선-내용)
+    - [추가된 내용](#추가된-내용)
 
 ---
 
@@ -32,8 +33,6 @@
 > 웹툰을 보고 별점을 매길 수 있습니다.
 >
 > 댓글을 달 수 있고 댓글에 좋아요 혹은 싫어요를 요청할 수 있습니다.
-
-> TODO : 프로젝트 예시 이미지 추가
 
 </br>
 
@@ -67,11 +66,22 @@
 
 ## API 문서
 
-Postman으로 작성했던 API 문서 링크 (Spring Rest Docs으로 모두 전환되면 링크 수정 예정)
+Spring Rest Docs으로 모두 전환되면 링크 추가 예정
 
->- [인증서버 API](https://documenter.getpostman.com/view/10215521/SWTK3Dqq) </br>
->- [파일서버 API](https://documenter.getpostman.com/view/10254430/SzKSRygn) </br>
->- [플랫폼 서버 API](https://documenter.getpostman.com/view/9773992/SzKWtGnX) </br>
+<details>
+<summary>이전에 Postman으로 작성했던 API 문서 링크(더 보기)</summary>
+<div markdown="1">
+
+- [인증서버 API](https://documenter.getpostman.com/view/10215521/SWTK3Dqq) </br>
+- [파일서버 API](https://documenter.getpostman.com/view/10254430/SzKSRygn) </br>
+- [플랫폼 서버 API](https://documenter.getpostman.com/view/9773992/SzKWtGnX) </br>
+
+</div>
+</details>
+
+
+
+
 
 </br>
 
@@ -81,18 +91,20 @@ Postman으로 작성했던 API 문서 링크 (Spring Rest Docs으로 모두 전�
 
 ### 개선 내용
 
-| 분류 | 기존 프로젝트 방식 | 개선 내용 | 참고 |
+| No | 기존 프로젝트 방식 | 개선 내용 | 참고 |
 | :-- | :- | :- | :- |
-| Test Code | Test Code 작성 X | Junit5 + AssertJ, Mockito를 이용해 Unit Test 작성 | [#6](https://github.com/momojh94/wow-welcome-webtoon/pull/6) [#10](https://github.com/momojh94/wow-welcome-webtoon/pull/10) |
-| API 문서 | Postman을 이용해 수동으로 API 문서화 | API 문서 자동화 도구인 Spring Rest Docs 도입 |  [#16](https://github.com/momojh94/wow-welcome-webtoon/pull/16) |
+| 1 | Test Code 작성 X | Junit5 + AssertJ, Mockito를 이용해 Unit Test 작성 | [#6](https://github.com/momojh94/wow-welcome-webtoon/pull/6) [#10](https://github.com/momojh94/wow-welcome-webtoon/pull/10) |
+| 2 | Postman을 이용해 수동으로 API 문서화 | API 문서 자동화 도구인 Spring Rest Docs 도입 |  [#16](https://github.com/momojh94/wow-welcome-webtoon/pull/16) |
+| 3 | 일관성 없는 Code Case Style | Java Code는 Camel Case로 수정, API 통신할 때 Json Data는 설정 값을 바꿔서 그대로 Snake Case로 사용 | [#22](https://github.com/momojh94/wow-welcome-webtoon/pull/22) |
+| 4 | 성별, 웹툰 장르 등 상태 값을 가지는 Column을 0, 1, 2와 같이 DB Code 값을 그대로 사용하여 비직관적인 개발 | 상태 값을 가지는 Column을 Enum으로 전환 및 Generic한 Enum Converter 적용  | [#22](https://github.com/momojh94/wow-welcome-webtoon/pull/22) | 
 
 </br>
 
 ### 추가된 내용
 
-| 분류 | 내용 | 참고 |
+| No | 내용 | 참고 |
 | :-: | :-: | :-: |
-| Test | JaCoCo 적용 - Code Coverage 확인 용도 | [#8](https://github.com/momojh94/wow-welcome-webtoon/pull/8) |
+| 1 | JaCoCo 적용 - Code Coverage 확인 용도 | [#8](https://github.com/momojh94/wow-welcome-webtoon/pull/8) |
 
 </br>
 

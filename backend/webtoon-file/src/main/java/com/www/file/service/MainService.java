@@ -1,36 +1,31 @@
 package com.www.file.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
-import com.www.core.auth.repository.UsersRepository;
+import com.www.core.auth.repository.UserRepository;
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.file.repository.WebtoonRepository;
 import com.www.file.dto.EpisodeContents;
-import com.www.file.dto.EpisodeListDto;
-import com.www.file.dto.EpisodePage;
 import com.www.file.dto.MainWebtoonDto;
 import com.www.file.dto.MainWebtoonPage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MainService {
 	@Autowired
 	private WebtoonRepository webtoonRepository;
 	@Autowired
-	private UsersRepository usersRepository;
+	private UserRepository userRepository;
 	@Autowired
 	private EpisodeRepository episodeRepository;
 	
@@ -84,11 +79,11 @@ public class MainService {
 						.idx(webtoon.getIdx())
 						.title(webtoon.getTitle())
 						.thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail())
-						.genre1(webtoon.getGenre1())
-						.genre2(webtoon.getGenre2())
-						.author(webtoon.getUsers().getName())
+						.storyGenre1(webtoon.getStoryGenre1())
+						.storyGenre2(webtoon.getStoryGenre2())
+						.author(webtoon.getUser().getName())
 						.hits(webtoon.getHits())
-						.epRatingAvg(webtoon.getEpRatingAvg())
+						.epRatingAvg(webtoon.getRatingAvg())
 						.build();
 				webtoonListDto.add(webtoonDto);
 			}
@@ -105,10 +100,10 @@ public class MainService {
 	    return mainWebtoonPage;
 	}
 	
-	public Response<EpisodeContents> showEpisode(int webtoon_idx, int no){
+	public Response<EpisodeContents> showEpisode(Long webtoonIdx, int no){
 		
 		Response<EpisodeContents> res = new Response<EpisodeContents>();
-		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoon_idx);
+		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoonIdx);
 		Webtoon webtoon = webtoonWrapper.get();
 		List<Episode> epList = webtoon.getEpisodes();
 		Episode episode = new Episode();
@@ -116,24 +111,24 @@ public class MainService {
 		webtoonRepository.save(webtoon);
 		
 		for(Episode ep : epList) {
-			if(no == ep.getEp_no()) {
+			if(no == ep.getEpNo()) {
 				episode = ep;
 				break;
 			}
 		}
-		episode.setEp_hits(episode.getEp_hits()+1);
+		episode.setHits(episode.getHits()+1);
 		episodeRepository.save(episode);
 		
 		EpisodeContents episodeContents = EpisodeContents.builder()
-				.webtoon_title(webtoon.getTitle())
+				.webtoonTitle(webtoon.getTitle())
 				.title(episode.getTitle())
-				.author_comment(episode.getAuthor_comment())
-				.author(webtoon.getUsers().getName())
+				.authorComment(episode.getAuthorComment())
+				.author(webtoon.getUser().getName())
 				.summary(webtoon.getSummary())
 				.thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail())
-				.rating_person_total(episode.getRating_person_total())
-				.rating_avg(episode.getRating_avg())
-				.ep_hits(episode.getEp_hits())
+				.ratingPersonTotal(episode.getRatingPersonTotal())
+				.ratingAvg(episode.getRatingAvg())
+				.epHits(episode.getHits())
 				.build();
 		
 		String content = episode.getContents();

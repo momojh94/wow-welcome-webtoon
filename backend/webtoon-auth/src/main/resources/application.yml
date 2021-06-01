@@ -16,7 +16,10 @@ spring:
     port: 6379
     host: 127.0.0.1
   http:
-    encoding:      charset: UTF-8
+    encoding:
+      charset: UTF-8
       enabled: true
       force: true
+  jackson:
+    property-naming-strategy: SNAKE_CASE
     

@@ -69,7 +69,7 @@ export default function EditEpisode() {
             .then(response => response.json())
             .then(result => {
                 console.log(result)
-                setEpisodes(result.data.episodelist)
+                setEpisodes(result.data.episodes)
                 setWebtoon_thumbnail(result.data.webtoon_thumbnail)
                 setTitle(result.data.title)
                 setWriter(result.data.writer)

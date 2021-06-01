@@ -1,10 +1,6 @@
 package com.www.file.dto;
 
-import java.time.LocalDateTime;
-
-import com.www.core.auth.entity.Users;
-import com.www.file.dto.WebtoonListDto.WebtoonListDtoBuilder;
-
+import com.www.core.file.enums.StoryGenre;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,25 +10,24 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MainWebtoonDto {
-	
-	private int idx;
+	private Long idx;
 	private String title;
 	private String author;
 	private String thumbnail;
-	private int genre1;
-	private int genre2;
-	private int hits;
+	private StoryGenre storyGenre1;
+	private StoryGenre storyGenre2;
+	private Long hits;
 	private float epRatingAvg;
 	private Integer[] pagelist;
 	
 	@Builder
-	public MainWebtoonDto(int idx, String author, String title, String thumbnail, int genre1, int genre2, float epRatingAvg, int hits) {
+	public MainWebtoonDto(Long idx, String author, String title, String thumbnail, StoryGenre storyGenre1, StoryGenre storyGenre2, float epRatingAvg, Long hits) {
 		this.idx = idx;
 		this.title = title;
 		this.author = author;
 		this.thumbnail = thumbnail;
-		this.genre1 = genre1;
-		this.genre2 = genre2;
+		this.storyGenre1 = storyGenre1;
+		this.storyGenre2 = storyGenre2;
 		this.epRatingAvg = epRatingAvg;
 		this.hits = hits;
 	}

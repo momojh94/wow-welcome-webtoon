@@ -1,58 +1,52 @@
 package com.www.file.dto;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-
-
+import com.www.core.file.entity.Episode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-
-import com.www.core.file.entity.*;
 
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class EpisodeDto {
-	
-	private int ep_no;
+	private int epNo;
 	private String title;
-	private String author_comment;
+	private String authorComment;
 	private String thumbnail;
 	private String contents;
-	//private int ep_hits;
-	//private Webtoon webtoon;
-	public EpisodeDto(String title, String author_comment) {
+
+	public EpisodeDto(String title, String authorComment) {
 		this.title = title;
-		this.author_comment = author_comment;
+		this.authorComment = authorComment;
 	}
+
 	public Episode toEntity() {
 		Episode build = Episode.builder()
-				.ep_no(ep_no)
+				.epNo(epNo)
 				.title(title)
-				.author_comment(author_comment)
+				.authorComment(authorComment)
 				.thumbnail(thumbnail)
 				.contents(contents)
 				.build();
 		return build;
 	}
+
 	public EpisodeDto(EpisodeDto p) {
-		this.ep_no = ep_no;
+		this.epNo = epNo;
 		this.title = title;
-		this.author_comment = author_comment;
+		this.authorComment = authorComment;
 		this.thumbnail = thumbnail;
 		this.contents = contents;
 	}
+
 	@Builder
-	public EpisodeDto(int ep_no, String title, String author_comment, String thumbnail,
-			String contents) {
-		this.ep_no = ep_no;
+	public EpisodeDto(int epNo, String title, String authorComment, String thumbnail,
+					  String contents) {
+		this.epNo = epNo;
 		this.title = title;
-		this.author_comment = author_comment;
+		this.authorComment = authorComment;
 		this.thumbnail = thumbnail;
 		this.contents = contents;
 	}

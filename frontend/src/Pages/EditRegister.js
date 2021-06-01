@@ -70,7 +70,7 @@ export default function EditRegister() {
                 console.log(result)
                 if (result.code == 0) {
                     setTitle(result.data.title);
-                    setType(result.data.toon_type);
+                    setType(result.data.story_type);
                     setSummary(result.data.summary);
                     setPlot(result.data.plot);
                     setThumbnail(result.data.thumbnail);
@@ -98,20 +98,21 @@ export default function EditRegister() {
     const [title, setTitle] = React.useState("");
     const [type, setType] = React.useState("");
     const [genre, setGenre] = React.useState({
-        daily: false,
-        gag: false,
-        fantasy: false,
-        action: false,
-        drama: false,
-        pure: false,
-        emotion: false,
+        DAILY: false,
+        GAG: false,
+        FANTASY: false,
+        ACTION: false,
+        DRAMA: false,
+        PURE: false,
+        EMOTION: false,
     });
     const [summary, setSummary] = React.useState("");
     const [plot, setPlot] = React.useState("");
     const [thumbnail, setThumbnail] = React.useState("");
     const [thumbnailstr, setThumbnailstr] = React.useState("");
 
-    const genreArray = [genre.daily, genre.gag, genre.fantasy, genre.action, genre.drama, genre.pure, genre.emotion];
+    const genreStr = ["DAILY", "GAG", "FANTASY", "ACTION", "DRAMA", "PURE", "EMOTION"]
+    const genreArray = [genre.DAILY, genre.GAG, genre.FANTASY, genre.ACTION, genre.DRAMA, genre.PURE, genre.EMOTION];
 
     const handleTitleChange = (e) => {
         setTitle(e.target.value);
@@ -186,7 +187,7 @@ export default function EditRegister() {
             var j = 0;
             for (var i = 0; i < genreArray.length; i++) {
                 if (genreArray[i] == true) {
-                    genreTrue[j] = i;
+                    genreTrue[j] = genreStr[i];
                     j++
                 }
             }
@@ -209,12 +210,12 @@ export default function EditRegister() {
             var formdata = new FormData();
             formdata.append("thumbnail", thumbnail);
             formdata.append("title", title);
-            formdata.append("toon_type", type);
-            formdata.append("genre1", genre1);
-            formdata.append("genre2", genre2);
+            formdata.append("story_type", type);
+            formdata.append("stroy_genre1", genre1);
+            formdata.append("stroy_genre2", genre2);
             formdata.append("summary", summary);
             formdata.append("plot", plot);
-            formdata.append("end_flag", "0");
+            formdata.append("end_flag", "ONGOING");
 
 
             var requestOptions = {
@@ -311,19 +312,19 @@ export default function EditRegister() {
                         <h5 >형식&emsp;&emsp;&emsp;&emsp;</h5>
                         <RadioGroup aria-label="position" name="type" value={type} onChange={handleTypeChange} row>
                             <FormControlLabel
-                                value="0"
+                                value="EPISODE"
                                 control={<Radio color="primary" />}
                                 label="에피소드"
                                 labelPlacement="end"
                             />
                             <FormControlLabel
-                                value="1"
+                                value="OMNIBUS"
                                 control={<Radio color="primary" />}
                                 label="옴니버스"
                                 labelPlacement="end"
                             />
                             <FormControlLabel
-                                value="2"
+                                value="STORY"
                                 control={<Radio color="primary" />}
                                 label="스토리"
                                 labelPlacement="end"
@@ -336,8 +337,8 @@ export default function EditRegister() {
                             control={
                                 <Checkbox
                                     checked={genre.daily}
-                                    onChange={handleGenreChange('daily')}
-                                    value="1"
+                                    onChange={handleGenreChange('DAILY')}
+                                    value="DAILY"
                                     color="primary"
                                 />
                             }
@@ -347,8 +348,8 @@ export default function EditRegister() {
                             control={
                                 <Checkbox
                                     checked={genre.gag}
-                                    onChange={handleGenreChange('gag')}
-                                    value="2"
+                                    onChange={handleGenreChange('GAG')}
+                                    value="GAG"
                                     color="primary"
                                 />
                             }
@@ -358,8 +359,8 @@ export default function EditRegister() {
                             control={
                                 <Checkbox
                                     checked={genre.fantasy}
-                                    onChange={handleGenreChange('fantasy')}
-                                    value="3"
+                                    onChange={handleGenreChange('FANTASY')}
+                                    value="FANTASY"
                                     color="primary"
                                 />
                             }
@@ -369,8 +370,8 @@ export default function EditRegister() {
                             control={
                                 <Checkbox
                                     checked={genre.action}
-                                    onChange={handleGenreChange('action')}
-                                    value="4"
+                                    onChange={handleGenreChange('ACTION')}
+                                    value="ACTION"
                                     color="primary"
                                 />
                             }
@@ -380,8 +381,8 @@ export default function EditRegister() {
                             control={
                                 <Checkbox
                                     checked={genre.drama}
-                                    onChange={handleGenreChange('drama')}
-                                    value="5"
+                                    onChange={handleGenreChange('DRAMA')}
+                                    value="DRAMA"
                                     color="primary"
                                 />
                             }
@@ -391,8 +392,8 @@ export default function EditRegister() {
                             control={
                                 <Checkbox
                                     checked={genre.pure}
-                                    onChange={handleGenreChange('pure')}
-                                    value="6"
+                                    onChange={handleGenreChange('PURE')}
+                                    value="PURE"
                                     color="primary"
                                 />
                             }
@@ -402,8 +403,8 @@ export default function EditRegister() {
                             control={
                                 <Checkbox
                                     checked={genre.emotion}
-                                    onChange={handleGenreChange('emotion')}
-                                    value="7"
+                                    onChange={handleGenreChange('EMOTION')}
+                                    value="EMOTION"
                                     color="primary"
                                 />
                             }

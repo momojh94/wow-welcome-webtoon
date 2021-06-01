@@ -1,11 +1,12 @@
 package com.www.auth.dto;
 
-import java.sql.Date;
-
+import com.www.core.auth.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.sql.Date;
 
 /**
  * UserDto : not contains pw
@@ -13,18 +14,14 @@ import lombok.Setter;
  *
  */
 
-//controller dto
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-	
-		//private int idx;
-		private String userid;
-		private String name;
-		private Date birth;
-		private int gender;
-		private String email;
-		
+	private String account;
+	private String name;
+	private Date birth;
+	protected Gender gender;
+	private String email;
 }

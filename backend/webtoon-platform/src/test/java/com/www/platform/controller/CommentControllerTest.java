@@ -1,30 +1,29 @@
 package com.www.platform.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.www.core.auth.entity.Users;
+import com.www.core.auth.enums.Gender;
+import com.www.core.auth.entity.User;
 import com.www.core.common.Response;
 import com.www.core.common.TokenChecker;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
-import com.www.core.platform.entity.Comments;
+import com.www.core.platform.entity.Comment;
 import com.www.platform.dto.*;
-import com.www.platform.service.CommentsLikeDislikeService;
-import com.www.platform.service.CommentsService;
+import com.www.platform.service.CommentLikeDislikeService;
+import com.www.platform.service.CommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -35,26 +34,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(controllers = CommentsController.class)
-public class CommentsControllerTest {
+@WebMvcTest(controllers = CommentController.class)
+public class CommentControllerTest {
     @MockBean
-    private CommentsService commentsService;
+    private CommentService commentService;
 
     @MockBean
-    private CommentsLikeDislikeService commentsLikeDislikeService;
+    private CommentLikeDislikeService commentLikeDislikeService;
 
     @MockBean
     private TokenChecker tokenChecker;
@@ -65,10 +64,10 @@ public class CommentsControllerTest {
     private ObjectMapper objectMapper;
 
     private RestDocumentationResultHandler documentationHandler;
-    private Users user;
+    private User user;
     private Webtoon webtoon;
     private Episode episode;
-    private Comments comment;
+    private Comment comment;
 
     private static final String CODE = "code";
     private static final String MESSAGE = "msg";
@@ -91,41 +90,41 @@ public class CommentsControllerTest {
 
         objectMapper = new ObjectMapper();
 
-        user = Users.builder()
-                .idx(1)
-                .id("id123")
+        user = User.builder()
+                .idx(1L)
+                .account("id123")
                 .name("철수")
-                .e_pw("1q2w3e4r")
-                .gender(0)
+                .pw("1q2w3e4r")
+                .gender(Gender.MALE)
                 .email("test@email.com")
                 .build();
 
         webtoon = Webtoon.builder()
-                .idx(1)
+                .idx(1L)
                 .title("웹툰 제목")
-                .toon_type(0)
-                .genre1(0)
-                .genre2(0)
+                .toonType((byte) 0)
+                .genre1((byte) 0)
+                .genre2((byte) 0)
                 .summary("웹툰 한줄 요약")
                 .plot("줄거리")
                 .thumbnail("thumbnailTest.jpg")
-                .end_flag(0)
+                .endFlag((byte) 0)
                 .build();
 
         episode = Episode.builder()
-                .idx(1)
-                .ep_no(1)
+                .idx(1L)
+                .epNo(1)
                 .title("에피소드 제목")
                 .webtoon(webtoon)
-                .author_comment("작가의 말")
+                .authorComment("작가의 말")
                 .build();
 
-        comment = Comments.builder()
-                .idx(1)
-                .users(user)
+        comment = Comment.builder()
+                .idx(1L)
+                .user(user)
                 .ep(episode)
                 .content("댓글 내용 1")
-                .created_date(LocalDateTime.of(2021, 4, 22, 05, 32))
+                .createdDate(LocalDateTime.of(2021, 4, 22, 05, 32))
                 .build();
 
     }
@@ -136,21 +135,21 @@ public class CommentsControllerTest {
         //given
         String page = "1";
         int pageNumber = Integer.parseInt(page);
-        List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 3; idx >= 1; idx--) {
-            commentsList.add(Comments.builder()
+        List<Comment> commentList = new ArrayList<>();
+        for (Long idx = 3L; idx >= 1L; idx--) {
+            commentList.add(Comment.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
-                    .created_date(LocalDateTime.of(2021, 4, 22, idx, 32))
+                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                     .build());
         }
         CommentsResponseDto responseData = CommentsResponseDto.builder()
-                .comments(commentsList.stream()
-                        .map(CommentsDto::new)
+                .comments(commentList.stream()
+                        .map(CommentDto::new)
                         .collect(Collectors.toList()))
-                .total_pages(1)
+                .totalPages(1)
                 .build();
 
         Response<CommentsResponseDto> response = new Response<>();
@@ -158,7 +157,7 @@ public class CommentsControllerTest {
         response.setMsg("request complete : get comments by page request");
         response.setData(responseData);
 
-        given(commentsService.getCommentsByPageRequest(episode.getIdx(), pageNumber))
+        given(commentService.getCommentsByPageRequest(episode.getIdx(), pageNumber))
                 .willReturn(response);
 
         //when
@@ -185,9 +184,9 @@ public class CommentsControllerTest {
                                 subsectionWithPath(DATA).description("응답 데이터"),
                                 fieldWithPath("data.comments[]").description("댓글 목록").type(JsonFieldType.ARRAY),
                                 fieldWithPath("data.comments.[].idx").description("댓글 기본 idx").type(JsonFieldType.NUMBER),
-                                fieldWithPath("data.comments.[].user_id").description("유저 아이디").type(JsonFieldType.STRING),
-                                fieldWithPath("data.comments.[].like_cnt").description("좋아요 수").type(JsonFieldType.NUMBER),
-                                fieldWithPath("data.comments.[].dislike_cnt").description("싫어요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].account").description("유저 계정 아이디").type(JsonFieldType.STRING),
+                                fieldWithPath("data.comments.[].like_count").description("좋아요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].dislike_count").description("싫어요 수").type(JsonFieldType.NUMBER),
                                 fieldWithPath("data.comments.[].content").description("댓글 내용").type(JsonFieldType.STRING),
                                 fieldWithPath("data.comments.[].created_date").description("댓글 생성일").type(JsonFieldType.STRING),
                                 fieldWithPath("data.total_pages").description("총 페이지 수").type(JsonFieldType.NUMBER)
@@ -198,28 +197,28 @@ public class CommentsControllerTest {
     @Test
     void getBestCommnets() throws Exception {
         //given
-        List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 3; idx < 8; idx++) {
-            commentsList.add(Comments.builder()
+        List<Comment> commentList = new ArrayList<>();
+        for (Long idx = 3L; idx < 8; idx++) {
+            commentList.add(Comment.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
-                    .like_cnt(30 - idx)
-                    .dislike_cnt(10 + idx)
-                    .created_date(LocalDateTime.of(2021, 4, 22, idx, 32))
+                    .likeCount((int)(30 - idx))
+                    .dislikeCount((int)(10 + idx))
+                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                     .build());
         }
-        List<CommentsDto> responseData = commentsList.stream()
-                .map(CommentsDto::new)
+        List<CommentDto> responseData = commentList.stream()
+                .map(CommentDto::new)
                 .collect(Collectors.toList());
 
-        Response<List<CommentsDto>> response = new Response<>();
+        Response<List<CommentDto>> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : get best comments");
         response.setData(responseData);
 
-        given(commentsService.getBestComments(episode.getIdx()))
+        given(commentService.getBestComments(episode.getIdx()))
                 .willReturn(response);
 
         //when
@@ -242,9 +241,9 @@ public class CommentsControllerTest {
                                 subsectionWithPath(DATA).description("응답 데이터"),
                                 fieldWithPath("data[]").description("베스트 댓글 목록(최대 5개)").type(JsonFieldType.ARRAY),
                                 fieldWithPath("data[].idx").description("댓글 기본 idx").type(JsonFieldType.NUMBER),
-                                fieldWithPath("data[].user_id").description("유저 아이디").type(JsonFieldType.STRING),
-                                fieldWithPath("data[].like_cnt").description("좋아요 수").type(JsonFieldType.NUMBER),
-                                fieldWithPath("data[].dislike_cnt").description("싫어요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data[].account").description("유저 계정 아이디").type(JsonFieldType.STRING),
+                                fieldWithPath("data[].like_count").description("좋아요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data[].dislike_count").description("싫어요 수").type(JsonFieldType.NUMBER),
                                 fieldWithPath("data[].content").description("댓글 내용").type(JsonFieldType.STRING),
                                 fieldWithPath("data[].created_date").description("댓글 생성일").type(JsonFieldType.STRING)
                         )));
@@ -252,19 +251,19 @@ public class CommentsControllerTest {
 
     @DisplayName("댓글 등록")
     @Test
-    void insertComments() throws Exception {
+    void insertComment() throws Exception {
         //given
         String requestBody = objectMapper.writeValueAsString(
-                new CommentsSaveRequestDto(comment.getContent()));
+                new CommentSaveRequestDto(comment.getContent()));
 
-        Response<Integer> response = new Response<>();
+        Response<Long> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : insert comment");
         response.setData(null);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(commentsService.insertComments(user.getIdx(), episode.getIdx(), comment.getContent()))
+        given(commentService.insertComment(user.getIdx(), episode.getIdx(), comment.getContent()))
                 .willReturn(response);
 
         //when
@@ -298,16 +297,16 @@ public class CommentsControllerTest {
 
     @DisplayName("댓글 삭제")
     @Test
-    void deleteComments() throws Exception {
+    void deleteComment() throws Exception {
         //given
-        Response<Integer> response = new Response<>();
+        Response<Long> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : delete comment");
         response.setData(null);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(commentsService.deleteComments(user.getIdx(), comment.getIdx()))
+        given(commentService.deleteComment(user.getIdx(), comment.getIdx()))
                 .willReturn(response);
 
         //when
@@ -337,18 +336,18 @@ public class CommentsControllerTest {
 
     @DisplayName("댓글 좋아요 요청")
     @Test
-    void requestCommentsLike() throws Exception {
+    void requestCommentLike() throws Exception {
         //given
-        CommentsLikeDislikeCntResponseDto responseData =
-                new CommentsLikeDislikeCntResponseDto(comment.getLike_cnt() + 1);
-        Response<CommentsLikeDislikeCntResponseDto> response = new Response<>();
+        CommentLikeDislikeCountResponseDto responseData =
+                new CommentLikeDislikeCountResponseDto(comment.getLikeCount() + 1);
+        Response<CommentLikeDislikeCountResponseDto> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : success request like");
         response.setData(responseData);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(commentsLikeDislikeService.requestLike(user.getIdx(), comment.getIdx()))
+        given(commentLikeDislikeService.requestLike(user.getIdx(), comment.getIdx()))
                 .willReturn(response);
 
         //when
@@ -360,7 +359,7 @@ public class CommentsControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : success request like"))
-                .andExpect(jsonPath("data.cnt").value(comment.getLike_cnt() + 1))
+                .andExpect(jsonPath("data.count").value(comment.getLikeCount() + 1))
                 .andDo(this.documentationHandler.document(
                         requestHeaders(
                                 headerWithName(AUTH_HEADER).description("유저의 AccessToken")
@@ -372,24 +371,24 @@ public class CommentsControllerTest {
                                 fieldWithPath(CODE).description("응답 코드"),
                                 fieldWithPath(MESSAGE).description("응답 메시지"),
                                 subsectionWithPath(DATA).description("응답 데이터"),
-                                fieldWithPath("data.cnt").description("좋아요 수").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.count").description("좋아요 수").type(JsonFieldType.NUMBER)
                         )));
     }
 
     @DisplayName("댓글 싫어요 요청")
     @Test
-    void requestCommentsDislike() throws Exception {
+    void requestCommentDislike() throws Exception {
         //given
-        CommentsLikeDislikeCntResponseDto responseData =
-                new CommentsLikeDislikeCntResponseDto(comment.getDislike_cnt() + 1);
-        Response<CommentsLikeDislikeCntResponseDto> response = new Response<>();
+        CommentLikeDislikeCountResponseDto responseData =
+                new CommentLikeDislikeCountResponseDto(comment.getDislikeCount() + 1);
+        Response<CommentLikeDislikeCountResponseDto> response = new Response<>();
         response.setCode(0);
         response.setMsg("request complete : success request dislike");
         response.setData(responseData);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(commentsLikeDislikeService.requestDislike(user.getIdx(), comment.getIdx()))
+        given(commentLikeDislikeService.requestDislike(user.getIdx(), comment.getIdx()))
                 .willReturn(response);
 
         //when
@@ -401,7 +400,7 @@ public class CommentsControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : success request dislike"))
-                .andExpect(jsonPath("data.cnt").value(comment.getDislike_cnt() + 1))
+                .andExpect(jsonPath("data.count").value(comment.getDislikeCount() + 1))
                 .andDo(this.documentationHandler.document(
                         requestHeaders(
                                 headerWithName(AUTH_HEADER).description("유저의 AccessToken")
@@ -413,7 +412,7 @@ public class CommentsControllerTest {
                                 fieldWithPath(CODE).description("응답 코드"),
                                 fieldWithPath(MESSAGE).description("응답 메시지"),
                                 subsectionWithPath(DATA).description("응답 데이터"),
-                                fieldWithPath("data.cnt").description("싫어요 수").type(JsonFieldType.NUMBER)
+                                fieldWithPath("data.count").description("싫어요 수").type(JsonFieldType.NUMBER)
                         )));
     }
 
@@ -423,22 +422,22 @@ public class CommentsControllerTest {
         //given
         String page = "1";
         int pageNumber = Integer.parseInt(page);
-        List<Comments> commentsList = new ArrayList<>();
-        for (int idx = 13; idx >= 9; idx--) {
-            commentsList.add(Comments.builder()
+        List<Comment> commentList = new ArrayList<>();
+        for (Long idx = 13L; idx >= 9L; idx--) {
+            commentList.add(Comment.builder()
                     .idx(idx)
-                    .users(user)
+                    .user(user)
                     .ep(episode)
                     .content("댓글 내용 " + idx)
-                    .created_date(LocalDateTime.of(2021, 4, 22, idx, 32))
+                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                     .build());
         }
         MyPageCommentsResponseDto responseData
                 = MyPageCommentsResponseDto.builder()
-                .comments(commentsList.stream()
-                        .map(MyPageCommentsDto::new)
+                .comments(commentList.stream()
+                        .map(MyPageCommentDto::new)
                         .collect(Collectors.toList()))
-                .total_pages(1)
+                .totalPages(1)
                 .build();
 
         Response<MyPageCommentsResponseDto> response = new Response<>();
@@ -448,7 +447,7 @@ public class CommentsControllerTest {
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(commentsService.getMyPageComments(user.getIdx(), pageNumber))
+        given(commentService.getMyPageComments(user.getIdx(), pageNumber))
                 .willReturn(response);
 
         //when
@@ -480,8 +479,8 @@ public class CommentsControllerTest {
                                 fieldWithPath("data.comments.[].webtoon_thumbnail").description("웹툰 썸네일").type(JsonFieldType.STRING),
                                 fieldWithPath("data.comments.[].webtoon_title").description("웹툰 제목").type(JsonFieldType.STRING),
                                 fieldWithPath("data.comments.[].ep_no").description("에피소드 회차").type(JsonFieldType.NUMBER),
-                                fieldWithPath("data.comments.[].like_cnt").description("좋아요 수").type(JsonFieldType.NUMBER),
-                                fieldWithPath("data.comments.[].dislike_cnt").description("싫어요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].like_count").description("좋아요 수").type(JsonFieldType.NUMBER),
+                                fieldWithPath("data.comments.[].dislike_count").description("싫어요 수").type(JsonFieldType.NUMBER),
                                 fieldWithPath("data.comments.[].content").description("댓글 내용").type(JsonFieldType.STRING),
                                 fieldWithPath("data.comments.[].created_date").description("댓글 생성일").type(JsonFieldType.STRING),
                                 fieldWithPath("data.total_pages").description("총 페이지 수").type(JsonFieldType.NUMBER)

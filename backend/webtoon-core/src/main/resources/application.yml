@@ -9,3 +9,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     generate-ddl: true
     show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+#      ddl-auto: validate
+  jackson:
+    property-naming-strategy: SNAKE_CASE

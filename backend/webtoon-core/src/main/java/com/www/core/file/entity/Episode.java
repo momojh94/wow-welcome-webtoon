@@ -2,61 +2,66 @@ package com.www.core.file.entity;
 
 import com.www.core.common.BaseTimeEntity;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
-@EqualsAndHashCode(callSuper=false)
 public class Episode extends BaseTimeEntity {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int idx;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long idx;
+
 	@Column
-	private int ep_no;
+	private int epNo;
+
 	@Column
 	private String title;
+
 	@Column
-	private String author_comment;
+	@Type(type = "text")
+	private String authorComment;
+
 	@Column
+	@Type(type = "text")
 	private String thumbnail;
+
 	@Column
+	@Type(type = "text")
 	private String contents;
+
 	@Column
-	private int ep_hits;
+	private int hits;
+
 	@Column
-	private float rating_avg;
+	private float ratingAvg;
+
 	@Column
-	private int rating_person_total;
+	private int ratingPersonTotal;
 
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name = "webtoon_idx")
 	private Webtoon webtoon;
 	
-	//created_date
-	//updated_date
-	
 	@Builder
-	public Episode(int idx, Webtoon webtoon, String title, int ep_no, String author_comment,
-				   String thumbnail, String contents, int ep_hits, float rating_avg,
-				   int rating_person_total) {
+	public Episode(Long idx, Webtoon webtoon, String title, int epNo, String authorComment,
+				   String thumbnail, String contents, int hits, float ratingAvg, int ratingPersonTotal) {
 		this.idx = idx;
 		this.webtoon = webtoon;
-		//this.webtoon_idx = webtoon_idx;
 		this.title = title;
-		this.ep_no = ep_no;
-		this.author_comment = author_comment;
+		this.epNo = epNo;
+		this.authorComment = authorComment;
 		this.thumbnail = thumbnail;
 		this.contents = contents;
-		this.ep_hits = ep_hits;
-		this.rating_avg = rating_avg;
-		this.rating_person_total = rating_person_total;
+		this.hits = hits;
+		this.ratingAvg = ratingAvg;
+		this.ratingPersonTotal = ratingPersonTotal;
 	}
-	
-
 }

@@ -45,7 +45,7 @@ export default function Login() {
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
 
-            var raw = JSON.stringify({ "userid": userid, "pw": pw });
+            var raw = JSON.stringify({ "account": userid, "pw": pw });
 
             var requestOptions = {
                 method: 'POST',
@@ -67,7 +67,7 @@ export default function Login() {
                                 var decodeToken = jwt_decode(temp.replace("bearer ", ""))
                                 localStorage.setItem("USER_IDX", decodeToken.user_idx)
 
-                                localStorage.setItem("USERID", result.data.userid);
+                                localStorage.setItem("USERID", result.data.account);
                                 localStorage.setItem("NAME", result.data.name);
                                 localStorage.setItem("BIRTH", result.data.birth);
                                 localStorage.setItem("GENDER", result.data.gender);

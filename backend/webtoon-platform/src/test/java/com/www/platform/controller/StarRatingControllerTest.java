@@ -1,12 +1,13 @@
 package com.www.platform.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.www.core.auth.entity.Users;
+import com.www.core.auth.enums.Gender;
+import com.www.core.auth.entity.User;
 import com.www.core.common.Response;
 import com.www.core.common.TokenChecker;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
-import com.www.core.platform.entity.Comments;
+import com.www.core.platform.entity.Comment;
 import com.www.platform.dto.*;
 import com.www.platform.service.StarRatingService;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,10 +59,10 @@ public class StarRatingControllerTest {
     private ObjectMapper objectMapper;
 
     private RestDocumentationResultHandler documentationHandler;
-    private Users user;
+    private User user;
     private Webtoon webtoon;
     private Episode episode;
-    private Comments comment;
+    private Comment comment;
 
     private static final String CODE = "code";
     private static final String MESSAGE = "msg";
@@ -84,41 +85,42 @@ public class StarRatingControllerTest {
 
         objectMapper = new ObjectMapper();
 
-        user = Users.builder()
-                .idx(1)
-                .id("id123")
+        user = User.builder()
+                .idx(1L)
+                .account("id123")
                 .name("철수")
-                .e_pw("1q2w3e4r")
-                .gender(0)
+                .pw("1q2w3e4r")
+                .gender(Gender.MALE)
                 .email("test@email.com")
                 .build();
 
         webtoon = Webtoon.builder()
-                .idx(1)
+                .idx(1L)
                 .title("웹툰 제목")
-                .toon_type(0)
-                .genre1(0)
-                .genre2(0)
+                .toonType((byte) 0)
+                .genre1((byte) 0)
+                .genre2((byte) 0)
                 .summary("웹툰 한줄 요약")
                 .plot("줄거리")
                 .thumbnail("thumbnailTest.jpg")
-                .end_flag(0)
+                .endFlag((byte) 0)
                 .build();
+
 
         episode = Episode.builder()
-                .idx(1)
-                .ep_no(1)
+                .idx(1L)
+                .epNo(1)
                 .title("에피소드 제목")
                 .webtoon(webtoon)
-                .author_comment("작가의 말")
+                .authorComment("작가의 말")
                 .build();
 
-        comment = Comments.builder()
-                .idx(1)
-                .users(user)
+        comment = Comment.builder()
+                .idx(1L)
+                .user(user)
                 .ep(episode)
                 .content("댓글 내용 1")
-                .created_date(LocalDateTime.of(2021, 4, 22, 05, 32))
+                .createdDate(LocalDateTime.of(2021, 4, 22, 05, 32))
                 .build();
 
     }
@@ -132,7 +134,7 @@ public class StarRatingControllerTest {
         EpisodeStarRatingResponseDto responseData =
                 EpisodeStarRatingResponseDto.builder()
                         .rating(3.66667f)
-                        .person_total(3)
+                        .personTotal(3)
                         .build();
 
         Response<EpisodeStarRatingResponseDto> response = new Response<>();
@@ -156,7 +158,7 @@ public class StarRatingControllerTest {
                 .andExpect(jsonPath(CODE).value(0))
                 .andExpect(jsonPath(MESSAGE).value("request complete : insert star rating"))
                 .andExpect(jsonPath("data.rating").value(responseData.getRating()))
-                .andExpect(jsonPath("data.person_total").value(responseData.getPerson_total()))
+                .andExpect(jsonPath("data.person_total").value(responseData.getPersonTotal()))
                 .andDo(this.documentationHandler.document(
                         requestHeaders(
                                 headerWithName(AUTH_HEADER).description("유저의 AccessToken")
