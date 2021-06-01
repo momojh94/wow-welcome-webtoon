@@ -157,8 +157,8 @@ export default function Home() {
             .then(result => {
                 console.log(result)
                 if (result.code == 0) {
-                    setList(result.data.webtoonlist);
-                    setPageNum(result.data.totalpage);
+                    setList(result.data.webtoons);
+                    setPageNum(result.data.total_pages);
                 }
             })
             .catch(error => console.log('error', error));

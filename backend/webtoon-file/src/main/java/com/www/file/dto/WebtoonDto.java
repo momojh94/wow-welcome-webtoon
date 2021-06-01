@@ -3,6 +3,9 @@ package com.www.file.dto;
 import com.www.core.auth.entity.User;
 import com.www.core.file.entity.*;
 
+import com.www.core.file.enums.EndFlag;
+import com.www.core.file.enums.StoryGenre;
+import com.www.core.file.enums.StoryType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,21 +16,21 @@ import lombok.Setter;
 @NoArgsConstructor
 public class WebtoonDto {
 	private String title;
-	private byte toonType;
-	private byte genre1;
-	private byte genre2;
+	private StoryType storyType;
+	private StoryGenre storyGenre1;
+	private StoryGenre storyGenre2;
 	private String summary;
 	private String plot;
 	private String thumbnail;
-	private byte endFlag;
+	private EndFlag endFlag;
 	private User user;
 
-	public WebtoonDto(String title, byte toonType, byte genre1, byte genre2,
-					  String summary, String plot, byte endFlag) {
+	public WebtoonDto(String title, StoryType storyType, StoryGenre storyGenre1, StoryGenre storyGenre2,
+					  String summary, String plot, EndFlag endFlag) {
 		this.title = title;
-		this.toonType = toonType;
-		this.genre1 = genre1;
-		this.genre2 = genre2;
+		this.storyType = storyType;
+		this.storyGenre1 = storyGenre1;
+		this.storyGenre2 = storyGenre2;
 		this.summary = summary;
 		this.plot = plot;
 		this.endFlag = endFlag;
@@ -36,9 +39,9 @@ public class WebtoonDto {
 	public Webtoon toEntity() {
 		Webtoon build = Webtoon.builder()
 				.title(title)
-				.toonType(toonType)
-				.genre1(genre1)
-				.genre2(genre2)
+				.storyType(storyType)
+				.storyGenre1(storyGenre1)
+				.storyGenre2(storyGenre2)
 				.summary(summary)
 				.plot(plot)
 				.thumbnail(thumbnail)
@@ -48,12 +51,12 @@ public class WebtoonDto {
 	}
 	
 	@Builder
-	public WebtoonDto(String title, byte toonType, byte genre1, byte genre2, String summary, String plot,
-					  String thumbnail, byte endFlag) {
+	public WebtoonDto(String title, StoryType storyType, StoryGenre storyGenre1, StoryGenre storyGenre2, String summary, String plot,
+					  String thumbnail, EndFlag endFlag) {
 		this.title = title;
-		this.toonType = toonType;
-		this.genre1 = genre1;
-		this.genre2 = genre2;
+		this.storyType = storyType;
+		this.storyGenre1 = storyGenre1;
+		this.storyGenre2 = storyGenre2;
 		this.summary = summary;
 		this.plot = plot;
 		this.thumbnail = thumbnail;

@@ -1,7 +1,6 @@
 package com.www.core.auth.entity;
 
 import com.www.core.auth.enums.Gender;
-import com.www.core.auth.enums.GenderConverter;
 import com.www.core.common.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,7 +31,6 @@ public class User extends BaseTimeEntity {
 	private Date birth;
 
 	@Column(nullable = false)
-	@Convert(converter = GenderConverter.class)
 	private Gender gender;
 
 	@Column(nullable = false, length = 45)

@@ -106,14 +106,14 @@ export default function EditInfo() {
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)
-                    if (result.code == 0) {
+                    if (result.code === 0) {
                         alert("재로그인 해주세요")
                         window.location.href = "/login";
                     }
-                    else if(result.code==44){
+                    else if(result.code === 44){
                         ReToken.ReToken()
                     }
-                    else if(result.code==42){
+                    else if(result.code === 42){
                         alert("[ERROR 42] 잘못된 접근입니다, 관리자에게 문의하세요.")
                     }
                     else{
@@ -144,7 +144,7 @@ export default function EditInfo() {
             .then(response => response.json())
             .then(result => {
                 console.log(result)
-                if(result.code==0){
+                if(result.code === 0){
                     alert("회원 탈퇴가 성공적으로 마무리되었습니다.")
                     localStorage.clear();
                     window.location.href="/";
@@ -228,8 +228,8 @@ export default function EditInfo() {
                         labelWidth={labelWidth}
                         placeholder={localStorage.getItem("GENDER")}
                     >
-                        <MenuItem value={0}>남</MenuItem>
-                        <MenuItem value={1}>여</MenuItem>
+                        <MenuItem value={"Male"}>남</MenuItem>
+                        <MenuItem value={"Female"}>여</MenuItem>
                     </Select>
                 </FormControl>
             </div>

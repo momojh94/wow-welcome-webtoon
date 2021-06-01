@@ -118,7 +118,7 @@ export default function Signup() {
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
 
-            var raw = JSON.stringify({ "userid": userId, "pw": pw, "name": name, "birth": birth, "gender": gender, "email": email });
+            var raw = JSON.stringify({ "account": userId, "pw": pw, "name": name, "birth": birth, "gender": gender, "email": email });
 
             var requestOptions = {
                 method: 'POST',
@@ -198,8 +198,8 @@ export default function Signup() {
                         onChange={handleGenderChange}
                         labelWidth={labelWidth}
                     >
-                        <MenuItem value={0}>남</MenuItem>
-                        <MenuItem value={1}>여</MenuItem>
+                        <MenuItem value={"MALE"}>남</MenuItem>
+                        <MenuItem value={"FEMALE"}>여</MenuItem>
                     </Select>
                 </FormControl>
             </div>

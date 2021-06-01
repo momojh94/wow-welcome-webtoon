@@ -98,9 +98,9 @@ public class WebtoonService {
 			
 			Webtoon webtoon = Webtoon.builder()
 					.title(webtoonDto.getTitle())
-					.toonType(webtoonDto.getToonType())
-					.genre1(webtoonDto.getGenre1())
-					.genre2(webtoonDto.getGenre2())
+					.storyType(webtoonDto.getStoryType())
+					.storyGenre1(webtoonDto.getStoryGenre1())
+					.storyGenre2(webtoonDto.getStoryGenre2())
 					.summary(webtoonDto.getSummary())
 					.plot(webtoonDto.getPlot())
 					.endFlag(webtoonDto.getEndFlag())
@@ -185,12 +185,12 @@ public class WebtoonService {
 	        Webtoon webtoon = WebtoonEntityWrapper.get();
 	        
 	        webtoon.setEndFlag(webtoonDto.getEndFlag());
-	        webtoon.setStoryGenre1(webtoonDto.getGenre1());
-	        webtoon.setStoryGenre2(webtoonDto.getGenre2());
+	        webtoon.setStoryGenre1(webtoonDto.getStoryGenre1());
+	        webtoon.setStoryGenre2(webtoonDto.getStoryGenre2());
 	        webtoon.setPlot(webtoonDto.getPlot());
 	        webtoon.setSummary(webtoonDto.getSummary());
 	        webtoon.setTitle(webtoonDto.getTitle());
-	        webtoon.setStoryType(webtoonDto.getToonType());
+	        webtoon.setStoryType(webtoonDto.getStoryType());
 	        
 	        if(!file.isEmpty()) {
 	        	UUID uuid = UUID.randomUUID();
@@ -247,9 +247,9 @@ public class WebtoonService {
         
 		WebtoonDto webtoonDto = WebtoonDto.builder()
 				.title(webtoon.getTitle())
-				.toonType(webtoon.getStoryType())
-				.genre1(webtoon.getStoryGenre1())
-				.genre2(webtoon.getStoryGenre2())
+				.storyType(webtoon.getStoryType())
+				.storyGenre1(webtoon.getStoryGenre1())
+				.storyGenre2(webtoon.getStoryGenre2())
 				.summary(webtoon.getSummary())
 				.plot(webtoon.getPlot())
 				.endFlag(webtoon.getEndFlag())

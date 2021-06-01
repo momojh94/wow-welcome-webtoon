@@ -29,7 +29,7 @@ public class EpisodeController {
 	public Response<EpisodeDto> addEpisode(@RequestHeader("Authorization") String accessToken,
 			@PathVariable("idx") Long idx, @RequestPart("thumbnail") MultipartFile thumbnail, 
 			@RequestPart("manuscript") MultipartFile[] manuscripts, @RequestParam("title") String title, 
-			@RequestParam("authorComment") String authorComment) throws IllegalStateException, IOException {
+			@RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
 		EpisodeDto episodeDto = new EpisodeDto(title, authorComment);
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
 		int n = tokenchecker.validateToken(accessToken);
@@ -55,7 +55,7 @@ public class EpisodeController {
 	public Response<EpisodeDto> editEpisode(@RequestHeader("Authorization") String accessToken,
 			@PathVariable("webtoonIdx") Long webtoonIdx, @PathVariable("no") Long idx,
 			@RequestPart("thumbnail") MultipartFile thumbnail, @RequestPart("manuscript") MultipartFile[] manuscripts, 
-			@RequestParam("title") String title, @RequestParam("authorComment") String authorComment) throws IOException{
+			@RequestParam("title") String title, @RequestParam("author_comment") String authorComment) throws IOException{
 		EpisodeDto episodeDto = new EpisodeDto(title, authorComment);
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
 		int n = tokenchecker.validateToken(accessToken);
