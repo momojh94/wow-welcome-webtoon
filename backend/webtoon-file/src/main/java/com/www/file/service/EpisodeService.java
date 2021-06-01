@@ -255,7 +255,7 @@ public class EpisodeService {
         return res;
 	}
 	
-	public Response<Long> deleteEpisode(Long webtoonIdx, int ep_no, Long userIdx) {
+	public Response<Long> deleteEpisode(Long webtoonIdx, int epNo, Long userIdx) {
 		Response<Long> res = new Response<Long>();
 		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoonIdx);
 		Webtoon webtoon = webtoonWrapper.get();
@@ -268,7 +268,7 @@ public class EpisodeService {
 		Episode episode = new Episode();
 		
 		for(Episode ep : epList) {
-			if(ep_no == ep.getEpNo()) {
+			if(epNo == ep.getEpNo()) {
 				episode = ep;
 				break;
 			}

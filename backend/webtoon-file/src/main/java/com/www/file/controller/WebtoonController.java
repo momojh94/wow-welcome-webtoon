@@ -36,11 +36,11 @@ public class WebtoonController {
 		WebtoonDto webtoonDto = new WebtoonDto(title, storyType, storyGenre1, storyGenre2, summary, plot, endFlag);
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		int n = tokenChecker.validateToken(accessToken);
-		Long user_idx = tokenChecker.getUserIdx(accessToken);
+		Long userIdx = tokenChecker.getUserIdx(accessToken);
 
 		switch(n) {
 			case 0: //유효한 토큰
-				return webtoonService.createWebtoon(file, webtoonDto, user_idx);
+				return webtoonService.createWebtoon(file, webtoonDto, userIdx);
 			case 1: //만료된 토큰
 				res.setCode(40);
 				res.setMsg("reissue tokens");
