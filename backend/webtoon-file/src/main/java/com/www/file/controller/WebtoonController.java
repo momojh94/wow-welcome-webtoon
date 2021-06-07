@@ -5,28 +5,46 @@ import com.www.core.common.TokenChecker;
 import com.www.core.file.enums.EndFlag;
 import com.www.core.file.enums.StoryGenre;
 import com.www.core.file.enums.StoryType;
+import com.www.file.dto.MainWebtoonPage;
 import com.www.file.dto.WebtoonDto;
 import com.www.file.dto.WebtoonPage;
 import com.www.file.service.EpisodeService;
 import com.www.file.service.WebtoonService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @RestController
-@AllArgsConstructor
 public class WebtoonController {
-	@Autowired
-	private WebtoonService webtoonService;
+	private final WebtoonService webtoonService;
+	private final EpisodeService episodeService;
+	private final TokenChecker tokenChecker;
 
-	@Autowired
-	private EpisodeService episodeService;
+	public WebtoonController(WebtoonService webtoonService, EpisodeService episodeService,
+							 TokenChecker tokenChecker) {
+		this.webtoonService = webtoonService;
+		this.episodeService = episodeService;
+		this.tokenChecker = tokenChecker;
+	}
 
-	private TokenChecker tokenChecker;
-	
+	//웹툰 리스트 출력 (한 페이지당 최대 20개)
+	@GetMapping("/webtoonlist")
+	public Response<MainWebtoonPage> showWebtoonList(@RequestParam(value="page", defaultValue = "1") Integer page,
+													 @RequestParam(value="sortBy", defaultValue = "0") int sort ){
+
+		Response<MainWebtoonPage> res = new Response<MainWebtoonPage>();
+		MainWebtoonPage webtoonpage =  webtoonService.getWebtoonList(page,res,sort);
+		switch(res.getCode()) {
+			case 0:
+				res.setData(webtoonpage);
+				break;
+			case 1:
+				break;
+		}
+		return res;
+	}
+
 	//새 웹툰 등록
 	@PostMapping("/myTitleDetail")
 	public Response<WebtoonDto> createWebtoon(@RequestHeader("Authorization") String accessToken,

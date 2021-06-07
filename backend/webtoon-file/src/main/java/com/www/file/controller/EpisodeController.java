@@ -6,9 +6,7 @@ import com.www.file.dto.EpisodeContents;
 import com.www.file.dto.EpisodeDto;
 import com.www.file.dto.EpisodePage;
 import com.www.file.service.EpisodeService;
-import com.www.file.service.MainService;
 import com.www.file.service.WebtoonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,14 +14,41 @@ import java.io.IOException;
 
 @RestController
 public class EpisodeController {
-	@Autowired
-	private WebtoonService webtoonService;
-	@Autowired
-	private EpisodeService episodeService;
-	@Autowired
-	private MainService mainService;
-	
-	private TokenChecker tokenchecker = new TokenChecker();
+	private final WebtoonService webtoonService;
+	private final EpisodeService episodeService;
+	private final TokenChecker tokenChecker;
+
+	public EpisodeController(WebtoonService webtoonService, EpisodeService episodeService,
+							 TokenChecker tokenChecker) {
+		this.webtoonService = webtoonService;
+		this.episodeService = episodeService;
+		this.tokenChecker = tokenChecker;
+	}
+
+	//회차 리스트 출력
+	@GetMapping("/episode/{idx}")
+	public Response<EpisodePage> showEpisodeList( @PathVariable("idx") Long idx,
+												  @RequestParam(value="page", defaultValue = "1") Integer page){
+		Response<EpisodePage> res = new Response<EpisodePage>();
+		EpisodePage episodePage = new EpisodePage();
+
+		switch (res.getCode()) {
+			case 0:
+				return episodeService.getEpisodeList(idx,page,-1L);
+			case 1:
+				break;
+		}
+		return res;
+
+	}
+
+	//회차 출력
+	@GetMapping("/detail/{webtoonIdx}/{no}")
+	public Response<EpisodeContents> showEpisode(@PathVariable("webtoonIdx") Long webtoonIdx,
+												 @PathVariable("no") int no) throws IOException{
+		return episodeService.showEpisode(webtoonIdx, no);
+	}
+
 	//회차 등록
 	@PostMapping("/myArticleDetail/{idx}")
 	public Response<EpisodeDto> addEpisode(@RequestHeader("Authorization") String accessToken,
@@ -32,7 +57,7 @@ public class EpisodeController {
 			@RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
 		EpisodeDto episodeDto = new EpisodeDto(title, authorComment);
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
-		int n = tokenchecker.validateToken(accessToken);
+		int n = tokenChecker.validateToken(accessToken);
 		
 		switch(n) {
 		case 0: //유효한 토큰
@@ -58,7 +83,7 @@ public class EpisodeController {
 			@RequestParam("title") String title, @RequestParam("author_comment") String authorComment) throws IOException{
 		EpisodeDto episodeDto = new EpisodeDto(title, authorComment);
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
-		int n = tokenchecker.validateToken(accessToken);
+		int n = tokenChecker.validateToken(accessToken);
 		
 		switch(n) {
 			case 0: //유효한 토큰
@@ -81,8 +106,8 @@ public class EpisodeController {
 			@PathVariable("idx") Long idx, @RequestParam(value="page", defaultValue = "1") Integer page){
 		Response<EpisodePage> res = new Response<EpisodePage>();
 		
-		int n = tokenchecker.validateToken(accessToken);
-		Long user_idx = tokenchecker.getUserIdx(accessToken);
+		int n = tokenChecker.validateToken(accessToken);
+		Long user_idx = tokenChecker.getUserIdx(accessToken);
 		switch(n) {
 		case 0: //유효한 토큰
 			switch (res.getCode()) {
@@ -114,8 +139,8 @@ public class EpisodeController {
 			@PathVariable("webtoonIdx") Long webtoonIdx, @PathVariable("no") int epNo){
 		
 		Response<Long> res = new Response<Long>();
-		int tk = tokenchecker.validateToken(accessToken);
-		Long userIdx = tokenchecker.getUserIdx(accessToken);
+		int tk = tokenChecker.validateToken(accessToken);
+		Long userIdx = tokenChecker.getUserIdx(accessToken);
 		
 		switch(tk) {
 		case 0: //유효한 토큰
@@ -138,7 +163,7 @@ public class EpisodeController {
 	public Response<EpisodeDto> getOriginalEpisode(@RequestHeader("Authorization") String accessToken,
 			@PathVariable("webtoonIdx") Long webtoonIdx, @PathVariable("no") int no) throws IOException{
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
-		int tk = tokenchecker.validateToken(accessToken);
+		int tk = tokenChecker.validateToken(accessToken);
 		
 		switch(tk) {
 		case 0: //유효한 토큰
@@ -162,11 +187,11 @@ public class EpisodeController {
 			@PathVariable("webtoon_idx") Long webtoonIdx, @PathVariable("no") int no) throws IOException{
 		
 		Response<EpisodeContents> res = new Response<EpisodeContents>();
-		int tk = tokenchecker.validateToken(accessToken);
+		int tk = tokenChecker.validateToken(accessToken);
 		
 		switch(tk) {
 		case 0: //유효한 토큰
-			return mainService.showEpisode(webtoonIdx, no);
+			return episodeService.showEpisode(webtoonIdx, no);
 		case 1: //만료된 토큰
 			res.setCode(40);
 			res.setMsg("reissue tokens");

@@ -5,10 +5,7 @@ import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.file.repository.WebtoonRepository;
-import com.www.file.dto.EpisodeDto;
-import com.www.file.dto.EpisodeListDto;
-import com.www.file.dto.EpisodePage;
-import com.www.file.dto.EpisodeRegistDto;
+import com.www.file.dto.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,9 +24,8 @@ import java.util.UUID;
 
 @Service
 public class EpisodeService {
-	
-	private WebtoonRepository webtoonRepository;
-	private EpisodeRepository episodeRepository;
+	private final WebtoonRepository webtoonRepository;
+	private final EpisodeRepository episodeRepository;
 	
 	//한 블럭 내 최대 페이지 번호 수
 	private static final int BLOCK_PAGE_NUM_COUNT = 5;
@@ -38,11 +34,57 @@ public class EpisodeService {
 		
 	@Value("${custom.path.upload-images}")
 	private String filePath;
-	
+
 	public EpisodeService(WebtoonRepository webtoonRepository, EpisodeRepository episodeRepository) {
 		this.webtoonRepository = webtoonRepository;
 		this.episodeRepository = episodeRepository;
 	}
+
+	public Response<EpisodeContents> showEpisode(Long webtoonIdx, int no){
+		Response<EpisodeContents> res = new Response<EpisodeContents>();
+		Optional<Webtoon> webtoonWrapper = webtoonRepository.findById(webtoonIdx);
+		Webtoon webtoon = webtoonWrapper.get();
+		List<Episode> epList = webtoon.getEpisodes();
+		Episode episode = new Episode();
+		webtoon.setHits(webtoon.getHits()+1);
+		webtoonRepository.save(webtoon);
+
+		for(Episode ep : epList) {
+			if(no == ep.getEpNo()) {
+				episode = ep;
+				break;
+			}
+		}
+		episode.setHits(episode.getHits()+1);
+		episodeRepository.save(episode);
+
+		EpisodeContents episodeContents = EpisodeContents.builder()
+				.webtoonTitle(webtoon.getTitle())
+				.title(episode.getTitle())
+				.authorComment(episode.getAuthorComment())
+				.author(webtoon.getUser().getName())
+				.summary(webtoon.getSummary())
+				.thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail())
+				.ratingPersonTotal(episode.getRatingPersonTotal())
+				.ratingAvg(episode.getRatingAvg())
+				.epHits(episode.getHits())
+				.build();
+
+		String content = episode.getContents();
+		String[] contents = content.split(";");
+		for(int i=0;i<contents.length;i++) {
+			contents[i] = "http://localhost:8081/static/webtoon/"+contents[i];
+			System.out.println(contents[i]);
+		}
+		episodeContents.setContents(contents);
+
+		res.setData(episodeContents);
+		res.setCode(0);
+		res.setMsg("show complete");
+		return res;
+
+	}
+
 	//필수 조건 체크
 	public void checkCondition(MultipartFile thumbnail, MultipartFile[] manuscript, EpisodeDto episodeDto, Response<EpisodeDto> res) {
 		
