@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Comment() {
     const [myComments, setMyComments] = React.useState([]);
-    //const [renderFlag,setRenderFlag]=React.useState(0);
+    //const [renderFlag,setRenderFlag] = React.useState(0);
 
     React.useEffect(() => {
         loadMyComments(1);
@@ -81,7 +81,7 @@ export default function Comment() {
         setChecked(event.target.checked);
     };
 
-    const [pageNum,setPageNum]=React.useState("");
+    const [pageNum,setPageNum] = React.useState("");
     
     /* 내 댓글 목록 조회 */
     const loadMyComments = (page) => {

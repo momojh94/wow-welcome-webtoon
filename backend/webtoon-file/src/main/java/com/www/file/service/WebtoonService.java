@@ -45,23 +45,22 @@ public class WebtoonService {
 	private String filePath;
 	
 	public void checkCondition(MultipartFile file,WebtoonDto webtoonDto,Response<WebtoonDto> res) {
-		
-		if(webtoonDto.getTitle()==null) {
+		if (webtoonDto.getTitle() == null) {
 			res.setCode(10);
 			res.setMsg("insert fail: need to register title");
 			return;
 		}
-		if(webtoonDto.getPlot()==null) {
+		if (webtoonDto.getPlot() == null) {
 			res.setCode(11);
 			res.setMsg("insert fail: need to register plot");
 			return;
 		}
-		if(webtoonDto.getSummary()==null) {
+		if (webtoonDto.getSummary() == null) {
 			res.setCode(12);
 			res.setMsg("insert fail: need to register summary");
 			return;
 		}
-		if(file.isEmpty()) {
+		if (file.isEmpty()) {
 			res.setCode(13);
 			res.setMsg("insert fail: need to register thumbnail");
 			return;
@@ -73,7 +72,6 @@ public class WebtoonService {
 
 	@Transactional
 	public MainWebtoonPage getWebtoonList(Integer pageNum, Response<MainWebtoonPage> res, int sort) {
-
 		Page<Webtoon> page = null;
 		switch(sort) {
 			//기본정렬
@@ -132,27 +130,25 @@ public class WebtoonService {
 	}
 	
 	@Transactional
-	public Response<WebtoonDto> createWebtoon(MultipartFile file, WebtoonDto webtoonDto, Long user_idx) throws IOException {
+	public Response<WebtoonDto> createWebtoon(MultipartFile file, WebtoonDto webtoonDto, Long userIdx) throws IOException {
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
-		System.out.println(user_idx);
-		Optional<User> users = userRepository.findById(user_idx);
+		Optional<User> users = userRepository.findById(userIdx);
 		User user = users.get();
 		//필수 조건 체크
 		checkCondition(file,webtoonDto,res);
-		if(res.getCode()!=0)
+		if (res.getCode() != 0) {
 			return res;
-		else {
-			
+		} else {
 			//필수 입력 조건 만족시
 			UUID uuid = UUID.randomUUID();
 			String fileName = uuid + "_" + file.getOriginalFilename();
 			webtoonDto.setThumbnail(fileName);
-			
+
 			//file 외부 폴더로 이동
-			File destinationFile = new File(filePath+"/web_thumbnail/"+fileName);
+			File destinationFile = new File(filePath + "/web_thumbnail/" + fileName);
 			destinationFile.getParentFile().mkdir();
 			file.transferTo(destinationFile);
-			
+
 			Webtoon webtoon = Webtoon.builder()
 					.title(webtoonDto.getTitle())
 					.storyType(webtoonDto.getStoryType())
@@ -165,7 +161,7 @@ public class WebtoonService {
 					.thumbnail(fileName)
 					.build();
 			webtoonRepository.save(webtoon);
-					
+
 			res.setData(webtoonDto);
 			return res;
 		}

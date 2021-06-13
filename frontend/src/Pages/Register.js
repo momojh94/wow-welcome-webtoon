@@ -180,7 +180,7 @@ export default function Register() {
                 .then(response => response.json())
                 .then(result =>{ 
                     console.log(result)
-                    if(result.code==0){
+                    if(result.code == 0){
                         alert("새로운 웹툰이 등록되었습니다.")
                         window.location.href="/mypage";
                     }
