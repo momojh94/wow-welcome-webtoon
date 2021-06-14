@@ -58,7 +58,7 @@ public class WebtoonController {
 		Response<WebtoonPage> res = new Response<WebtoonPage>();
 		int n = tokenChecker.validateToken(accessToken);
 		Long userIdx = tokenChecker.getUserIdx(accessToken);
-		System.out.println("/users/webtoons&page=" + page);
+		// System.out.println("/users/webtoons&page=" + page);
 
 		switch(n) {
 			case 0: //유효한 토큰
@@ -90,7 +90,7 @@ public class WebtoonController {
 												 @RequestParam(value="sortBy", defaultValue = "0") int sort ){
 		Response<MainWebtoonPage> res = new Response<MainWebtoonPage>();
 		MainWebtoonPage webtoonpage =  webtoonService.getWebtoonList(page,res,sort);
-		System.out.println("/webtoons&page=" + page + "sortBy&=" + sort);
+		// System.out.println("/webtoons&page=" + page + "sortBy&=" + sort);
 
 		switch(res.getCode()) {
 			case 0:
