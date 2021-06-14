@@ -17,9 +17,9 @@ export function ReToken() {
     redirect: 'follow'
   };
 
-  var user_idx = localStorage.getItem("USER_IDX")
+  var userIdx = localStorage.getItem("USER_IDX")
 
-  fetch("/users/" + user_idx + "/token", requestOptions)
+  fetch("/users/" + userIdx + "/token", requestOptions)
     .then(response => {
       localStorage.setItem("AUTHORIZATION", response.headers.get('Authorization'))
       response.json().then(

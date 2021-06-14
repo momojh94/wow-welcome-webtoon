@@ -56,7 +56,7 @@ public class Webtoon extends BaseTimeEntity {
 	private float ratingAvg;
 
 	@Column
-	@ColumnDefault("0")
+	@ColumnDefault("0L")
 	private Long hits;
 
 	@OneToMany(fetch=FetchType.EAGER, orphanRemoval = true , cascade = CascadeType.REMOVE, mappedBy = "webtoon")

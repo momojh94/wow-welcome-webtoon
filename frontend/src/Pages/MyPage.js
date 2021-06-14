@@ -81,11 +81,13 @@ export default function MyPage() {
             redirect: 'follow',
         };
 
-        fetch("/myTitleList?page="+page, requestOptions)
+        fetch("/users/webtoons?page="+page, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
                 if (result.code == 0) {
+                    console.log("mypage~~");
+                    console.log(result);
                     setMyWebtoons(result.data.webtoons);
                     setPageNum(result.data.total_pages);
                 }

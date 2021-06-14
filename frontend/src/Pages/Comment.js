@@ -68,7 +68,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Comment() {
     const [myComments, setMyComments] = React.useState([]);
-    //const [renderFlag,setRenderFlag] = React.useState(0);
 
     React.useEffect(() => {
         loadMyComments(1);
@@ -219,7 +218,7 @@ export default function Comment() {
                                             {myComment.webtoon_title}
                                         </div>
                                     </TableCell>
-                                    <TableCell align="center">{myComment.ep_no}화</TableCell>
+                                    <TableCell align="center">{myComment.epNo}화</TableCell>
                                     <TableCell align="center">
                                         <div className={classes.commentField}>
                                             {myComment.content}

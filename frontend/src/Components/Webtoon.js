@@ -26,8 +26,8 @@ class Webtoon extends Component {
         const { classes } = this.props;
         return (
             <div>
-                <a href={"/webtoon?idx="+this.props.idx} style={{ textDecoration: "none" }}>
-                    <Card href={"/webtoon?idx="+this.props.idx} className={classes.card} variant="outlined">
+                <a href={"/webtoon?webtoon_idx="+this.props.idx} style={{ textDecoration: "none" }}>
+                    <Card href={"/webtoon?webtoon_idx="+this.props.idx} className={classes.card} variant="outlined">
                         <CardActionArea>
                             <CardContent>
                                 <Webtoonthumbnail container justify="center" thumbnail={this.props.thumbnail} />
@@ -35,7 +35,7 @@ class Webtoon extends Component {
                                     {this.props.title}({this.props.author})
                                 </Typography>
                                 <Box component="span" mb={0} borderColor="transparent">
-                                    <Rating name="read-only" value={this.props.ep_rating_avg} readOnly />
+                                    <Rating name="read-only" value={this.props.rating_avg} readOnly />
                                 </Box>
                             </CardContent>
                         </CardActionArea>

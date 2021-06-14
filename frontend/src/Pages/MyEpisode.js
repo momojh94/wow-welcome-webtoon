@@ -60,9 +60,9 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var idx = getParameterByName('idx');
-var ep_no = getParameterByName('ep_no');
-var ep_idx=getParameterByName('ep_idx');
+const webtoonIdx = getParameterByName('webtoon_idx');
+const epNo = getParameterByName('ep_no');
+const epIdx = getParameterByName('ep_idx');
 
 //댓글 정보
 let comments = [
@@ -115,7 +115,7 @@ function commentLoading() {
     };
 
     //url 수정
-    fetch("/episodes/" + ep_idx + "/comments?page=1", requestOptions)
+    fetch("/episodes/" + epIdx + "/comments?page=1", requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result)
@@ -147,7 +147,7 @@ function bestCommentLoading() {
         redirect: 'follow'
     };
 
-    fetch("/episodes/" + ep_idx + "/comments/best", requestOptions)
+    fetch("/episodes/" + epIdx + "/comments/best", requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result)
@@ -174,16 +174,16 @@ export default function MyEpisode() {
 
     React.useEffect(() => {
         // 회차 정보
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", localStorage.getItem("AUTHORIZATION"));
+        // var myHeaders = new Headers();
+        // myHeaders.append("Authorization", localStorage.getItem("AUTHORIZATION"));
 
         var requestOptions = {
             method: 'GET',
-            headers: myHeaders,
+            // headers: myHeaders,
             redirect: 'follow'
         };
 
-        fetch("/mydetail/" + idx + "/" + ep_no, requestOptions)
+        fetch("/webtoons/" + webtoonIdx + "/episodes/" + epNo + "/detail", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -235,7 +235,7 @@ export default function MyEpisode() {
 
                 <div className={classes.body} style={{ width: 950, borderTop: '1px solid grey' }}>
                     <div style={{ marginLeft: 30 }}>
-                        <h4 style={{ marginTop: 20, marginBottom: 0 }}>{ep_no}화. {title}</h4>
+                        <h4 style={{ marginTop: 20, marginBottom: 0 }}>{epNo}화. {title}</h4>
                         <Box component="span" mb={0} borderColor="transparent" style={{ display: "flex", }}>
                             <Rating name="read-only" value={rating_avg} readOnly style={{ marginTop: 30 }} />
                             <body2 style={{ marginTop: 30 }}>&nbsp;({rating_avg})&ensp;</body2>
@@ -263,12 +263,12 @@ export default function MyEpisode() {
 
                             <TabPanel value={value} index={0}>
                                 {best_comments.map(comment => (
-                                    <Comment key={comment.idx} cmt_idx={comment.idx} nickname={comment.user_id} comment={comment.content} date={comment.created_date} goodNum={comment.like_cnt} badNum={comment.dislike_cnt} />
+                                    <Comment key={comment.idx} cmtIdx={comment.idx} nickname={comment.user_id} comment={comment.content} date={comment.created_date} goodNum={comment.like_cnt} badNum={comment.dislike_cnt} />
                                 ))}
                             </TabPanel>
                             <TabPanel value={value} index={1}>
                                 {comments.map(comment => (
-                                    <Comment key={comment.idx} cmt_idx={comment.idx} nickname={comment.user_id} comment={comment.content} date={comment.created_date} goodNum={comment.like_cnt} badNum={comment.dislike_cnt} />
+                                    <Comment key={comment.idx} cmtIdx={comment.idx} nickname={comment.user_id} comment={comment.content} date={comment.created_date} goodNum={comment.like_cnt} badNum={comment.dislike_cnt} />
                                 ))}
                             </TabPanel>
                         </Paper>

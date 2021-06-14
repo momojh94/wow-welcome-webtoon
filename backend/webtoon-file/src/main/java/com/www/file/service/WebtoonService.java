@@ -76,17 +76,17 @@ public class WebtoonService {
 		switch(sort) {
 			//기본정렬
 			case 0:
-				page = webtoonRepository.findAll(PageRequest.of(pageNum-1, PAGE_EPISODE_COUNT));
+				page = webtoonRepository.findAll(PageRequest.of(pageNum - 1, PAGE_EPISODE_COUNT));
 				break;
 			//조회순 정렬
 			case 1:
-				page = webtoonRepository.findAll(PageRequest.of(pageNum-1, PAGE_EPISODE_COUNT,
+				page = webtoonRepository.findAll(PageRequest.of(pageNum - 1, PAGE_EPISODE_COUNT,
 						Sort.by(Sort.Direction.DESC,"hits")));
 				break;
 			//별점 정렬
 			case 2:
-				page = webtoonRepository.findAll(PageRequest.of(pageNum-1, PAGE_EPISODE_COUNT,
-						Sort.by(Sort.Direction.DESC,"epRatingAvg")));
+				page = webtoonRepository.findAll(PageRequest.of(pageNum - 1, PAGE_EPISODE_COUNT,
+						Sort.by(Sort.Direction.DESC,"ratingAvg")));
 				break;
 			default:
 				res.setCode(1);
@@ -112,7 +112,7 @@ public class WebtoonService {
 						.storyGenre2(webtoon.getStoryGenre2())
 						.author(webtoon.getUser().getName())
 						.hits(webtoon.getHits())
-						.epRatingAvg(webtoon.getRatingAvg())
+						.ratingAvg(webtoon.getRatingAvg())
 						.build();
 				webtoonListDto.add(webtoonDto);
 			}

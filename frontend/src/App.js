@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Home, Comment, Login, MyPage, Signup, Register, MyEpisode,Webtoon,Episode,Upload,EditInfo,EditRegister,EditEpisode,EditUpload,Preview} from './Pages';
+import { Home, Comment, Login, MyPage, Signup, Register, MyEpisode, Webtoon,
+  Episode, Upload, EditInfo, EditRegister, EditEpisode, EditUpload, Preview} from './Pages';
 import AuthRoute from './AuthRoute';
 
 export default function App() {

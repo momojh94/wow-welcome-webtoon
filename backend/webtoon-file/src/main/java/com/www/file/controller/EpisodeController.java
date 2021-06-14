@@ -63,13 +63,14 @@ public class EpisodeController {
 		return res;
 	}
 
-	// 해당 웹툰의 에피소드 출력
+	// 해당 웹툰과 에피소드 정보 출력
 	@GetMapping("/webtoons/{webtoonIdx}/episodes/{epNo}/detail")
-	public Response<EpisodeContents> getEpisode(@PathVariable("webtoonIdx") Long webtoonIdx,
+	public Response<EpisodeContents> getEpisodeWithWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx,
 												@PathVariable("epNo") int epNo) throws IOException {
 		return episodeService.showEpisode(webtoonIdx, epNo);
 	}
 
+	/*
 	// 내 웹툰의 에피소드 목록 출력
 	@GetMapping("/users/webtoons/{webtoonIdx}/episodes")
 	public Response<EpisodePage> getMyEpisodes(@RequestHeader("Authorization") String accessToken,
@@ -102,18 +103,20 @@ public class EpisodeController {
 
 		return res;
 	}
+	*/
 
-	// 해당 에피소드 정보 출력 (에피소드 수정 전 기존 정보 get)
-	@GetMapping("/users/webtoons/{webtoonIdx}/episodes/{epNo}")
-	public Response<EpisodeDto> getOriginalEpisode(@RequestHeader("Authorization") String accessToken,
-												   @PathVariable("webtoonIdx") Long webtoonIdx,
-												   @PathVariable("epNo") int epNo) throws IOException {
-		Response<EpisodeDto> res = new Response<EpisodeDto>();
+	// 해당 에피소드 정보 출력
+	@GetMapping("/webtoons/{webtoonIdx}/episodes/{epNo}")
+	public Response<EpisodeDto> getEpisode(@PathVariable("webtoonIdx") Long webtoonIdx,
+										   @PathVariable("epNo") int epNo) throws IOException {
+		// Response<EpisodeDto> res = new Response<EpisodeDto>();
+		return episodeService.getEpisodeInfo(webtoonIdx, epNo);
+		/*
 		int tk = tokenChecker.validateToken(accessToken);
 
 		switch(tk) {
 			case 0: //유효한 토큰
-				return episodeService.getEpisodeInfo(webtoonIdx, epNo);
+
 			case 1: //만료된 토큰
 				res.setCode(40);
 				res.setMsg("reissue tokens");
@@ -124,7 +127,7 @@ public class EpisodeController {
 				break;
 		}
 
-		return res;
+		return res;*/
 	}
 
 	// 에피소드 정보 수정

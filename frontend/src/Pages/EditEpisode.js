@@ -45,7 +45,7 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var idx = getParameterByName('idx');
+const webtoonIdx = getParameterByName('webtoon_idx');
 
 export default function EditEpisode() {
     const [episodes, setEpisodes] = React.useState([]);
@@ -53,7 +53,7 @@ export default function EditEpisode() {
     const [title, setTitle] = React.useState("");
     const [writer, setWriter] = React.useState("");
     const [plot, setPlot] = React.useState("");
-    const [rating,setRating]=React.useState("");
+    const [rating, setRating]=React.useState("");
 
     React.useEffect(() => {
         var myHeaders = new Headers();
@@ -65,7 +65,7 @@ export default function EditEpisode() {
             redirect: 'follow'
         };
 
-        fetch("/myArticleList/" + idx + "?page=1", requestOptions)
+        fetch("/webtoons/" + webtoonIdx + "?page=1", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -81,7 +81,7 @@ export default function EditEpisode() {
 
     const classes = useStyles();
 
-    function episodeDelete(ep_no) {
+    function episodeDelete(epNo) {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", localStorage.getItem("AUTHORIZATION"));
 
@@ -91,7 +91,7 @@ export default function EditEpisode() {
             redirect: 'follow'
         };
 
-        fetch("/myArticleList/" + idx + "/" + ep_no, requestOptions)
+        fetch("/webtoons/" + webtoonIdx + "/episodes/" + epNo, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -134,7 +134,7 @@ export default function EditEpisode() {
                     <div>
                         <h2>{title} ({writer})</h2>
                         <h5>{plot}</h5>
-                        <Button variant="contained" href={"/mypage/upload?idx=" + idx + "&episode_idx=" + (episodes.length + 1)} style={{ marginLeft: 5 }}>
+                        <Button variant="contained" href={"/mypage/upload?webtoon_idx=" + webtoonIdx + "&ep_idx=" + (episodes.length + 1)} style={{ marginLeft: 5 }}>
                             <span style={{ color: "#212121", fontWeight: 520 }}>새 회차 등록</span>
                         </Button>
                     </div>
@@ -158,7 +158,7 @@ export default function EditEpisode() {
                                         <img src={episode.thumnail} width="64" height="64" />
                                     </TableCell>
                                     <TableCell align="left">
-                                        <a href={"/mypage/myEpisode?idx=" + idx + "&ep_no=" + episode.ep_no + "&ep_idx=" + episode.idx} style={{}}>
+                                        <a href={"/mypage/myEpisode?webtoon_idx=" + webtoonIdx + "&ep_no=" + episode.ep_no + "&ep_idx=" + episode.idx} style={{}}>
                                             {episode.ep_no}화. {episode.title}
                                         </a>
                                     </TableCell>
@@ -169,12 +169,12 @@ export default function EditEpisode() {
                                     </TableCell>
                                     <TableCell align="center">{episode.created_date.slice(0, 10)}</TableCell>
                                     <TableCell align="center">
-                                        <Button variant="contained" href={"/mypage/editUpload?idx=" + idx + "&ep_no=" + episode.ep_no}>
+                                        <Button variant="contained" href={"/mypage/editUpload?webtoon_idx=" + webtoonIdx + "&ep_no=" + episode.ep_no}>
                                             <span style={{ color: "#212121", fontWeight: 520 }}>수정</span>
                                         </Button>
                                     </TableCell>
                                     <TableCell align="center">
-                                        <Button variant="contained" onClick={() => episodeDelete(episode.ep_no)}>
+                                        <Button variant="contained" onClick={() => episodeDelete(episode.epNo)}>
                                             <span style={{ color: "#212121", fontWeight: 520 }}>삭제</span>
                                         </Button>
                                     </TableCell>

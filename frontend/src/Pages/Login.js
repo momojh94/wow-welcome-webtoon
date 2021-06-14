@@ -65,7 +65,7 @@ export default function Login() {
                                 var temp = localStorage.getItem("AUTHORIZATION")
                                 var jwt_decode = require('jwt-decode')
                                 var decodeToken = jwt_decode(temp.replace("bearer ", ""))
-                                localStorage.setItem("USER_IDX", decodeToken.user_idx)
+                                localStorage.setItem("userIdx", decodeToken.userIdx)
 
                                 localStorage.setItem("USERID", result.data.account);
                                 localStorage.setItem("NAME", result.data.name);

@@ -20,8 +20,8 @@ function LogoutButton() {
             redirect: 'follow'
         };
 
-        var user_idx = localStorage.getItem("USER_IDX");
-        fetch("/users/" + user_idx+ "/token", requestOptions)
+        var userIdx = localStorage.getItem("user_idx");
+        fetch("/users/" + userIdx + "/token", requestOptions)
             .then(response => response.text())
             .then(result => {
                 console.log(result)

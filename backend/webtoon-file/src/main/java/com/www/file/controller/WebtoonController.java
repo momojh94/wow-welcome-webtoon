@@ -58,6 +58,7 @@ public class WebtoonController {
 		Response<WebtoonPage> res = new Response<WebtoonPage>();
 		int n = tokenChecker.validateToken(accessToken);
 		Long userIdx = tokenChecker.getUserIdx(accessToken);
+		System.out.println("/users/webtoons&page=" + page);
 
 		switch(n) {
 			case 0: //유효한 토큰
@@ -83,16 +84,34 @@ public class WebtoonController {
 		return res;
 	}
 
-	// 특정 웹툰 정보 출력
-	@GetMapping("/webtoons/{webtoonIdx}")
-	public Response<WebtoonDto> getWebtoon(@RequestHeader("Authorization") String accessToken,
-										   @PathVariable("webtoonIdx") Long idx) throws IOException {
-		Response<WebtoonDto> res = new Response<WebtoonDto>();
-		int n = tokenChecker.validateToken(accessToken);
+	// 웹툰 리스트 출력 (한 페이지당 최대 20개), 정렬 기준 마다 조회 방식 다름
+	@GetMapping("/webtoons")
+	public Response<MainWebtoonPage> getWebtoons(@RequestParam(value="page", defaultValue = "1") Integer page,
+												 @RequestParam(value="sortBy", defaultValue = "0") int sort ){
+		Response<MainWebtoonPage> res = new Response<MainWebtoonPage>();
+		MainWebtoonPage webtoonpage =  webtoonService.getWebtoonList(page,res,sort);
+		System.out.println("/webtoons&page=" + page + "sortBy&=" + sort);
 
+		switch(res.getCode()) {
+			case 0:
+				res.setData(webtoonpage);
+				break;
+			case 1:
+				break;
+		}
+		return res;
+	}
+
+	// 해당 웹툰 정보 출력
+	@GetMapping("/webtoons/{webtoonIdx}")
+	public Response<WebtoonDto> getWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx) throws IOException {
+		return webtoonService.getWebtoonInfo(webtoonIdx);
+
+		/*Response<WebtoonDto> res = new Response<WebtoonDto>();
+		int n = tokenChecker.validateToken(accessToken);
 		switch(n) {
 			case 0:
-				return webtoonService.getWebtoonInfo(idx);
+
 			case 1:
 				res.setCode(40);
 				res.setMsg("reissue tokens");
@@ -103,23 +122,7 @@ public class WebtoonController {
 				break;
 		}
 
-		return res;
-	}
-
-	// 웹툰 리스트 출력 (한 페이지당 최대 20개), 정렬 기준 마다 조회 방식 다름
-	@GetMapping("/webtoons")
-	public Response<MainWebtoonPage> getWebtoons(@RequestParam(value="page", defaultValue = "1") Integer page,
-													 @RequestParam(value="sortBy", defaultValue = "0") int sort ){
-		Response<MainWebtoonPage> res = new Response<MainWebtoonPage>();
-		MainWebtoonPage webtoonpage =  webtoonService.getWebtoonList(page,res,sort);
-		switch(res.getCode()) {
-			case 0:
-				res.setData(webtoonpage);
-				break;
-			case 1:
-				break;
-		}
-		return res;
+		return res;*/
 	}
 	
 	//내 웹툰 정보 수정

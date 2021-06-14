@@ -43,7 +43,7 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var idx = getParameterByName('idx');
+const webtoonIdx = getParameterByName('webtoon_idx');
 
 export default function Webtoon() {
     const [episodes, setEpisodes] = React.useState([]);
@@ -59,8 +59,8 @@ export default function Webtoon() {
             method: 'GET',
             redirect: 'follow'
         };
-
-        fetch("/episode/" + idx, requestOptions)
+    
+        fetch("/webtoons/" + webtoonIdx + "/episodes", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -113,8 +113,8 @@ export default function Webtoon() {
                                         <img src={episode.thumnail} width="64" height="64"/>
                                     </TableCell>
                                     <TableCell align="left">
-                                        <a href={"/webtoon/episode?idx="+idx+"&ep_no="+episode.ep_no+"&ep_idx="+episode.idx}>
-                                            {episode.ep_no}화. {episode.title}
+                                        <a href={"/webtoon/episode?webtoon_idx=" + webtoonIdx + "&ep_no=" + episode.epNo + "&ep_idx=" + episode.idx}>
+                                            {episode.epNo}화. {episode.title}
                                         </a>
                                     </TableCell>
                                     <TableCell align="center">
