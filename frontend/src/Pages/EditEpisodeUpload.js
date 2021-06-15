@@ -61,21 +61,21 @@ function getParameterByName(name) {
 }
 
 //회차 idx
-var idx = getParameterByName('idx');
-var ep_no = getParameterByName('ep_no');
+const webtoonIdx = getParameterByName('webtoon_idx');
+const epNo = getParameterByName('ep_no');
 
 export default function EditUpload() {
     React.useEffect(() => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", localStorage.getItem("AUTHORIZATION"));
+        // var myHeaders = new Headers();
+        // myHeaders.append("Authorization", localStorage.getItem("AUTHORIZATION"));
 
         var requestOptions = {
             method: 'GET',
-            headers: myHeaders,
+            // headers: myHeaders,
             redirect: 'follow'
         };
 
-        fetch("/myArticleDetail/" + idx + "/" + ep_no, requestOptions)
+        fetch("/webtoons/" + webtoonIdx + "/episodes/" + epNo, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -213,18 +213,18 @@ export default function EditUpload() {
                 redirect: 'follow'
             };
 
-            fetch("/myArticleDetail/" + idx + "/" + ep_no, requestOptions)
+            fetch("/webtoons/" + webtoonIdx + "/episodes/" + epNo, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)
                     if (result.code == 0) {
                         alert("회차 정보가 수정되었습니다.")
-                        window.location.href = "/mypage/editEpisode?idx=" + idx;
+                        window.location.href = "/mypage/editEpisode?webtoon_idx=" + webtoonIdx;
                     }
-                    else if(result.code==44){
+                    else if(result.code == 44){
                         ReToken.ReToken()
                     }
-                    else if(result.code==42){
+                    else if(result.code == 42){
                         alert("[ERROR 42] 잘못된 접근입니다, 관리자에게 문의하세요.")
                     }
                     else{
@@ -260,7 +260,7 @@ export default function EditUpload() {
                             id="episodeNo"
                             variant="outlined"
                             size="small"
-                            label={ep_no}
+                            label={epNo}
                             style={{ width: 100 }}
                             InputProps={{
                                 readOnly: true,

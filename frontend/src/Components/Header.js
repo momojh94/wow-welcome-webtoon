@@ -100,7 +100,7 @@ export default function Header() {
           <Typography variant="h6" className={classes.title}>
             WWW 만화
           </Typography>
-          <div className={classes.search} >
+          {/* <div className={classes.search} >
             <div className={classes.searchIcon}>
               <img src='/Icon/searchIcon.png' />
             </div>
@@ -112,7 +112,7 @@ export default function Header() {
               }}
               inputProps={{ 'aria-label': 'search' }}
             />
-          </div>
+          </div> */}
           <div className={classes.buttonMargin}>
             <Button variant="contained" color="primary" href="http://localhost:3000/login" >
               <span style={{ color: "#fafafa", fontWeight: 550 }}>만화 업로드</span>

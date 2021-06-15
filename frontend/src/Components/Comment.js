@@ -20,7 +20,7 @@ class Comment extends Component {
             redirect: 'follow'
         };
 
-        fetch("/comments/" + this.props.cmt_idx + "/like", requestOptions)
+        fetch("/comments/" + this.props.cmtIdx + "/like", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -66,7 +66,7 @@ class Comment extends Component {
             redirect: 'follow'
         };
 
-        fetch("/comments/" + this.props.cmt_idx + "/dislike", requestOptions)
+        fetch("/comments/" + this.props.cmtIdx + "/dislike", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -117,7 +117,7 @@ class Comment extends Component {
                             &ensp;{badNum}
                         </Button>
                     </div>
-                    <div style={{ display: "none" }}>{this.props.cmt_idx}</div>
+                    <div style={{ display: "none" }}>{this.props.cmtIdx}</div>
                     <div style={{ display: "none" }}>{this.props.goodNum}</div>
                     <div style={{ display: "none" }}>{this.props.badNum}</div>
                 </div>

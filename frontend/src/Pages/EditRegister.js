@@ -50,21 +50,21 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var idx = getParameterByName('idx');
+const webtoonIdx = getParameterByName('webtoon_idx');
 
 export default function EditRegister() {
 
     React.useEffect(() => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", localStorage.getItem("AUTHORIZATION"));
+        // var myHeaders = new Headers();
+        // myHeaders.append("Authorization", localStorage.getItem("AUTHORIZATION"));
 
         var requestOptions = {
             method: 'GET',
-            headers: myHeaders,
+            // headers: myHeaders,
             redirect: 'follow'
         };
 
-        fetch("/myTitleDetail/" + idx, requestOptions)
+        fetch("/webtoons/" + webtoonIdx, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -74,16 +74,17 @@ export default function EditRegister() {
                     setSummary(result.data.summary);
                     setPlot(result.data.plot);
                     setThumbnail(result.data.thumbnail);
+
                     let reader = new FileReader();
                     reader.onload = () => {
                         console.log("load end");
                         setThumbnailstr(reader.result);
                     }
                 }
-                else if(result.code==44){
+                else if(result.code == 44){
                     ReToken.ReToken()
                 }
-                else if(result.code==42){
+                else if(result.code == 42){
                     alert("[ERROR 42] 잘못된 접근입니다, 관리자에게 문의하세요.")
                 }
                 else{
@@ -211,12 +212,13 @@ export default function EditRegister() {
             formdata.append("thumbnail", thumbnail);
             formdata.append("title", title);
             formdata.append("story_type", type);
-            formdata.append("stroy_genre1", genre1);
-            formdata.append("stroy_genre2", genre2);
+            formdata.append("story_genre1", genre1);
+            formdata.append("story_genre2", genre2);
             formdata.append("summary", summary);
             formdata.append("plot", plot);
             formdata.append("end_flag", "ONGOING");
 
+            console.log(genre1 + ", " + genre2)
 
             var requestOptions = {
                 headers: myHeaders,
@@ -225,7 +227,7 @@ export default function EditRegister() {
                 redirect: 'follow'
             };
 
-            fetch("/myTitleDetail/" + idx, requestOptions)
+            fetch("/webtoons/" + webtoonIdx, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)
@@ -233,10 +235,10 @@ export default function EditRegister() {
                         alert("작품 정보가 수정되었습니다.")
                         window.location.href = "/mypage"
                     }
-                    else if(result.code==44){
+                    else if(result.code == 44){
                         ReToken.ReToken()
                     }
-                    else if(result.code==42){
+                    else if(result.code == 42){
                         alert("[ERROR 42] 잘못된 접근입니다, 관리자에게 문의하세요.")
                     }
                     else{
@@ -257,18 +259,18 @@ export default function EditRegister() {
             redirect: 'follow'
         };
 
-        fetch("/myArticleList/" + idx, requestOptions)
-            .then(response => response.text())
+        fetch("/webtoons/" + webtoonIdx, requestOptions)
+            .then(response => response.json())
             .then(result => {
                 console.log(result)
                 if (result.code == 0) {
-                    alert("삭제가 완료되었습니다.")
+                    alert("웹툰 삭제가 완료되었습니다.")
                     window.location.href = "/mypage";
                 }
-                else if(result.code==44){
+                else if(result.code == 44){
                     ReToken.ReToken()
                 }
-                else if(result.code==42){
+                else if(result.code == 42){
                     alert("[ERROR 42] 잘못된 접근입니다, 관리자에게 문의하세요.")
                 }
                 else{

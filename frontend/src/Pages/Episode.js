@@ -66,9 +66,9 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var idx = getParameterByName('idx');
-var ep_no = getParameterByName('ep_no');
-var ep_idx = getParameterByName('ep_idx');
+const webtoonIdx = getParameterByName('webtoon_idx');
+const epNo = getParameterByName('ep_no');
+const epIdx = getParameterByName('ep_idx');
 
 //탭 관련
 function TabPanel(props) {
@@ -127,8 +127,8 @@ export default function Episode() {
             method: 'GET',
             redirect: 'follow'
         };
-
-        fetch("/detail/" + idx + "/" + ep_no, requestOptions)
+        
+        fetch("/webtoons/" + webtoonIdx + "/episodes/" + epNo + "/detail", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -150,7 +150,7 @@ export default function Episode() {
         loadComment(1);
 
         // 베스트 댓글 로드
-        fetch("/episodes/" + ep_idx + "/comments/best", requestOptions)
+        fetch("/episodes/" + epIdx + "/comments/best", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -189,7 +189,7 @@ export default function Episode() {
             redirect: 'follow'
         };
 
-        fetch("/episodes/" + ep_idx + "/comments?page=" + page, requestOptions)
+        fetch("/episodes/" + epIdx + "/comments?page=" + page, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -227,7 +227,7 @@ export default function Episode() {
                 redirect: 'follow'
             };
 
-            fetch("/episodes/" + ep_idx + "/comments", requestOptions)
+            fetch("/episodes/" + epIdx + "/comments", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)
@@ -279,7 +279,7 @@ export default function Episode() {
             redirect: 'follow'
         };
 
-        fetch("/episodes/" + ep_idx + "/rating", requestOptions)
+        fetch("/episodes/" + epIdx + "/rating", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -339,7 +339,7 @@ export default function Episode() {
 
                 <div className={classes.body} style={{ width: 950, borderTop: '1px solid grey' }}>
                     <div style={{ marginLeft: 30 }}>
-                        <h5 style={{ marginTop: 20, marginBottom: 0 }}>{ep_no}화 {title}</h5>
+                        <h5 style={{ marginTop: 20, marginBottom: 0 }}>{epNo}화 {title}</h5>
                         <Box component="span" mb={0} borderColor="transparent" style={{ display: "flex", }}>
                             <Rating name="read-only" value={rating_avg} readOnly style={{ marginTop: 30 }} />
                             <body2 style={{ marginTop: 30 }}>&nbsp;{rating_avg} (참여자수 {rating_prt})&ensp;</body2>
@@ -398,12 +398,12 @@ export default function Episode() {
 
                             <TabPanel value={value} index={0}>
                                 {bestComments.map(comment => (
-                                    <Comment key={comment.idx} cmt_idx={comment.idx} nickname={comment.user_id} comment={comment.content} date={comment.created_date} goodNum={comment.like_cnt} badNum={comment.dislike_cnt} />
+                                    <Comment key={comment.idx} cmtIdx={comment.idx} nickname={comment.user_id} comment={comment.content} date={comment.created_date} goodNum={comment.like_cnt} badNum={comment.dislike_cnt} />
                                 ))}
                             </TabPanel>
                             <TabPanel value={value} index={1}>
                                 {comments.map(comment => (
-                                    <Comment key={comment.idx} cmt_idx={comment.idx} nickname={comment.user_id} comment={comment.content} date={comment.created_date} goodNum={comment.like_cnt} badNum={comment.dislike_cnt} />
+                                    <Comment key={comment.idx} cmtIdx={comment.idx} nickname={comment.user_id} comment={comment.content} date={comment.created_date} goodNum={comment.like_cnt} badNum={comment.dislike_cnt} />
                                 ))}
                                 <div className={classes.paging}>
                                     <Pagination count={cmt_page} color="primary" onChange={handlePaging} />

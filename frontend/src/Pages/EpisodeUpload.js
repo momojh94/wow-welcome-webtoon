@@ -62,8 +62,8 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-var idx = getParameterByName('idx');
-var episode_idx = getParameterByName('episode_idx');
+const webtoonIdx = getParameterByName('webtoon_idx');
+const epIdx = getParameterByName('ep_idx');
 
 export default function Upload() {
     const [title, setTitle] = React.useState("");
@@ -175,13 +175,13 @@ export default function Upload() {
                 redirect: 'follow'
             };
 
-            fetch("/myArticleDetail/" + idx, requestOptions)
+            fetch("/webtoons/" + webtoonIdx + "/episodes", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)
                     if (result.code == 0) {
                         alert("새로운 회차가 등록되었습니다")
-                        window.location.href = "/mypage/editEpisode?idx=" + idx;
+                        window.location.href = "/mypage/editEpisode?webtoon_idx=" + webtoonIdx;
                     }
                     else if (result.code == 44) {
                         ReToken.ReToken()
@@ -222,7 +222,7 @@ export default function Upload() {
                             id="episodeNo"
                             variant="outlined"
                             size="small"
-                            label={episode_idx}
+                            label={epIdx}
                             style={{ width: 100 }}
                             InputProps={{
                                 readOnly: true,

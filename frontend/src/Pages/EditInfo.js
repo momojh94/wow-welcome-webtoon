@@ -100,9 +100,9 @@ export default function EditInfo() {
                 redirect: 'follow'
             };
 
-            var user_idx = localStorage.getItem("USER_IDX")
+            var userIdx = localStorage.getItem("userIdx")
 
-            fetch("/users/" + user_idx, requestOptions)
+            fetch("/users/" + userIdx, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)
@@ -138,9 +138,9 @@ export default function EditInfo() {
             redirect: 'follow'
         };
 
-        var user_idx = localStorage.getItem("USER_IDX")
+        var userIdx = localStorage.getItem("userIdx")
         
-        fetch("/users/"+user_idx, requestOptions)
+        fetch("/users/" + userIdx, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

@@ -17,18 +17,18 @@ public class MainWebtoonDto {
 	private StoryGenre storyGenre1;
 	private StoryGenre storyGenre2;
 	private Long hits;
-	private float epRatingAvg;
+	private float ratingAvg;
 	private Integer[] pagelist;
 	
 	@Builder
-	public MainWebtoonDto(Long idx, String author, String title, String thumbnail, StoryGenre storyGenre1, StoryGenre storyGenre2, float epRatingAvg, Long hits) {
+	public MainWebtoonDto(Long idx, String author, String title, String thumbnail, StoryGenre storyGenre1, StoryGenre storyGenre2, float ratingAvg, Long hits) {
 		this.idx = idx;
 		this.title = title;
 		this.author = author;
 		this.thumbnail = thumbnail;
 		this.storyGenre1 = storyGenre1;
 		this.storyGenre2 = storyGenre2;
-		this.epRatingAvg = epRatingAvg;
+		this.ratingAvg = ratingAvg;
 		this.hits = hits;
 	}
 }

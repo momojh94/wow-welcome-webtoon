@@ -65,33 +65,33 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-//오늘 인기 웹툰 정보
-const webtoons = [
-    {
-        title: "유미의 세포들",
-        thumbnail: "http://placeimg.com/128/128/any",
-        artist: "이동건",
-        ep_rating_avg: 4
-    },
-    {
-        title: "복학왕",
-        thumbnail: "http://placeimg.com/128/128/any",
-        artist: "기안84",
-        ep_rating_avg: 3
-    },
-    {
-        title: "신의탑",
-        thumbnail: "http://placeimg.com/128/128/any",
-        artist: "siu",
-        ep_rating_avg: 5
-    },
-    {
-        title: "여신강림",
-        thumbnail: "http://placeimg.com/128/128/any",
-        artist: "냥",
-        ep_rating_avg: 4
-    }
-]
+// //오늘 인기 웹툰 정보
+// const webtoons = [
+//     {
+//         title: "유미의 세포들",
+//         thumbnail: "http://placeimg.com/128/128/any",
+//         artist: "이동건",
+//         ep_rating_avg: 4
+//     },
+//     {
+//         title: "복학왕",
+//         thumbnail: "http://placeimg.com/128/128/any",
+//         artist: "기안84",
+//         ep_rating_avg: 3
+//     },
+//     {
+//         title: "신의탑",
+//         thumbnail: "http://placeimg.com/128/128/any",
+//         artist: "siu",
+//         ep_rating_avg: 5
+//     },
+//     {
+//         title: "여신강림",
+//         thumbnail: "http://placeimg.com/128/128/any",
+//         artist: "냥",
+//         ep_rating_avg: 4
+//     }
+// ]
 
 //오늘 날짜 불러오는 함수
 class Clock extends Component {
@@ -152,7 +152,7 @@ export default function Home() {
             redirect: 'follow'
         };
     
-        fetch("/webtoonlist?page="+page+"&sortBy="+sortBy, requestOptions)
+        fetch("/webtoons?page=" + page + "&sortBy=" + sortBy, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -194,7 +194,7 @@ export default function Home() {
                 </div>
             </div>
 
-            <div className={classes.todayBest}>
+            {/* <div className={classes.todayBest}>
                 <Paper elevation={3} >
                     <div className={classes.titleMargin}>
                         <h4>오늘의 인기 도전 만화</h4>
@@ -203,12 +203,12 @@ export default function Home() {
                     <Grid container justify="center" direction="row" spacing={8}>
                         {webtoons.map(webtoon => (
                             <Grid key={webtoon.title} item>
-                                <Webtoon title={webtoon.title} thumbnail={webtoon.thumbnail} artist={webtoon.artist} ep_rating_avg={webtoon.ep_rating_avg} />
+                                <Webtoon title={webtoon.title} thumbnail={webtoon.thumbnail} artist={webtoon.artist} rating_avg={webtoon.rating_avg} />
                             </Grid>
                         ))}
                     </Grid>
                 </Paper>
-            </div>
+            </div> */}
 
             <div className={classes.webtoonList}>
                 <Paper elevation={3}>
@@ -225,7 +225,7 @@ export default function Home() {
                             <GridList cellHeight={250} className={classes.gridList} spacing={15} cols={5}>
                                 {list.map(webtoon => (
                                     <GridListTile key={webtoon.idx} item="true" >
-                                        <Webtoon title={webtoon.title} thumbnail={webtoon.thumbnail} author={webtoon.author} ep_rating_avg={webtoon.epRatingAvg} idx={webtoon.idx} />
+                                        <Webtoon title={webtoon.title} thumbnail={webtoon.thumbnail} author={webtoon.author} rating_avg={webtoon.ratingAvg} idx={webtoon.idx} />
                                     </GridListTile>
                                 ))}
                             </GridList>
@@ -239,7 +239,7 @@ export default function Home() {
                             <GridList cellHeight={250} className={classes.gridList} spacing={15} cols={5}>
                                 {list.map(webtoon => (
                                     <GridListTile key={webtoon.idx} item="true" >
-                                        <Webtoon title={webtoon.title} thumbnail={webtoon.thumbnail} author={webtoon.author} ep_rating_avg={webtoon.epRatingAvg} idx={webtoon.idx} />
+                                        <Webtoon title={webtoon.title} thumbnail={webtoon.thumbnail} author={webtoon.author} ep_rating_avg={webtoon.ratingAvg} idx={webtoon.idx} />
                                     </GridListTile>
                                 ))}
                             </GridList>
@@ -253,7 +253,7 @@ export default function Home() {
                             <GridList cellHeight={250} className={classes.gridList} spacing={15} cols={5}>
                                 {list.map(webtoon => (
                                     <GridListTile key={webtoon.idx} item="true" >
-                                        <Webtoon title={webtoon.title} thumbnail={webtoon.thumbnail} author={webtoon.author} ep_rating_avg={webtoon.epRatingAvg} idx={webtoon.idx} />
+                                        <Webtoon title={webtoon.title} thumbnail={webtoon.thumbnail} author={webtoon.author} ep_rating_avg={webtoon.ratingAvg} idx={webtoon.idx} />
                                     </GridListTile>
                                 ))}
                             </GridList>

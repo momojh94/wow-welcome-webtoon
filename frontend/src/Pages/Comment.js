@@ -68,7 +68,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function Comment() {
     const [myComments, setMyComments] = React.useState([]);
-    //const [renderFlag,setRenderFlag]=React.useState(0);
 
     React.useEffect(() => {
         loadMyComments(1);
@@ -81,7 +80,7 @@ export default function Comment() {
         setChecked(event.target.checked);
     };
 
-    const [pageNum,setPageNum]=React.useState("");
+    const [pageNum,setPageNum] = React.useState("");
     
     /* 내 댓글 목록 조회 */
     const loadMyComments = (page) => {
@@ -219,7 +218,7 @@ export default function Comment() {
                                             {myComment.webtoon_title}
                                         </div>
                                     </TableCell>
-                                    <TableCell align="center">{myComment.ep_no}화</TableCell>
+                                    <TableCell align="center">{myComment.epNo}화</TableCell>
                                     <TableCell align="center">
                                         <div className={classes.commentField}>
                                             {myComment.content}

@@ -2,7 +2,6 @@ package com.www.platform.service;
 
 import com.www.core.auth.entity.User;
 import com.www.core.auth.repository.UserRepository;
-
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.repository.EpisodeRepository;
@@ -15,11 +14,15 @@ import com.www.platform.dto.CommentsResponseDto;
 import com.www.platform.dto.MyPageCommentDto;
 import com.www.platform.dto.MyPageCommentsResponseDto;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**

@@ -29,7 +29,7 @@ public class TokenChecker {
 			return Long.parseLong(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("user_idx").toString());
 			//return Integer.parseInt(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().get("user_idx").toString());
 		} catch (ExpiredJwtException e) { //만료된 token이라도 user idx 반환
-			return (Long) e.getClaims().get("user_idx");
+			return Long.parseLong(String.valueOf(e.getClaims().get("user_idx")));
 		} catch (Exception e) {
 			return -1L; //error
 		}
@@ -76,6 +76,4 @@ public class TokenChecker {
 			return 2; // 올바르지않은 토큰
 		}
 	}
-	
-
 }
