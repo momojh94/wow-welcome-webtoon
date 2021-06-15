@@ -55,22 +55,13 @@ public class WebtoonController {
 	@GetMapping("/users/webtoons")
 	public Response<WebtoonPage> getMyWebtoons(@RequestHeader("Authorization") String accessToken,
 											   @RequestParam(value="page", defaultValue = "1") Integer page){
-		Response<WebtoonPage> res = new Response<WebtoonPage>();
+		Response<WebtoonPage> res = new Response<>();
 		int n = tokenChecker.validateToken(accessToken);
 		Long userIdx = tokenChecker.getUserIdx(accessToken);
-		// System.out.println("/users/webtoons&page=" + page);
 
 		switch(n) {
 			case 0: //유효한 토큰
-				WebtoonPage webtoonpage = webtoonService.getWebtoonList(page, res, userIdx);
-				switch(res.getCode()) {
-					case 0:
-						res.setData(webtoonpage);
-						break;
-					case 1:
-						break;
-				}
-				return res;
+				res = webtoonService.getMyWebtoons(page, userIdx);
 			case 1:
 				res.setCode(40);
 				res.setMsg("reissue tokens");
@@ -88,41 +79,13 @@ public class WebtoonController {
 	@GetMapping("/webtoons")
 	public Response<MainWebtoonPage> getWebtoons(@RequestParam(value="page", defaultValue = "1") Integer page,
 												 @RequestParam(value="sortBy", defaultValue = "0") int sort ){
-		Response<MainWebtoonPage> res = new Response<MainWebtoonPage>();
-		MainWebtoonPage webtoonpage =  webtoonService.getWebtoonList(page,res,sort);
-		// System.out.println("/webtoons&page=" + page + "sortBy&=" + sort);
-
-		switch(res.getCode()) {
-			case 0:
-				res.setData(webtoonpage);
-				break;
-			case 1:
-				break;
-		}
-		return res;
+		return webtoonService.getWebtoons(page, sort);
 	}
 
 	// 해당 웹툰 정보 출력
 	@GetMapping("/webtoons/{webtoonIdx}")
 	public Response<WebtoonDto> getWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx) throws IOException {
-		return webtoonService.getWebtoonInfo(webtoonIdx);
-
-		/*Response<WebtoonDto> res = new Response<WebtoonDto>();
-		int n = tokenChecker.validateToken(accessToken);
-		switch(n) {
-			case 0:
-
-			case 1:
-				res.setCode(40);
-				res.setMsg("reissue tokens");
-				break;
-			case 2:
-				res.setCode(42);
-				res.setMsg("access denied : maybe captured or faked token");
-				break;
-		}
-
-		return res;*/
+		return webtoonService.getWebtoon(webtoonIdx);
 	}
 	
 	//내 웹툰 정보 수정
@@ -131,22 +94,21 @@ public class WebtoonController {
 											@RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
 											@RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
 											@RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
-		
 		WebtoonDto webtoonDto = new WebtoonDto(title, storyType, storyGenre1, storyGenre2, summary, plot, endFlag);
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		int n = tokenChecker.validateToken(accessToken);
 		
 		switch(n) {
-		case 0: 
-			return webtoonService.editWebtoon(idx, file, webtoonDto);
-		case 1: 
-			res.setCode(40);
-			res.setMsg("reissue tokens");
-			break;
-		case 2: 
-			res.setCode(42);
-			res.setMsg("access denied : maybe captured or faked token");
-			break;
+			case 0:
+				return webtoonService.editWebtoon(idx, file, webtoonDto);
+			case 1:
+				res.setCode(40);
+				res.setMsg("reissue tokens");
+				break;
+			case 2:
+				res.setCode(42);
+				res.setMsg("access denied : maybe captured or faked token");
+				break;
 		}
 		
 		return res;
@@ -157,19 +119,20 @@ public class WebtoonController {
 	public Response<Long> deleteWebtoon(@RequestHeader("Authorization") String accessToken,
 										@PathVariable("webtoonIdx") Long idx){
 		Response<Long> res = new Response<Long>();
-		int tk = tokenChecker.validateToken(accessToken);
+		int n = tokenChecker.validateToken(accessToken);
 		Long userIdx = tokenChecker.getUserIdx(accessToken);
-		switch(tk) {
-		case 0: 
-			return  webtoonService.deleteWebtoon(idx, userIdx);
-		case 1:
-			res.setCode(40);
-			res.setMsg("reissue tokens");
-			break;
-		case 2: 
-			res.setCode(42);
-			res.setMsg("access denied : maybe captured or faked token");
-			break;
+
+		switch(n) {
+			case 0:
+				return  webtoonService.deleteWebtoon(idx, userIdx);
+			case 1:
+				res.setCode(40);
+				res.setMsg("reissue tokens");
+				break;
+			case 2:
+				res.setCode(42);
+				res.setMsg("access denied : maybe captured or faked token");
+				break;
 		}
 		
 		return res;

@@ -71,7 +71,8 @@ public class WebtoonService {
 	}
 
 	@Transactional
-	public MainWebtoonPage getWebtoonList(Integer pageNum, Response<MainWebtoonPage> res, int sort) {
+	public Response<MainWebtoonPage> getWebtoons(Integer pageNum, int sort) {
+		Response<MainWebtoonPage> res = new Response<>();
 		Page<Webtoon> page = null;
 		switch(sort) {
 			//기본정렬
@@ -99,15 +100,17 @@ public class WebtoonService {
 		int totalpages = page.getTotalPages();
 
 		//등록된 웹툰이 없을 경우
-		if(totalpages == 0 ) totalpages = 1;
+		if (totalpages == 0) {
+			totalpages = 1;
+		}
 
 		//요청한 페이지 번호가 유효한 범위인지 체크
-		if(pageNum>0 && pageNum<=totalpages) {
-			for(Webtoon webtoon : webtoons) {
+		if (pageNum > 0 && pageNum <= totalpages) {
+			for (Webtoon webtoon : webtoons) {
 				MainWebtoonDto webtoonDto = MainWebtoonDto.builder()
 						.idx(webtoon.getIdx())
 						.title(webtoon.getTitle())
-						.thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail())
+						.thumbnail("http://localhost:8081/static/web_thumbnail/" + webtoon.getThumbnail())
 						.storyGenre1(webtoon.getStoryGenre1())
 						.storyGenre2(webtoon.getStoryGenre2())
 						.author(webtoon.getUser().getName())
@@ -118,15 +121,14 @@ public class WebtoonService {
 			}
 			res.setCode(0);
 			res.setMsg("show complete");
-		}
-
-		else {
+		} else {
 			res.setCode(1);
 			res.setMsg("fail : pageNum is not in valid range");
 		}
 
 		MainWebtoonPage mainWebtoonPage = new MainWebtoonPage(webtoonListDto, totalpages);
-		return mainWebtoonPage;
+		res.setData(mainWebtoonPage);
+		return res;
 	}
 	
 	@Transactional
@@ -169,53 +171,54 @@ public class WebtoonService {
 	}
 	
 	@Transactional
-	public WebtoonPage getWebtoonList(Integer pageNum, Response<WebtoonPage> res, Long user_idx) {
+	public Response<WebtoonPage> getMyWebtoons(Integer pageNum, Long userIdx) {
+		Response<WebtoonPage> res = new Response<>();
 		Pageable pageable = PageRequest.of(pageNum-1, PAGE_WEBTOON_COUNT);
-		Page<Webtoon> page = webtoonRepository.findAllByUserIdx(pageable, user_idx);
+		Page<Webtoon> page = webtoonRepository.findAllByUserIdx(pageable, userIdx);
 	    List<WebtoonListDto> webtoonListDto = new ArrayList<>();
 		WebtoonPage webtoonPage = null;
 		int totalpages = page.getTotalPages();
-		if(totalpages == 0 ) totalpages =1;
+		if (totalpages == 0) {
+			totalpages = 1;
+		}
 		
 		//요청한 페이지 번호가 유효한 범위인지 체크
-		if(pageNum>0 && pageNum<=totalpages) {
+		if (pageNum > 0 && pageNum <= totalpages) {
 			List<Webtoon> webtoons = page.getContent();
-			for(Webtoon webtoon : webtoons) {
+			for (Webtoon webtoon : webtoons) {
 				WebtoonListDto webtoonDto = WebtoonListDto.builder()
 						.idx(webtoon.getIdx())
 						.title(webtoon.getTitle())
-						.thumbnail("http://localhost:8081/static/web_thumbnail/"+webtoon.getThumbnail())
+						.thumbnail("http://localhost:8081/static/web_thumbnail/" + webtoon.getThumbnail())
 						.createdDate(webtoon.getCreatedDate())
 						.build();
-				
+
 				List<Episode> episodeList = webtoon.getEpisodes();
-				
+
 				//웹툰 업데이트일 필드 
 				//회차가 1개 이상 등록된 경우 가장 최신 회차의 업데이트 시간으로 설정
-				if(!episodeList.isEmpty()) {
-		        	Episode e = episodeList.get(episodeList.size()-1);
-		        	LocalDateTime lastUpdate = e.getUpdatedDate();
-		        	webtoonDto.setLastUpdated(lastUpdate);
-		        }
-		        
-		        //회차가 등록되어있지 않은 경우 웹툰 생성시간으로 설정
-		        else {
-		        	webtoonDto.setLastUpdated(webtoon.getCreatedDate());
-		        }
+				if (!episodeList.isEmpty()) {
+					Episode e = episodeList.get(episodeList.size() - 1);
+					LocalDateTime lastUpdate = e.getUpdatedDate();
+					webtoonDto.setLastUpdated(lastUpdate);
+				}
+
+				//회차가 등록되어있지 않은 경우 웹툰 생성시간으로 설정
+				else {
+					webtoonDto.setLastUpdated(webtoon.getCreatedDate());
+				}
 				webtoonListDto.add(webtoonDto);
 			}
 			webtoonPage = new WebtoonPage(webtoonListDto, totalpages);
 			res.setCode(0);
-		    res.setMsg("show complete");
+			res.setMsg("show complete");
+		} else {
+			res.setCode(1);
+			res.setMsg("fail : pageNum is not in valid range");
 		}
-		
-		else {
-	    	res.setCode(1);
-	    	res.setMsg("fail : pageNum is not in valid range");
-		}
-		
-	    return webtoonPage;
-        
+
+		res.setData(webtoonPage);
+	    return res;
 	}
 	
 	
@@ -230,72 +233,71 @@ public class WebtoonService {
         }
 		
 		checkCondition(file, webtoonDto, res);
-		
-		if(res.getCode()!=0)
+
+		if (res.getCode() != 0) {
 			return res;
-		else {
+		} else {
 			Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(idx);
-	        Webtoon webtoon = WebtoonEntityWrapper.get();
-	        
-	        webtoon.setEndFlag(webtoonDto.getEndFlag());
-	        webtoon.setStoryGenre1(webtoonDto.getStoryGenre1());
-	        webtoon.setStoryGenre2(webtoonDto.getStoryGenre2());
-	        webtoon.setPlot(webtoonDto.getPlot());
-	        webtoon.setSummary(webtoonDto.getSummary());
-	        webtoon.setTitle(webtoonDto.getTitle());
-	        webtoon.setStoryType(webtoonDto.getStoryType());
-	        
-	        if(!file.isEmpty()) {
-	        	UUID uuid = UUID.randomUUID();
+			Webtoon webtoon = WebtoonEntityWrapper.get();
+
+			webtoon.setEndFlag(webtoonDto.getEndFlag());
+			webtoon.setStoryGenre1(webtoonDto.getStoryGenre1());
+			webtoon.setStoryGenre2(webtoonDto.getStoryGenre2());
+			webtoon.setPlot(webtoonDto.getPlot());
+			webtoon.setSummary(webtoonDto.getSummary());
+			webtoon.setTitle(webtoonDto.getTitle());
+			webtoon.setStoryType(webtoonDto.getStoryType());
+
+			if (!file.isEmpty()) {
+				UUID uuid = UUID.randomUUID();
 				String fileName = uuid + "_" + file.getOriginalFilename();
 				System.out.println(fileName);
 				webtoonDto.setThumbnail(fileName);
 				//file 외부 폴더로 이동
-				File destinationFile = new File(filePath+"/web_thumbnail/"+fileName);
+				File destinationFile = new File(filePath + "/web_thumbnail/" + fileName);
 				destinationFile.getParentFile().mkdir();
 				file.transferTo(destinationFile);
 			}
-	        
-	        webtoonRepository.save(webtoon);
-	        res.setData(webtoonDto);
-	        return res;
+
+			webtoonRepository.save(webtoon);
+			res.setData(webtoonDto);
+			return res;
 		}
 	}
 	
-	public Response<Long> deleteWebtoon(Long idx, Long user_idx) {
+	public Response<Long> deleteWebtoon(Long webtoonIdx, Long userIdx) {
 		Response<Long> res = new Response<Long>();
+
         //해당 웹툰 idx가 유효한지 체크
-		System.out.println("*****웹툰 삭제 idx 체크 : " + idx);
-        if(!webtoonRepository.existsById(idx)) {
-        	res.setCode(1);
+		if (!webtoonRepository.existsById(webtoonIdx)) {
+			res.setCode(1);
 			res.setMsg("delete fail: Webtoon do not exists");
-        }
-        else {
-        	Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(idx);
-            Webtoon webtoon = WebtoonEntityWrapper.get();
-            if(webtoon.getUser().getIdx() != user_idx) {
-            	res.setMsg("delete fail: user do not have authority");
-            	res.setCode(1);
-            }
-            else {
-            	webtoonRepository.delete(webtoon);
-            	res.setMsg("delete complete");
-                res.setCode(0);
-            }
-        }
+		} else {
+			Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(webtoonIdx);
+			Webtoon webtoon = WebtoonEntityWrapper.get();
+			if (webtoon.getUser().getIdx() != userIdx) {
+				res.setMsg("delete fail: user do not have authority");
+				res.setCode(1);
+			} else {
+				webtoonRepository.delete(webtoon);
+				res.setMsg("delete complete");
+				res.setCode(0);
+			}
+		}
+
         return res;
-        
 	}
 	
-	public Response<WebtoonDto> getWebtoonInfo(Long idx){
+	public Response<WebtoonDto> getWebtoon(Long webtoonIdx){
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
-		
-		if(!webtoonRepository.existsById(idx)) {
+
+		if (!webtoonRepository.existsById(webtoonIdx)) {
 			res.setCode(1);
 			res.setMsg("Webtoon do not exist");
 			return res;
 		}
-		Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(idx);
+
+		Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(webtoonIdx);
         Webtoon webtoon = WebtoonEntityWrapper.get();
         
 		WebtoonDto webtoonDto = WebtoonDto.builder()
@@ -313,7 +315,5 @@ public class WebtoonService {
 		res.setMsg("get webtoon info");
 		
 		return res;
-		
 	}
-
 }
