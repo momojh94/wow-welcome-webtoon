@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -56,7 +55,6 @@ public class Webtoon extends BaseTimeEntity {
 	private float ratingAvg;
 
 	@Column
-	@ColumnDefault("0L")
 	private Long hits;
 
 	@OneToMany(fetch=FetchType.EAGER, orphanRemoval = true , cascade = CascadeType.REMOVE, mappedBy = "webtoon")
@@ -81,5 +79,6 @@ public class Webtoon extends BaseTimeEntity {
 		this.endFlag = endFlag;
 		this.user = user;
 		this.ratingAvg = ratingAvg;
+		this.hits = 0L;
 	}
 }

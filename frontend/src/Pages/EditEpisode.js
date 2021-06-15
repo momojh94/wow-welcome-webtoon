@@ -65,7 +65,7 @@ export default function EditEpisode() {
             redirect: 'follow'
         };
 
-        fetch("/webtoons/" + webtoonIdx + "?page=1", requestOptions)
+        fetch("/webtoons/" + webtoonIdx + "/episodes?page=1", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -174,7 +174,7 @@ export default function EditEpisode() {
                                         </Button>
                                     </TableCell>
                                     <TableCell align="center">
-                                        <Button variant="contained" onClick={() => episodeDelete(episode.epNo)}>
+                                        <Button variant="contained" onClick={() => episodeDelete(episode.ep_no)}>
                                             <span style={{ color: "#212121", fontWeight: 520 }}>삭제</span>
                                         </Button>
                                     </TableCell>
