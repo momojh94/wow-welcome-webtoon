@@ -103,7 +103,7 @@ export default function Register() {
          
             img.src = window.URL.createObjectURL(file);
             img.onload = function() {
-                if(img.height <=330 && img.width<=430){
+                if(img.height <= 330 && img.width<= 430){
                     alert("파일이 선택되었습니다.")
                     setThumbnail(file);
                 }

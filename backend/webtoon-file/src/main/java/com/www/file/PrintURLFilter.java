@@ -22,13 +22,13 @@ public class PrintURLFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println("PrintURLFilter doFileter() 시작 ------------------------------------");
+        //System.out.println("PrintURLFilter doFileter() 시작");
 
         HttpServletRequest req = (HttpServletRequest) request;
-        System.out.println("요청 URL: " + req.getRequestURI() + " --------------------------------");
+        System.out.println(req.getMethod() + " " + req.getRequestURI() + "\n");
         chain.doFilter(request, response);
 
-        System.out.println("PrintURLFilter doFileter() 끝 ------------------------------------");
+        //System.out.println("PrintURLFilter doFileter() 끝\n");
     }
 
     @Override
