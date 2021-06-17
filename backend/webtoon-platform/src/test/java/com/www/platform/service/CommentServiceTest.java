@@ -1,11 +1,14 @@
 package com.www.platform.service;
 
-import com.www.core.auth.enums.Gender;
 import com.www.core.auth.entity.User;
+import com.www.core.auth.enums.Gender;
 import com.www.core.auth.repository.UserRepository;
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
+import com.www.core.file.enums.EndFlag;
+import com.www.core.file.enums.StoryGenre;
+import com.www.core.file.enums.StoryType;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.platform.entity.Comment;
 import com.www.core.platform.repository.CommentDislikeRepository;
@@ -83,13 +86,13 @@ public class CommentServiceTest {
         webtoon = Webtoon.builder()
                 .idx(1L)
                 .title("웹툰 제목")
-                .toonType((byte) 0)
-                .genre1((byte) 0)
-                .genre2((byte) 0)
+                .storyType(StoryType.EPISODE)
+                .storyGenre1(StoryGenre.DAILY)
+                .storyGenre2(StoryGenre.GAG)
                 .summary("웹툰 한줄 요약")
                 .plot("줄거리")
                 .thumbnail("thumbnail.jpg")
-                .endFlag((byte) 0)
+                .endFlag(EndFlag.ONGOING)
                 .build();
 
         episode = Episode.builder()

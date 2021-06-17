@@ -7,6 +7,9 @@ import com.www.core.common.Response;
 import com.www.core.common.TokenChecker;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
+import com.www.core.file.enums.EndFlag;
+import com.www.core.file.enums.StoryGenre;
+import com.www.core.file.enums.StoryType;
 import com.www.core.platform.entity.Comment;
 import com.www.platform.dto.*;
 import com.www.platform.service.CommentLikeDislikeService;
@@ -62,7 +65,6 @@ public class CommentControllerTest {
     private MockMvc mockMvc;
 
     private ObjectMapper objectMapper;
-
     private RestDocumentationResultHandler documentationHandler;
     private User user;
     private Webtoon webtoon;
@@ -102,13 +104,13 @@ public class CommentControllerTest {
         webtoon = Webtoon.builder()
                 .idx(1L)
                 .title("웹툰 제목")
-                .toonType((byte) 0)
-                .genre1((byte) 0)
-                .genre2((byte) 0)
+                .storyType(StoryType.EPISODE)
+                .storyGenre1(StoryGenre.DAILY)
+                .storyGenre2(StoryGenre.GAG)
                 .summary("웹툰 한줄 요약")
                 .plot("줄거리")
                 .thumbnail("thumbnailTest.jpg")
-                .endFlag((byte) 0)
+                .endFlag(EndFlag.ONGOING)
                 .build();
 
         episode = Episode.builder()

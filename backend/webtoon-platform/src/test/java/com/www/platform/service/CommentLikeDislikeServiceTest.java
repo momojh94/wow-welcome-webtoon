@@ -27,13 +27,15 @@ import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentLikeDislikeServiceTest {
-
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private CommentRepository commentRepository;
+
     @Mock
     private CommentLikeRepository commentLikeRepository;
+
     @Mock
     private CommentDislikeRepository commentDislikeRepository;
 
