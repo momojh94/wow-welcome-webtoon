@@ -8,20 +8,28 @@ import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.file.repository.WebtoonRepository;
 import com.www.core.platform.entity.StarRating;
 import com.www.core.platform.repository.StarRatingRepository;
-import com.www.platform.dto.*;
-import lombok.AllArgsConstructor;
+import com.www.platform.dto.EpisodeStarRatingResponseDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@AllArgsConstructor
 @Service
 public class StarRatingService {
     private UserRepository userRepository;
     private EpisodeRepository episodeRepository;
     private WebtoonRepository webtoonRepository;
     private StarRatingRepository starRatingRepository;
+
+    public StarRatingService(UserRepository userRepository,
+                             EpisodeRepository episodeRepository,
+                             WebtoonRepository webtoonRepository,
+                             StarRatingRepository starRatingRepository) {
+        this.userRepository = userRepository;
+        this.episodeRepository = episodeRepository;
+        this.webtoonRepository = webtoonRepository;
+        this.starRatingRepository = starRatingRepository;
+    }
 
     @Transactional
     public Response<EpisodeStarRatingResponseDto> insertStarRating(Long epIdx, Long userIdx, float rating) {

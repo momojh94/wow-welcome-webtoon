@@ -10,19 +10,27 @@ import com.www.core.platform.repository.CommentDislikeRepository;
 import com.www.core.platform.repository.CommentLikeRepository;
 import com.www.core.platform.repository.CommentRepository;
 import com.www.platform.dto.CommentLikeDislikeCountResponseDto;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@AllArgsConstructor
 @Service
 public class CommentLikeDislikeService {
     private UserRepository userRepository;
     private CommentRepository commentRepository;
     private CommentLikeRepository commentLikeRepository;
     private CommentDislikeRepository commentDislikeRepository;
+
+    public CommentLikeDislikeService(UserRepository userRepository,
+                                     CommentRepository commentRepository,
+                                     CommentLikeRepository commentLikeRepository,
+                                     CommentDislikeRepository commentDislikeRepository) {
+        this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.commentLikeRepository = commentLikeRepository;
+        this.commentDislikeRepository = commentDislikeRepository;
+    }
 
     @Transactional
     public Response<CommentLikeDislikeCountResponseDto> requestLike(Long userIdx, Long commentIdx) {

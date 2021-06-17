@@ -5,17 +5,23 @@ import com.www.core.common.TokenChecker;
 import com.www.platform.dto.*;
 import com.www.platform.service.CommentLikeDislikeService;
 import com.www.platform.service.CommentService;
-import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
 public class CommentController {
     private CommentService commentService;
     private CommentLikeDislikeService commentLikeDislikeService;
     private TokenChecker tokenChecker;
+
+    public CommentController(CommentService commentService,
+                             CommentLikeDislikeService commentLikeDislikeService,
+                             TokenChecker tokenChecker) {
+        this.commentService = commentService;
+        this.commentLikeDislikeService = commentLikeDislikeService;
+        this.tokenChecker = tokenChecker;
+    }
 
     @GetMapping("/episodes/{epIdx}/comments")
     public Response<CommentsResponseDto> getComments(@PathVariable("epIdx") Long epIdx,

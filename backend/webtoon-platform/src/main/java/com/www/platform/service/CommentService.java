@@ -13,7 +13,6 @@ import com.www.platform.dto.CommentDto;
 import com.www.platform.dto.CommentsResponseDto;
 import com.www.platform.dto.MyPageCommentDto;
 import com.www.platform.dto.MyPageCommentsResponseDto;
-import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,8 +32,6 @@ import java.util.stream.Collectors;
  * Spring 트랜잭션에 따라 다릅니다.
  */
 
-
-@AllArgsConstructor
 @Service
 public class CommentService {
     private CommentRepository commentRepository;
@@ -46,6 +43,18 @@ public class CommentService {
     //한 페이지 내의 최대 댓글 갯수
     public static final int COMMENTS_COUNT_PER_PAGE = 15;
     public static final int MYPAGE_COMMENTS_COUNT_PER_PAGE = 10;
+
+    public CommentService(CommentRepository commentRepository,
+                          CommentLikeRepository commentLikeRepository,
+                          CommentDislikeRepository commentDislikeRepository,
+                          UserRepository userRepository,
+                          EpisodeRepository episodeRepository) {
+        this.commentRepository = commentRepository;
+        this.commentLikeRepository = commentLikeRepository;
+        this.commentDislikeRepository = commentDislikeRepository;
+        this.userRepository = userRepository;
+        this.episodeRepository = episodeRepository;
+    }
 
     // 예외 발생시 모든 DB작업 초기화 해주는 어노테이션 ( 완료시에만 커밋해줌 )
     @Transactional
