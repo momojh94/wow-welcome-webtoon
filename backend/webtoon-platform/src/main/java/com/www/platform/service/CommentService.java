@@ -24,14 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * //import javax.transaction.Transactional;
- *
- * @Transactional에서 org.springframework.transaction.annotation.Transactional
- * 가 아니라에서 javax.transaction.Transactional같은 readOnly속성은
- * Spring 트랜잭션에 따라 다릅니다.
- */
-
 @Service
 public class CommentService {
     private CommentRepository commentRepository;
@@ -114,12 +106,6 @@ public class CommentService {
         return result;
     }
 
-    /**
-     * get Comments List by Page number
-     *
-     * @param epIdx episode idx
-     * @param page page number
-     */
     @Transactional(readOnly = true)
     public Response<CommentsResponseDto> getCommentsByPageRequest(Long epIdx, int page) {
         Response<CommentsResponseDto> result = new Response<CommentsResponseDto>();

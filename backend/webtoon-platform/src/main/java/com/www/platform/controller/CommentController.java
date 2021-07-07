@@ -5,6 +5,7 @@ import com.www.core.common.TokenChecker;
 import com.www.platform.dto.*;
 import com.www.platform.service.CommentLikeDislikeService;
 import com.www.platform.service.CommentService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class CommentController {
     @GetMapping("/episodes/{epIdx}/comments")
     public Response<CommentsResponseDto> getComments(@PathVariable("epIdx") Long epIdx,
                                                      @RequestParam("page") int page) {
+        ResponseEntity<Integer> a;
         return commentService.getCommentsByPageRequest(epIdx, page);
     }
 
