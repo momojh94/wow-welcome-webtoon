@@ -2,7 +2,8 @@ package com.www.platform.service;
 
 import com.www.core.auth.entity.User;
 import com.www.core.auth.repository.UserRepository;
-import com.www.core.common.Response;
+import com.www.core.common.exception.BusinessException;
+import com.www.core.common.exception.ErrorType;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.platform.entity.Comment;
@@ -21,8 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import static com.www.core.common.exception.ErrorType.*;
 
 @Service
 public class CommentService {
@@ -50,150 +51,84 @@ public class CommentService {
 
     // 예외 발생시 모든 DB작업 초기화 해주는 어노테이션 ( 완료시에만 커밋해줌 )
     @Transactional
-    public Response<Long> insertComment(Long userIdx, Long epIdx, String content) {
-        Response<Long> result = new Response<Long>();
-        Optional<User> user = userRepository.findById(userIdx);
-        Optional<Episode> episode = episodeRepository.findById(epIdx);
+    public void create(Long userIdx, Long epIdx, String content) {
+        User user = userRepository.findById(userIdx)
+                                  .orElseThrow(() -> new BusinessException(ErrorType.USER_NOT_FOUND));
+        Episode episode = episodeRepository.findById(epIdx)
+                                           .orElseThrow(() -> new BusinessException(ErrorType.EPISODE_NOT_FOUND));
 
-        if(200 < content.length()){
-            result.setCode(27);
-            result.setMsg("fail : content length is too long");
-        }
-        else if(!episode.isPresent()){ // 에피소드가 존재하지 않을 때
-            result.setCode(20);
-            result.setMsg("fail : episode doesn't exist");
-        }
-        else{   // 댓글 DB 저장
-            Comment comment = Comment.builder()
-                    .user(user.get())
-                    .ep(episode.get())
-                    .content(content)
-                    .build();
-            commentRepository.save(comment);
+        Comment comment = Comment.builder()
+                                 .user(user)
+                                 .ep(episode)
+                                 .content(content)
+                                 .build();
 
-            result.setCode(0);
-            result.setMsg("request complete : insert comment");
-        }
-
-        return result;
+        commentRepository.save(comment);
     }
 
     @Transactional
-    public Response<Long> deleteComment(Long userIdx, Long commentIdx) {
-        Response<Long> result = new Response<Long>();
-        Optional<User> users = userRepository.findById(userIdx);
-        Optional<Comment> comments = commentRepository.findById(commentIdx);
+    public void delete(Long userIdx, Long commentIdx) {
+        User user = userRepository.findById(userIdx)
+                                  .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+        Comment comment = commentRepository.findById(commentIdx)
+                                           .orElseThrow(() -> new BusinessException(COMMENT_NOT_FOUND));
 
-        if(comments.isPresent()){ // 유저가 해당 댓글의 주인이 아닐 때
-            if(userIdx != comments.get().getUser().getIdx()){
-                result.setCode(22);
-                result.setMsg("fail : user isn't commenter");
-            }
-            else{   // 댓글 삭제
-                commentLikeRepository.deleteAllByCommentIdx(commentIdx);
-                commentDislikeRepository.deleteAllBycommentIdx(commentIdx);
-                commentRepository.deleteById(commentIdx);
-                result.setCode(0);
-                result.setMsg("request complete : delete comment");
-            }
-        }
-        else    // 댓글이 이미 없을 때
-        {
-            result.setCode(21);
-            result.setMsg("fail : comment doesn't exist");
+        if(user.isNotCommenter(userIdx)) {
+            throw new BusinessException(ErrorType.USER_IS_NOT_COMMENTER);
         }
 
-        return result;
+        commentLikeRepository.deleteAllByCommentIdx(commentIdx);
+        commentDislikeRepository.deleteAllBycommentIdx(commentIdx);
+        commentRepository.deleteById(commentIdx);
+    }
+
+
+    @Transactional(readOnly = true)
+    public CommentsResponseDto getCommentsByPageRequest(Long epIdx, int page) {
+        if (page < 0) {
+            throw new BusinessException(ErrorType.INVALID_PAGE_VALUE);
+        }
+        page = page == 0 ? 1 : page;
+        Pageable pageable = PageRequest.of(page - 1, COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
+        Page<Comment> commentsPage = commentRepository.findAllByEpIdx(pageable, epIdx);
+
+        /*if (page > commentsPage.getTotalPages()) {
+            //
+        }*/
+
+        return CommentsResponseDto.builder()
+                                  .comments(commentsPage.stream()
+                                                        .map(CommentDto::new)
+                                                        .collect(Collectors.toList()))
+                                  .totalPages(commentsPage.getTotalPages())
+                                  .build();
     }
 
     @Transactional(readOnly = true)
-    public Response<CommentsResponseDto> getCommentsByPageRequest(Long epIdx, int page) {
-        Response<CommentsResponseDto> result = new Response<CommentsResponseDto>();
-
-        if(!episodeRepository.existsById(epIdx)) {    // 에피소드가 존재하지 않을 때
-            result.setCode(20);
-            result.setMsg("fail : episode doesn't exist");
-        }
-        else{
-            if(page < 1){
-                result.setCode(23);
-                result.setMsg("fail : invalid page number");
-                return result;
-            }
-
-            Pageable pageable = PageRequest.of(page - 1, COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
-            Page<Comment> commentsPage = commentRepository.findAllByEpIdx(pageable, epIdx);
-
-            if(page > commentsPage.getTotalPages() && page != 1){
-                result.setCode(23);
-                result.setMsg("fail : invalid page number");
-            }
-            else{
-                result.setCode(0);
-                result.setMsg("request complete : get comments by page request");
-                CommentsResponseDto commentsResponseDto
-                        = CommentsResponseDto.builder()
-                        .comments(commentsPage.stream()
+    public List<CommentDto> getBestComments(Long epIdx) {
+        return commentRepository.findBestCommentsByEpIdx(epIdx)
                                 .map(CommentDto::new)
-                                .collect(Collectors.toList()))
-                        .totalPages(commentsPage.getTotalPages())
-                        .build();
-
-                result.setData(commentsResponseDto);
-            }
-        }
-
-        return result;
+                                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public Response<List<CommentDto>> getBestComments(Long epIdx) {
-        Response<List<CommentDto>> result = new Response<List<CommentDto>>();
-
-        if(!episodeRepository.existsById(epIdx)) {  // 에피소드가 존재하지 않을 때
-            result.setCode(20);
-            result.setMsg("fail : episode doesn't exist");
+    public MyPageCommentsResponseDto getMyPageComments(Long userIdx, int page){
+        if (page < 0) {
+            throw new BusinessException(ErrorType.INVALID_PAGE_VALUE);
         }
-        else{
-            result.setData(commentRepository.findBestCommentsByEpIdx(epIdx)
-                    .map(CommentDto::new)
-                    .collect(Collectors.toList()));
-            result.setCode(0);
-            result.setMsg("requset complete : get best comments");
-        }
-
-        return result;
-    }
-
-    @Transactional(readOnly = true)
-    public Response<MyPageCommentsResponseDto> getMyPageComments(Long userIdx, int page){
-        Response<MyPageCommentsResponseDto> result = new Response<MyPageCommentsResponseDto>();
-
-        if(page < 1){
-            result.setCode(23);
-            result.setMsg("fail : invalid page number");
-            return result;
-        }
-
+        page = page == 0 ? 1 : page;
         Pageable pageable = PageRequest.of(page - 1, MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = commentRepository.findAllByUserIdx(pageable, userIdx);
 
-        if (page > commentsPage.getTotalPages() && page != 1) {
-            result.setCode(23);
-            result.setMsg("fail : invalid page number");
-            return result;
-        }
+        /*if (page > commentsPage.getTotalPages()) {
+            //
+        }*/
 
-        MyPageCommentsResponseDto myPageCommentsResponseDto
-                = MyPageCommentsResponseDto.builder()
-                .comments(commentsPage.stream()
-                        .map(MyPageCommentDto::new)
-                        .collect(Collectors.toList()))
-                .totalPages(commentsPage.getTotalPages())
-                .build();
-        result.setCode(0);
-        result.setMsg("request complete : get my page comments");
-        result.setData(myPageCommentsResponseDto);
-        return result;
+        return MyPageCommentsResponseDto.builder()
+                                        .comments(commentsPage.stream()
+                                                              .map(MyPageCommentDto::new)
+                                                              .collect(Collectors.toList()))
+                                        .totalPages(commentsPage.getTotalPages())
+                                        .build();
     }
 }

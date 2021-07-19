@@ -50,7 +50,7 @@ operation::comment-controller-test/get-my-page-comments[snippets='http-request,r
 === POST 댓글 등록
 - 해당 회차(ep_idx)에 대한 댓글을 등록합니다.
 
-operation::comment-controller-test/insert-comment[snippets='http-request,request-headers,path-parameters,request-fields,http-response,response-fields']
+operation::comment-controller-test/create-comment[snippets='http-request,request-headers,path-parameters,request-fields,http-response,response-fields']
 
 
 === POST 댓글 좋아요 요청
@@ -58,7 +58,7 @@ operation::comment-controller-test/insert-comment[snippets='http-request,request
 - 이전의 좋아요를 요청한 내역이 없으면 새롭게 좋아요 요청을 저장하고 좋아요 수를 1 증가합니다.
 - 이전의 좋아요를 요청한 내역이 있으면 내역을 삭제하고 좋아요 수를 1 감소합니다.
 
-operation::comment-controller-test/request-comment-like[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+operation::comment-like-dislike-controller-test/request-comment-like[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
 
 
 === POST 댓글 싫어요 요청
@@ -66,7 +66,7 @@ operation::comment-controller-test/request-comment-like[snippets='http-request,r
 - 이전의 싫어요를 요청한 내역이 없으면 새롭게 싫어요 요청을 저장하고 싫어요 수를 1 증가합니다.
 - 이전의 싫어요를 요청한 내역이 있으면 내역을 삭제하고 싫어요 수를 1 감소합니다.
 
-operation::comment-controller-test/request-comment-dislike[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
+operation::comment-like-dislike-controller-test/request-comment-dislike[snippets='http-request,request-headers,path-parameters,http-response,response-fields']
 
 
 === DEL 댓글 삭제

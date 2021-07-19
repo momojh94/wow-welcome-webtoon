@@ -1,7 +1,7 @@
 package com.www.file.controller;
 
 import com.www.core.common.Response;
-import com.www.core.common.TokenChecker;
+import com.www.core.common.service.TokenChecker;
 import com.www.core.file.enums.EndFlag;
 import com.www.core.file.enums.StoryGenre;
 import com.www.core.file.enums.StoryType;

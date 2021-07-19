@@ -1,16 +1,17 @@
 package com.www.platform.controller;
 
 import com.www.core.common.Response;
-import com.www.core.common.TokenChecker;
+import com.www.core.common.service.TokenChecker;
 import com.www.platform.dto.EpisodeStarRatingResponseDto;
 import com.www.platform.dto.StarRatingRequestDto;
 import com.www.platform.service.StarRatingService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class StarRatingController {
-    private StarRatingService starRatingService;
-    private TokenChecker tokenChecker;
+    private final StarRatingService starRatingService;
+    private final TokenChecker tokenChecker;
 
     public StarRatingController(StarRatingService starRatingService,
                                 TokenChecker tokenChecker) {
@@ -18,6 +19,7 @@ public class StarRatingController {
         this.tokenChecker = tokenChecker;
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/episodes/{epIdx}/rating")
     public Response<EpisodeStarRatingResponseDto> insertStarRating(@RequestHeader("Authorization") String AccessToken,
                                                                    @PathVariable("epIdx") Long epIdx, @RequestBody StarRatingRequestDto dto) {

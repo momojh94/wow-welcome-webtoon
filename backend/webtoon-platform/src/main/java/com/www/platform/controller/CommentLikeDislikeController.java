@@ -1,7 +1,7 @@
 package com.www.platform.controller;
 
 import com.www.core.common.Response;
-import com.www.core.common.TokenChecker;
+import com.www.core.common.service.TokenChecker;
 import com.www.platform.dto.CommentLikeDislikeCountResponseDto;
 import com.www.platform.service.CommentLikeDislikeService;
 import org.springframework.http.HttpStatus;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 public class CommentLikeDislikeController {

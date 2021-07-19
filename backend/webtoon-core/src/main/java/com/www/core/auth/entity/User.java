@@ -2,16 +2,22 @@ package com.www.core.auth.entity;
 
 import com.www.core.auth.enums.Gender;
 import com.www.core.common.BaseTimeEntity;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.sql.Date;
 
-@NoArgsConstructor
+
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
 	@Id
@@ -33,7 +39,7 @@ public class User extends BaseTimeEntity {
 	@Column(nullable = false)
 	private Gender gender;
 
-	@Column(nullable = false, length = 45)
+	@Column(length = 45, nullable = false)
 	private String email;
 
 	@Builder
@@ -46,4 +52,10 @@ public class User extends BaseTimeEntity {
 		this.gender = gender;
 		this.email = email;
 	}
+
+	public boolean isNotCommenter(Long userIdx) {
+		return this.idx != userIdx;
+	}
 }
+
+

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.www.core.auth.enums.Gender;
 import com.www.core.auth.entity.User;
 import com.www.core.common.Response;
-import com.www.core.common.TokenChecker;
+import com.www.core.common.service.TokenChecker;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
 import com.www.core.file.enums.EndFlag;
