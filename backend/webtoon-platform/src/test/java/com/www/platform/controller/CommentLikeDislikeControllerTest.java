@@ -3,7 +3,7 @@ package com.www.platform.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.www.core.auth.entity.User;
 import com.www.core.auth.enums.Gender;
-import com.www.core.common.Response;
+import com.www.core.common.ApiResponse;
 import com.www.core.common.service.TokenChecker;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
@@ -71,8 +71,8 @@ class CommentLikeDislikeControllerTest {
     private Episode episode;
     private Comment comment;
 
-    private static final String CODE = "code";
-    private static final String MESSAGE = "msg";
+    private static final String ERROR_CODE = "error_code";
+    private static final String MESSAGE = "message";
     private static final String DATA = "data";
     private static final String AUTH_HEADER = "AUTHORIZATION";
     private static final String ACCESS_TOKEN = "bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkeCI6MiwidXNlcl9uYW1lIjoi6rmA7Ju57YiwIiwiaWF0IjoxNjE5NDM5NDA3LCJleHAiOjE2MTk0NDMwMDd9.uCpvXtkLvhcDZMhfy5mMpo9J9V96SdN_LtDU5Z3as_s";
@@ -137,15 +137,11 @@ class CommentLikeDislikeControllerTest {
         //given
         CommentLikeDislikeCountResponseDto responseData =
                 new CommentLikeDislikeCountResponseDto(comment.getLikeCount() + 1);
-        Response<CommentLikeDislikeCountResponseDto> response = new Response<>();
-        response.setCode(0);
-        response.setMsg("request complete : success request like");
-        response.setData(responseData);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
         given(commentLikeDislikeService.requestLike(user.getIdx(), comment.getIdx()))
-                .willReturn(response);
+                .willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(post("/comments/{cmt_idx}/like", comment.getIdx())
@@ -154,8 +150,8 @@ class CommentLikeDislikeControllerTest {
 
         //then
         result.andExpect(status().isOk())
-              .andExpect(jsonPath(CODE).value(0))
-              .andExpect(jsonPath(MESSAGE).value("request complete : success request like"))
+              .andExpect(jsonPath(ERROR_CODE).isEmpty())
+              .andExpect(jsonPath(MESSAGE).value(ApiResponse.SUCCESS))
               .andExpect(jsonPath("data.count").value(comment.getLikeCount() + 1))
               .andDo(this.documentationHandler.document(
                       requestHeaders(
@@ -165,7 +161,7 @@ class CommentLikeDislikeControllerTest {
                               parameterWithName("cmt_idx").description("댓글의 idx")
                       ),
                       responseFields(
-                              fieldWithPath(CODE).description("응답 코드"),
+                              fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
                               fieldWithPath(MESSAGE).description("응답 메시지"),
                               subsectionWithPath(DATA).description("응답 데이터"),
                               fieldWithPath("data.count").description("좋아요 수").type(JsonFieldType.NUMBER)
@@ -178,15 +174,11 @@ class CommentLikeDislikeControllerTest {
         //given
         CommentLikeDislikeCountResponseDto responseData =
                 new CommentLikeDislikeCountResponseDto(comment.getDislikeCount() + 1);
-        Response<CommentLikeDislikeCountResponseDto> response = new Response<>();
-        response.setCode(0);
-        response.setMsg("request complete : success request dislike");
-        response.setData(responseData);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
         given(commentLikeDislikeService.requestDislike(user.getIdx(), comment.getIdx()))
-                .willReturn(response);
+                .willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(post("/comments/{cmt_idx}/dislike", comment.getIdx())
@@ -195,8 +187,8 @@ class CommentLikeDislikeControllerTest {
 
         //then
         result.andExpect(status().isOk())
-              .andExpect(jsonPath(CODE).value(0))
-              .andExpect(jsonPath(MESSAGE).value("request complete : success request dislike"))
+              .andExpect(jsonPath(ERROR_CODE).isEmpty())
+              .andExpect(jsonPath(MESSAGE).value(ApiResponse.SUCCESS))
               .andExpect(jsonPath("data.count").value(comment.getDislikeCount() + 1))
               .andDo(this.documentationHandler.document(
                       requestHeaders(
@@ -206,7 +198,7 @@ class CommentLikeDislikeControllerTest {
                               parameterWithName("cmt_idx").description("댓글의 idx")
                       ),
                       responseFields(
-                              fieldWithPath(CODE).description("응답 코드"),
+                              fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
                               fieldWithPath(MESSAGE).description("응답 메시지"),
                               subsectionWithPath(DATA).description("응답 데이터"),
                               fieldWithPath("data.count").description("싫어요 수").type(JsonFieldType.NUMBER)

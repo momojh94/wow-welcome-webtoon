@@ -49,6 +49,14 @@ public class Comment extends BaseCreatedTimeEntity {
         this.content = content;
         this.createdDate = createdDate;
     }
+
+    public boolean wasWrittenBy(Long userIdx) {
+        return this.user.getIdx() == userIdx;
+    }
+
+    public boolean wasWrittenBy(User user) {
+        return this.user.getIdx() == user.getIdx();
+    }
 }
 
 

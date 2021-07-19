@@ -186,7 +186,7 @@ public class CommentControllerTest {
                               parameterWithName("page").description("페이지 번호 (1 이상)")
                       ),
                       responseFields(
-                              fieldWithPath(ERROR_CODE).description("응답 코드"),
+                              fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
                               fieldWithPath(MESSAGE).description("응답 메시지"),
                               subsectionWithPath(DATA).description("응답 데이터"),
                               fieldWithPath("data.comments[]").description("댓글 목록").type(JsonFieldType.ARRAY),
@@ -238,7 +238,7 @@ public class CommentControllerTest {
                               parameterWithName("ep_idx").description("에피소드의 idx")
                       ),
                       responseFields(
-                              fieldWithPath(ERROR_CODE).description("응답 코드"),
+                              fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
                               fieldWithPath(MESSAGE).description("응답 메시지"),
                               subsectionWithPath(DATA).description("응답 데이터"),
                               fieldWithPath("data[]").description("베스트 댓글 목록(최대 5개)").type(JsonFieldType.ARRAY),
@@ -301,7 +301,7 @@ public class CommentControllerTest {
                               parameterWithName("page").description("페이지 번호 (1 이상)")
                       ),
                       responseFields(
-                              fieldWithPath(ERROR_CODE).description("응답 코드"),
+                              fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
                               fieldWithPath(MESSAGE).description("응답 메시지"),
                               subsectionWithPath(DATA).description("응답 데이터"),
                               fieldWithPath("data.comments[]").description("댓글 목록").type(JsonFieldType.ARRAY),
@@ -349,7 +349,7 @@ public class CommentControllerTest {
                               fieldWithPath("content").description("댓글 내용")
                       ),
                       responseFields(
-                              fieldWithPath(ERROR_CODE).description("응답 코드"),
+                              fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
                               fieldWithPath(MESSAGE).description("응답 메시지"),
                               subsectionWithPath(DATA).description("응답 데이터")
                       )));
@@ -381,7 +381,7 @@ public class CommentControllerTest {
                               parameterWithName("cmt_idx").description("댓글의 idx")
                       ),
                       responseFields(
-                              fieldWithPath(ERROR_CODE).description("응답 코드"),
+                              fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
                               fieldWithPath(MESSAGE).description("응답 메시지"),
                               subsectionWithPath(DATA).description("응답 데이터")
                       )));

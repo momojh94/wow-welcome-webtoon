@@ -53,9 +53,6 @@ public class User extends BaseTimeEntity {
 		this.email = email;
 	}
 
-	public boolean isNotCommenter(Long userIdx) {
-		return this.idx != userIdx;
-	}
 }
 
 

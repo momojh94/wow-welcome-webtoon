@@ -1,9 +1,8 @@
 package com.www.platform.service;
 
-import com.www.core.auth.enums.Gender;
 import com.www.core.auth.entity.User;
+import com.www.core.auth.enums.Gender;
 import com.www.core.auth.repository.UserRepository;
-import com.www.core.common.Response;
 import com.www.core.platform.entity.Comment;
 import com.www.core.platform.entity.CommentDislike;
 import com.www.core.platform.entity.CommentLike;
@@ -23,7 +22,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentLikeDislikeServiceTest {
@@ -89,20 +90,20 @@ public class CommentLikeDislikeServiceTest {
     void requestLike_success() {
         //given
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
-        given(commentRepository.findById(commentByOtherUser.getIdx())).willReturn(Optional.of(commentByOtherUser));
+        given(commentRepository.findById(commentByOtherUser.getIdx()))
+                .willReturn(Optional.of(commentByOtherUser));
         given(commentLikeRepository.existsByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
                 .willReturn(false);
 
         //when
-        Response<CommentLikeDislikeCountResponseDto> result = commentLikeDislikeService.requestLike(user.getIdx(), commentByOtherUser.getIdx());
+        CommentLikeDislikeCountResponseDto result
+                = commentLikeDislikeService.requestLike(user.getIdx(), commentByOtherUser.getIdx());
 
         //then
         assertAll(
                 () -> verify(commentLikeRepository).save(any(CommentLike.class)),
                 () -> verify(commentRepository).updateLikeCount(commentByOtherUser.getIdx(), 1),
-                () -> assertThat(result.getCode()).isEqualTo(0),
-                () -> assertThat(result.getMsg()).isEqualTo("request complete : success request like"),
-                () -> assertThat(result.getData().getCount()).isEqualTo(commentByOtherUser.getLikeCount() + 1)
+                () -> assertThat(result.getCount()).isEqualTo(commentByOtherUser.getLikeCount() + 1)
         );
     }
 
@@ -116,59 +117,22 @@ public class CommentLikeDislikeServiceTest {
                 .comment(commentByOtherUser)
                 .build();
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
-        given(commentRepository.findById(commentByOtherUser.getIdx())).willReturn(Optional.of(commentByOtherUser));
+        given(commentRepository.findById(commentByOtherUser.getIdx()))
+                .willReturn(Optional.of(commentByOtherUser));
         given(commentLikeRepository.existsByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
                 .willReturn(true);
         given(commentLikeRepository.findByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
                 .willReturn(commentLike);
 
         //when
-        Response<CommentLikeDislikeCountResponseDto> result = commentLikeDislikeService.requestLike(user.getIdx(), commentByOtherUser.getIdx());
+        CommentLikeDislikeCountResponseDto result =
+                commentLikeDislikeService.requestLike(user.getIdx(), commentByOtherUser.getIdx());
 
         //then
         assertAll(
                 () -> verify(commentLikeRepository).deleteByIdx(commentLike.getIdx()),
                 () -> verify(commentRepository).updateLikeCount(commentByOtherUser.getIdx(), -1),
-                () -> assertThat(result.getCode()).isEqualTo(0),
-                () -> assertThat(result.getMsg()).isEqualTo("request complete : cancel request like"),
-                () -> assertThat(result.getData().getCount()).isEqualTo(commentByOtherUser.getLikeCount() - 1)
-        );
-    }
-
-    @DisplayName("좋아요 요청 실패 - 존재하지 않은 댓글 접근")
-    @Test
-    void requestLike_fail_commentDoesNotExist() {
-        //given
-        Long emptyCommentIdx = 5L;
-        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
-        given(commentRepository.findById(emptyCommentIdx)).willReturn(Optional.empty());
-
-        //when
-        Response<CommentLikeDislikeCountResponseDto> result = commentLikeDislikeService.requestLike(user.getIdx(), emptyCommentIdx);
-
-        //then
-        assertAll(
-                () -> assertThat(result.getCode()).isEqualTo(21),
-                () -> assertThat(result.getMsg()).isEqualTo("fail : comment doesn't exist"),
-                () -> assertThat(result.getData()).isNull()
-        );
-    }
-
-    @DisplayName("좋아요 요청 실패 - 유저 자신이 쓴 댓글에 좋아요 요청 할 때")
-    @Test
-    void requestLike_fail_userIsLikeCommenter() {
-        //given
-        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
-        given(commentRepository.findById(commentByUser.getIdx())).willReturn(Optional.of(commentByUser));
-
-        //when
-        Response<CommentLikeDislikeCountResponseDto> result = commentLikeDislikeService.requestLike(user.getIdx(), commentByUser.getIdx());
-
-        //then
-        assertAll(
-                () -> assertThat(result.getCode()).isEqualTo(24),
-                () -> assertThat(result.getMsg()).isEqualTo("fail : users can't request like on their own comments"),
-                () -> assertThat(result.getData()).isNull()
+                () -> assertThat(result.getCount()).isEqualTo(commentByOtherUser.getLikeCount() - 1)
         );
     }
 
@@ -177,21 +141,20 @@ public class CommentLikeDislikeServiceTest {
     void requestDislike_success() {
         //given
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
-        given(commentRepository.findById(commentByOtherUser.getIdx())).willReturn(Optional.of(commentByOtherUser));
+        given(commentRepository.findById(commentByOtherUser.getIdx()))
+                .willReturn(Optional.of(commentByOtherUser));
         given(commentDislikeRepository.existsByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
                 .willReturn(false);
 
         //when
-        Response<CommentLikeDislikeCountResponseDto> result =
+        CommentLikeDislikeCountResponseDto result =
                 commentLikeDislikeService.requestDislike(user.getIdx(), commentByOtherUser.getIdx());
 
         //then
         assertAll(
                 () -> verify(commentDislikeRepository).save(any(CommentDislike.class)),
                 () -> verify(commentRepository).updateDislikeCount(commentByOtherUser.getIdx(), 1),
-                () -> assertThat(result.getCode()).isEqualTo(0),
-                () -> assertThat(result.getMsg()).isEqualTo("request complete : success request dislike"),
-                () -> assertThat(result.getData().getCount()).isEqualTo(commentByOtherUser.getDislikeCount() + 1)
+                () -> assertThat(result.getCount()).isEqualTo(commentByOtherUser.getDislikeCount() + 1)
         );
     }
 
@@ -205,62 +168,22 @@ public class CommentLikeDislikeServiceTest {
                 .comment(commentByOtherUser)
                 .build();
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
-        given(commentRepository.findById(commentByOtherUser.getIdx())).willReturn(Optional.of(commentByOtherUser));
+        given(commentRepository.findById(commentByOtherUser.getIdx()))
+                .willReturn(Optional.of(commentByOtherUser));
         given(commentDislikeRepository.existsByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
                 .willReturn(true);
         given(commentDislikeRepository.findByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
                 .willReturn(commentDislike);
 
         //when
-        Response<CommentLikeDislikeCountResponseDto> result =
+        CommentLikeDislikeCountResponseDto result =
                 commentLikeDislikeService.requestDislike(user.getIdx(), commentByOtherUser.getIdx());
 
         //then
         assertAll(
                 () -> verify(commentDislikeRepository).deleteByIdx(commentDislike.getIdx()),
                 () -> verify(commentRepository).updateDislikeCount(commentByOtherUser.getIdx(), -1),
-                () -> assertThat(result.getCode()).isEqualTo(0),
-                () -> assertThat(result.getMsg()).isEqualTo("request complete : cancel request dislike"),
-                () -> assertThat(result.getData().getCount()).isEqualTo(commentByOtherUser.getDislikeCount() - 1)
-        );
-    }
-
-    @DisplayName("싫어요 요청 실패 - 존재하지 않은 댓글 접근")
-    @Test
-    void requestDislike_fail_commentDoesNotExist() {
-        //given
-        Long emptyCommentIdx = 13L;
-        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
-        given(commentRepository.findById(emptyCommentIdx)).willReturn(Optional.empty());
-
-        //when
-        Response<CommentLikeDislikeCountResponseDto> result =
-                commentLikeDislikeService.requestDislike(user.getIdx(), emptyCommentIdx);
-
-        //then
-        assertAll(
-                () -> assertThat(result.getCode()).isEqualTo(21),
-                () -> assertThat(result.getMsg()).isEqualTo("fail : comment doesn't exist"),
-                () -> assertThat(result.getData()).isNull()
-        );
-    }
-
-    @DisplayName("싫어요 요청 실패 - 유저 자신이 쓴 댓글에 싫어요 요청 할 때")
-    @Test
-    void requestDislike_fail_userIsLikeCommenter() {
-        //given
-        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
-        given(commentRepository.findById(commentByUser.getIdx())).willReturn(Optional.of(commentByUser));
-
-        //when
-        Response<CommentLikeDislikeCountResponseDto> result =
-                commentLikeDislikeService.requestDislike(user.getIdx(), commentByUser.getIdx());
-
-        //then
-        assertAll(
-                () -> assertThat(result.getCode()).isEqualTo(25),
-                () -> assertThat(result.getMsg()).isEqualTo("fail : users can't request dislike on their own comments"),
-                () -> assertThat(result.getData()).isNull()
+                () -> assertThat(result.getCount()).isEqualTo(commentByOtherUser.getDislikeCount() - 1)
         );
     }
 }
