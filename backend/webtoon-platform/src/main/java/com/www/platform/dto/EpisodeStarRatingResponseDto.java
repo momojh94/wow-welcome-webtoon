@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EpisodeStarRatingResponseDto {
-    float ratingAvg;
-    int personTotal;
+
+    private float ratingAvg;
+    private int personTotal;
 
     @Builder
     public EpisodeStarRatingResponseDto(float ratingAvg, int personTotal) {

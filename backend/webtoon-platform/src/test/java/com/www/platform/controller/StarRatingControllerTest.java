@@ -137,7 +137,7 @@ public class StarRatingControllerTest {
     @Test
     void createStarRating() throws Exception {
         //given
-        float rating = 5f;
+        float rating = 3f;
         String requestBody = objectMapper.writeValueAsString(new EpisodeStarRatingRequestDto(rating));
         EpisodeStarRatingResponseDto responseData = EpisodeStarRatingResponseDto.builder()
                                                                                 .ratingAvg(3.66667f)

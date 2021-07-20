@@ -32,7 +32,7 @@ public class CommentLikeDislikeController {
                 if (-1 == userIdx) {
                     break;
                 }
-                return ApiResponse.of(commentLikeDislikeService.requestLike(userIdx, commentIdx));
+                return ApiResponse.succeed(commentLikeDislikeService.requestLike(userIdx, commentIdx));
             case 1: // 만료된 토큰
                 return ApiResponse.fail("44", "access denied : invalid access token");
             default:
@@ -51,7 +51,7 @@ public class CommentLikeDislikeController {
                 if (-1 == userIdx) {
                     break;
                 }
-                return ApiResponse.of(commentLikeDislikeService.requestDislike(userIdx, commentIdx));
+                return ApiResponse.succeed(commentLikeDislikeService.requestDislike(userIdx, commentIdx));
             case 1: // 만료된 토큰
                 return ApiResponse.fail("44", "access denied : invalid access token");
             default:

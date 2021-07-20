@@ -13,9 +13,9 @@ import com.www.core.platform.entity.Comment;
 import com.www.core.platform.repository.CommentDislikeRepository;
 import com.www.core.platform.repository.CommentLikeRepository;
 import com.www.core.platform.repository.CommentRepository;
-import com.www.platform.dto.CommentDto;
+import com.www.platform.dto.CommentResponseDto;
 import com.www.platform.dto.CommentsResponseDto;
-import com.www.platform.dto.MyPageCommentDto;
+import com.www.platform.dto.MyPageCommentResponseDto;
 import com.www.platform.dto.MyPageCommentsResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -73,8 +73,8 @@ public class CommentServiceTest {
     private Webtoon webtoon;
     private Episode episode;
     private Comment comment;
-    private String contentWithinSpecifiedLength = "제한된 길이(200자) 이내의 댓글 내용";
-    private final int CONTENT_MAX_LENGTH = 200;
+    private String contentWithinSpecifiedLength = "제한된 길이(500자) 이내의 댓글 내용";
+    private final int CONTENT_MAX_LENGTH = 500;
 
     @BeforeEach
     void beforeEach() {
@@ -214,7 +214,7 @@ public class CommentServiceTest {
                 .willReturn(bestCommentList.stream());
 
         //when
-        List<CommentDto> result = commentService.getBestComments(epIdx);
+        List<CommentResponseDto> result = commentService.getBestComments(epIdx);
 
         //then
         assertAll(
@@ -222,7 +222,7 @@ public class CommentServiceTest {
                                                        .map(Comment::getIdx)
                                                        .toArray(Long[]::new),
                         result.stream()
-                              .map(CommentDto::getIdx)
+                              .map(CommentResponseDto::getIdx)
                               .toArray(Long[]::new))
         );
     }
@@ -266,7 +266,7 @@ public class CommentServiceTest {
                                                .map(Comment::getIdx)
                                                .toArray(Long[]::new),
                         result.getComments().stream()
-                              .map(MyPageCommentDto::getIdx)
+                              .map(MyPageCommentResponseDto::getIdx)
                               .toArray(Long[]::new))
         );
     }

@@ -11,10 +11,10 @@ import com.www.core.file.enums.EndFlag;
 import com.www.core.file.enums.StoryGenre;
 import com.www.core.file.enums.StoryType;
 import com.www.core.platform.entity.Comment;
-import com.www.platform.dto.CommentDto;
-import com.www.platform.dto.CommentSaveRequestDto;
+import com.www.platform.dto.CommentResponseDto;
+import com.www.platform.dto.CommentCreateRequestDto;
 import com.www.platform.dto.CommentsResponseDto;
-import com.www.platform.dto.MyPageCommentDto;
+import com.www.platform.dto.MyPageCommentResponseDto;
 import com.www.platform.dto.MyPageCommentsResponseDto;
 import com.www.platform.service.CommentService;
 import org.junit.jupiter.api.BeforeEach;
@@ -160,7 +160,7 @@ public class CommentControllerTest {
         }
         CommentsResponseDto responseData = CommentsResponseDto.builder()
                                                               .comments(commentList.stream()
-                                                                                   .map(CommentDto::new)
+                                                                                   .map(CommentResponseDto::new)
                                                                                    .collect(Collectors.toList()))
                                                               .totalPages(1)
                                                               .build();
@@ -216,9 +216,9 @@ public class CommentControllerTest {
                                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                                    .build());
         }
-        List<CommentDto> responseData = commentList.stream()
-                                                   .map(CommentDto::new)
-                                                   .collect(Collectors.toList());
+        List<CommentResponseDto> responseData = commentList.stream()
+                                                           .map(CommentResponseDto::new)
+                                                           .collect(Collectors.toList());
 
         given(commentService.getBestComments(episode.getIdx()))
                 .willReturn(responseData);
@@ -270,7 +270,7 @@ public class CommentControllerTest {
         MyPageCommentsResponseDto responseData
                 = MyPageCommentsResponseDto.builder()
                                            .comments(commentList.stream()
-                                                                .map(MyPageCommentDto::new)
+                                                                .map(MyPageCommentResponseDto::new)
                                                                 .collect(Collectors.toList()))
                                            .totalPages(1)
                                            .build();
@@ -322,7 +322,7 @@ public class CommentControllerTest {
     void createComment() throws Exception {
         //given
         String requestBody = objectMapper.writeValueAsString(
-                new CommentSaveRequestDto(comment.getContent()));
+                new CommentCreateRequestDto(comment.getContent()));
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());

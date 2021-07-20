@@ -2,7 +2,7 @@ package com.www.platform.service;
 
 import com.www.core.auth.entity.User;
 import com.www.core.auth.repository.UserRepository;
-import com.www.core.common.exception.BusinessException;
+import com.www.core.common.exception.ApplicationException;
 import com.www.core.platform.entity.Comment;
 import com.www.core.platform.entity.CommentDislike;
 import com.www.core.platform.entity.CommentLike;
@@ -38,12 +38,12 @@ public class CommentLikeDislikeService {
     @Transactional
     public CommentLikeDislikeCountResponseDto requestLike(Long userIdx, Long commentIdx) {
         User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
         Comment comment = commentRepository.findById(commentIdx)
-                                           .orElseThrow(() -> new BusinessException(COMMENT_NOT_FOUND));
+                                           .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
 
         if (comment.wasWrittenBy(user)) {
-            throw new BusinessException(BAD_COMMENT_LIKE_REQUEST);
+            throw new ApplicationException(BAD_COMMENT_LIKE_REQUEST);
         }
 
         // 이미 눌렀던 좋아요 취소
@@ -77,12 +77,12 @@ public class CommentLikeDislikeService {
     @Transactional
     public CommentLikeDislikeCountResponseDto requestDislike(Long userIdx, Long commentIdx) {
         User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
         Comment comment = commentRepository.findById(commentIdx)
-                                           .orElseThrow(() -> new BusinessException(COMMENT_NOT_FOUND));
+                                           .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
 
         if (comment.wasWrittenBy(user)) {
-            throw new BusinessException(BAD_COMMENT_DISLIKE_REQUEST);
+            throw new ApplicationException(BAD_COMMENT_DISLIKE_REQUEST);
         }
 
         // 이미 눌렀던 싫어요 취소

@@ -7,11 +7,11 @@ import java.util.List;
 
 @Getter
 public class MyPageCommentsResponseDto {
-    private List<MyPageCommentDto> comments;
+    private List<MyPageCommentResponseDto> comments;
     private int totalPages;
 
     @Builder
-    public MyPageCommentsResponseDto(List<MyPageCommentDto> comments, int totalPages) {
+    public MyPageCommentsResponseDto(List<MyPageCommentResponseDto> comments, int totalPages) {
         this.comments = comments;
         this.totalPages = totalPages;
     }

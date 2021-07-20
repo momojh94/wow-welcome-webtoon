@@ -86,7 +86,7 @@ public class StarRatingServiceTest {
     @Test
     void insertStarRating () {
         //given
-        float rating = 8f;
+        float rating = 5f;
         given(starRatingRepository.existsByEpIdxAndUserIdx(episode.getIdx(), user.getIdx()))
                 .willReturn(false);
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));

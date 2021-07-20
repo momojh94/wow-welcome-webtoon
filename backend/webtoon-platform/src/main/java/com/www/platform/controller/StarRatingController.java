@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 public class StarRatingController {
     private final StarRatingService starRatingService;
@@ -28,14 +30,14 @@ public class StarRatingController {
     @PostMapping("/episodes/{epIdx}/rating")
     public ApiResponse<EpisodeStarRatingResponseDto> createStarRating(@RequestHeader("Authorization") String accessToken,
                                                                       @PathVariable("epIdx") Long epIdx,
-                                                                      @RequestBody EpisodeStarRatingRequestDto request) {
+                                                                      @RequestBody @Valid EpisodeStarRatingRequestDto request) {
         switch (tokenChecker.validateToken(accessToken)) {
             case 0: // 유효한 토큰
                 Long userIdx = tokenChecker.getUserIdx(accessToken);
                 if (userIdx == -1) {
                     break;
                 }
-                return ApiResponse.of(starRatingService.createStarRating(epIdx, userIdx, request.getRating()));
+                return ApiResponse.succeed(starRatingService.createStarRating(epIdx, userIdx, request.getRating()));
             case 1: // 만료된 토큰
                 return ApiResponse.fail("44", "access denied : invalid access token");
             default:

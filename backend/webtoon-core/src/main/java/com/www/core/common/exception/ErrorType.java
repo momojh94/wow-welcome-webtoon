@@ -3,7 +3,7 @@ package com.www.core.common.exception;
 public enum ErrorType {
 
     // 공통
-    INVALID_PAGE_VALUE(400, "COM000", "유효하지 않은 페이지 번호입니다."),
+    INVALID_REQUEST_VALUE(400, "C000", "적절하지 않은 요청 값 처리"),
 
     // 댓글
     COMMENT_NOT_FOUND(404, "CMT000", "댓글이 존재하지 않습니다."),
@@ -12,7 +12,7 @@ public enum ErrorType {
     BAD_COMMENT_DISLIKE_REQUEST(400, "CMT003", "User 자신이 쓴 댓글에 싫어요 요청을 할 수 없습니다"),
 
     // User
-    USER_NOT_FOUND(404, "USR000", "유저가 존재하지 않습니다."),
+    USER_NOT_FOUND(404, "U000", "유저가 존재하지 않습니다."),
 
     // 에피소드
     EPISODE_NOT_FOUND(404, "EP000", "에피소드(회차)가 존재하지 않습니다."),

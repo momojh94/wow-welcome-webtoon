@@ -25,15 +25,21 @@ public class ApiResponse<T> {
         return new ApiResponse<Void>(null, SUCCESS, null);
     }
 
-    public static <T> ApiResponse<T> of(T data) {
+    public static <T> ApiResponse<T> succeed(T data) {
         return new ApiResponse<>(null, SUCCESS, data);
+    }
+
+    public static <Void> ApiResponse<Void> fail(ErrorType errorType) {
+        return new ApiResponse<>(errorType.getCode(), errorType.getMessage(), null);
+    }
+
+    public static <Void> ApiResponse<Void> fail(ErrorType errorType, String errors) {
+        return new ApiResponse<>(errorType.getCode(), errors, null);
     }
 
     public static <Void> ApiResponse<Void> fail(String errorCode, String message) {
         return new ApiResponse<Void>(errorCode, message, null);
     }
 
-    public static <Void> ApiResponse<Void> fail(ErrorType errorType) {
-        return new ApiResponse<Void>(errorType.getCode(), errorType.getMessage(), null);
-    }
+
 }

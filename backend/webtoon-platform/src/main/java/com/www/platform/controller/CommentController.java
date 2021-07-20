@@ -2,8 +2,8 @@ package com.www.platform.controller;
 
 import com.www.core.common.ApiResponse;
 import com.www.core.common.service.TokenChecker;
-import com.www.platform.dto.CommentDto;
-import com.www.platform.dto.CommentSaveRequestDto;
+import com.www.platform.dto.CommentCreateRequestDto;
+import com.www.platform.dto.CommentResponseDto;
 import com.www.platform.dto.CommentsResponseDto;
 import com.www.platform.dto.MyPageCommentsResponseDto;
 import com.www.platform.service.CommentService;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,13 +36,13 @@ public class CommentController {
     @GetMapping("/episodes/{epIdx}/comments")
     public ApiResponse<CommentsResponseDto> getComments(@PathVariable("epIdx") Long epIdx,
                                                         @RequestParam("page") int page) {
-        return ApiResponse.of(commentService.getCommentsByPageRequest(epIdx, page));
+        return ApiResponse.succeed(commentService.getCommentsByPageRequest(epIdx, page));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/episodes/{epIdx}/comments/best")
-    public ApiResponse<List<CommentDto>> getBestComments(@PathVariable("epIdx") Long epIdx) {
-        return ApiResponse.of(commentService.getBestComments(epIdx));
+    public ApiResponse<List<CommentResponseDto>> getBestComments(@PathVariable("epIdx") Long epIdx) {
+        return ApiResponse.succeed(commentService.getBestComments(epIdx));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -54,7 +55,7 @@ public class CommentController {
                 if (userIdx == -1) {
                     break;
                 }
-                return ApiResponse.of(commentService.getMyPageComments(userIdx, page));
+                return ApiResponse.succeed(commentService.getMyPageComments(userIdx, page));
             case 1: // 만료된 토큰
                 return ApiResponse.fail("44", "access denied : invalid access token");
             default:
@@ -67,14 +68,14 @@ public class CommentController {
     @PostMapping("/episodes/{epIdx}/comments")
     public ApiResponse<Void> create(@RequestHeader("Authorization") String accessToken,
                                     @PathVariable("epIdx") Long epIdx,
-                                    @RequestBody CommentSaveRequestDto dto) {
+                                    @RequestBody @Valid CommentCreateRequestDto request) {
         switch (tokenChecker.validateToken(accessToken)) {
             case 0: // 유효한 토큰
                 Long userIdx = tokenChecker.getUserIdx(accessToken);
                 if (userIdx == -1) {
                     break;
                 }
-                commentService.create(userIdx, epIdx, dto.getContent());
+                commentService.create(userIdx, epIdx, request.getContent());
                 return ApiResponse.succeed();
             case 1: // 만료된 토큰
                 return ApiResponse.fail("44", "access denied : invalid access token");

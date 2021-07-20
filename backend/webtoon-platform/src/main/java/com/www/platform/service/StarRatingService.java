@@ -2,7 +2,7 @@ package com.www.platform.service;
 
 import com.www.core.auth.entity.User;
 import com.www.core.auth.repository.UserRepository;
-import com.www.core.common.exception.BusinessException;
+import com.www.core.common.exception.ApplicationException;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.file.repository.WebtoonRepository;
@@ -36,13 +36,13 @@ public class StarRatingService {
     @Transactional
     public EpisodeStarRatingResponseDto createStarRating(Long epIdx, Long userIdx, float rating) {
         if (starRatingRepository.existsByEpIdxAndUserIdx(epIdx, userIdx)) {
-            throw new BusinessException(USER_HAVE_ALREADY_RATED_EPISODE);
+            throw new ApplicationException(USER_HAVE_ALREADY_RATED_EPISODE);
         }
 
         User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
         Episode episode = episodeRepository.findById(epIdx)
-                                           .orElseThrow(() -> new BusinessException(EPISODE_NOT_FOUND));
+                                           .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
 
         StarRating starRating = StarRating.builder()
                                           .user(user)
