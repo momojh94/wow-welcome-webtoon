@@ -88,7 +88,7 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/comments/{cmtIdx}")
     public ApiResponse<Void> deleteComment(@RequestHeader("Authorization") String accessToken,
-                                        @PathVariable("cmtIdx") Long commentIdx) {
+                                           @PathVariable("cmtIdx") Long commentIdx) {
         switch (tokenChecker.validateToken(accessToken)) {
             case 0: // 유효한 토큰
                 Long userIdx = tokenChecker.getUserIdx(accessToken);

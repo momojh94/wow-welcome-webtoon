@@ -15,7 +15,8 @@ public enum ErrorType {
     USER_NOT_FOUND(404, "USR000", "유저가 존재하지 않습니다."),
 
     // 에피소드
-    EPISODE_NOT_FOUND(404, "EP000", "에피소드(회차)가 존재하지 않습니다.");
+    EPISODE_NOT_FOUND(404, "EP000", "에피소드(회차)가 존재하지 않습니다."),
+    USER_HAVE_ALREADY_RATED_EPISODE(400, "EP001", "유저는 이미 해당 에피소드에 별점을 등록했습니다.");
 
 
     private final int status;

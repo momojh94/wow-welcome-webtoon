@@ -1,9 +1,9 @@
 package com.www.platform.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.www.core.auth.enums.Gender;
 import com.www.core.auth.entity.User;
-import com.www.core.common.Response;
+import com.www.core.auth.enums.Gender;
+import com.www.core.common.ApiResponse;
 import com.www.core.common.service.TokenChecker;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
@@ -11,7 +11,8 @@ import com.www.core.file.enums.EndFlag;
 import com.www.core.file.enums.StoryGenre;
 import com.www.core.file.enums.StoryType;
 import com.www.core.platform.entity.Comment;
-import com.www.platform.dto.*;
+import com.www.platform.dto.EpisodeStarRatingRequestDto;
+import com.www.platform.dto.EpisodeStarRatingResponseDto;
 import com.www.platform.service.StarRatingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,12 +38,17 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,8 +72,8 @@ public class StarRatingControllerTest {
     private Episode episode;
     private Comment comment;
 
-    private static final String CODE = "code";
-    private static final String MESSAGE = "msg";
+    private static final String ERROR_CODE = "error_code";
+    private static final String MESSAGE = "message";
     private static final String DATA = "data";
     private static final String AUTH_HEADER = "AUTHORIZATION";
     private static final String ACCESS_TOKEN = "bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkeCI6MiwidXNlcl9uYW1lIjoi6rmA7Ju57YiwIiwiaWF0IjoxNjE5NDM5NDA3LCJleHAiOjE2MTk0NDMwMDd9.uCpvXtkLvhcDZMhfy5mMpo9J9V96SdN_LtDU5Z3as_s";
@@ -129,25 +135,19 @@ public class StarRatingControllerTest {
 
     @DisplayName("에피소드 별점 주기(등록)")
     @Test
-    void insertStarRating() throws Exception {
+    void createStarRating() throws Exception {
         //given
-        StarRatingRequestDto dto = new StarRatingRequestDto(5f);
-        String requestBody = objectMapper.writeValueAsString(dto);
-        EpisodeStarRatingResponseDto responseData =
-                EpisodeStarRatingResponseDto.builder()
-                        .rating(3.66667f)
-                        .personTotal(3)
-                        .build();
-
-        Response<EpisodeStarRatingResponseDto> response = new Response<>();
-        response.setCode(0);
-        response.setMsg("request complete : insert star rating");
-        response.setData(responseData);
+        float rating = 5f;
+        String requestBody = objectMapper.writeValueAsString(new EpisodeStarRatingRequestDto(rating));
+        EpisodeStarRatingResponseDto responseData = EpisodeStarRatingResponseDto.builder()
+                                                                                .ratingAvg(3.66667f)
+                                                                                .personTotal(3)
+                                                                                .build();
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(starRatingService.insertStarRating(episode.getIdx(), user.getIdx(), dto.getRating()))
-                .willReturn(response);
+        given(starRatingService.createStarRating(episode.getIdx(), user.getIdx(), rating))
+                .willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(post("/episodes/{ep_idx}/rating", episode.getIdx())
@@ -157,26 +157,26 @@ public class StarRatingControllerTest {
 
         //then
         result.andExpect(status().isOk())
-                .andExpect(jsonPath(CODE).value(0))
-                .andExpect(jsonPath(MESSAGE).value("request complete : insert star rating"))
-                .andExpect(jsonPath("data.rating").value(responseData.getRating()))
-                .andExpect(jsonPath("data.person_total").value(responseData.getPersonTotal()))
-                .andDo(this.documentationHandler.document(
-                        requestHeaders(
-                                headerWithName(AUTH_HEADER).description("유저의 AccessToken")
-                        ),
-                        pathParameters(
-                                parameterWithName("ep_idx").description("에피소드의 idx")
-                        ),
-                        requestFields(
-                                fieldWithPath("rating").description("등록할 별점")
-                        ),
-                        responseFields(
-                                fieldWithPath(CODE).description("응답 코드"),
-                                fieldWithPath(MESSAGE).description("응답 메시지"),
-                                subsectionWithPath(DATA).description("응답 데이터"),
-                                fieldWithPath("data.rating").description("해당 에피소드 별점 평균").type(JsonFieldType.NUMBER),
-                                fieldWithPath("data.person_total").description("별점 등록 참여자 수").type(JsonFieldType.NUMBER)
-                        )));
+              .andExpect(jsonPath(ERROR_CODE).isEmpty())
+              .andExpect(jsonPath(MESSAGE).value(ApiResponse.SUCCESS))
+              .andExpect(jsonPath("data.rating_avg").value(responseData.getRatingAvg()))
+              .andExpect(jsonPath("data.person_total").value(responseData.getPersonTotal()))
+              .andDo(this.documentationHandler.document(
+                      requestHeaders(
+                              headerWithName(AUTH_HEADER).description("유저의 AccessToken")
+                      ),
+                      pathParameters(
+                              parameterWithName("ep_idx").description("에피소드의 idx")
+                      ),
+                      requestFields(
+                              fieldWithPath("rating").description("등록할 별점")
+                      ),
+                      responseFields(
+                              fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
+                              fieldWithPath(MESSAGE).description("응답 메시지"),
+                              subsectionWithPath(DATA).description("응답 데이터"),
+                              fieldWithPath("data.rating_avg").description("해당 에피소드 별점 평균").type(JsonFieldType.NUMBER),
+                              fieldWithPath("data.person_total").description("별점 등록 참여자 수").type(JsonFieldType.NUMBER)
+                      )));
     }
 }

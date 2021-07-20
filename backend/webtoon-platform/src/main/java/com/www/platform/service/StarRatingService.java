@@ -2,7 +2,7 @@ package com.www.platform.service;
 
 import com.www.core.auth.entity.User;
 import com.www.core.auth.repository.UserRepository;
-import com.www.core.common.Response;
+import com.www.core.common.exception.BusinessException;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.file.repository.WebtoonRepository;
@@ -12,7 +12,9 @@ import com.www.platform.dto.EpisodeStarRatingResponseDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import static com.www.core.common.exception.ErrorType.EPISODE_NOT_FOUND;
+import static com.www.core.common.exception.ErrorType.USER_HAVE_ALREADY_RATED_EPISODE;
+import static com.www.core.common.exception.ErrorType.USER_NOT_FOUND;
 
 @Service
 public class StarRatingService {
@@ -32,47 +34,32 @@ public class StarRatingService {
     }
 
     @Transactional
-    public Response<EpisodeStarRatingResponseDto> insertStarRating(Long epIdx, Long userIdx, float rating) {
-        Response<EpisodeStarRatingResponseDto> result = new Response<EpisodeStarRatingResponseDto>();
-
-        if(starRatingRepository.existsByEpIdxAndUserIdx(epIdx, userIdx))
-        {
-            result.setCode(26);
-            result.setMsg("fail : have already given star rating");
+    public EpisodeStarRatingResponseDto createStarRating(Long epIdx, Long userIdx, float rating) {
+        if (starRatingRepository.existsByEpIdxAndUserIdx(epIdx, userIdx)) {
+            throw new BusinessException(USER_HAVE_ALREADY_RATED_EPISODE);
         }
-        else
-        {
-            Optional<User> user = userRepository.findById(userIdx);
-            Optional<Episode> episode = episodeRepository.findById(epIdx);
 
-            if(!episode.isPresent()){ // 에피소드가 존재하지 않을 때
-                result.setCode(20);
-                result.setMsg("fail : episode doesn't exist");
-                return result;
-            }
+        User user = userRepository.findById(userIdx)
+                                  .orElseThrow(() -> new BusinessException(USER_NOT_FOUND));
+        Episode episode = episodeRepository.findById(epIdx)
+                                           .orElseThrow(() -> new BusinessException(EPISODE_NOT_FOUND));
 
-            StarRating starRating = StarRating.builder()
-                    .user(user.get())
-                    .ep(episode.get())
-                    .rating(rating)
-                    .build();
-            starRatingRepository.save(starRating);
+        StarRating starRating = StarRating.builder()
+                                          .user(user)
+                                          .ep(episode)
+                                          .rating(rating)
+                                          .build();
 
-            episodeRepository.updateRatingAvgAndPersonTotal(epIdx);
-            webtoonRepository.updateRatingAvg(episode.get().getWebtoon().getIdx());
+        starRatingRepository.save(starRating);
 
-            episode = episodeRepository.findById(epIdx);
+        episodeRepository.updateRatingAvgAndPersonTotal(epIdx);
+        webtoonRepository.updateRatingAvg(episode.getWebtoon().getIdx());
 
-            EpisodeStarRatingResponseDto episodeStarRatingResponseDto
-                    = EpisodeStarRatingResponseDto.builder()
-                    .rating(episode.get().getRatingAvg())
-                    .personTotal(episode.get().getRatingPersonTotal())
-                    .build();
-
-            result.setCode(0);
-            result.setMsg("request complete : insert star rating");
-            result.setData(episodeStarRatingResponseDto);
-        }
+        EpisodeStarRatingResponseDto result
+                = EpisodeStarRatingResponseDto.builder()
+                                              .ratingAvg(episode.getRatingAvg())
+                                              .personTotal(episode.getRatingPersonTotal())
+                                              .build();
 
         return result;
     }
