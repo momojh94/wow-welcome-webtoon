@@ -14,8 +14,7 @@ public interface CommentLikeRepository extends JpaRepository<CommentLike, Long> 
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM CommentLike " +
-            "WHERE idx = :idx")
+    @Query("DELETE FROM CommentLike WHERE idx = :idx")
     void deleteByIdx(@Param("idx") Long idx);
 
     @Modifying

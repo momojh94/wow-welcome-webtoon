@@ -7,11 +7,12 @@ import java.util.List;
 
 @Getter
 public class CommentsResponseDto {
-    private List<CommentDto> comments;
+
+    private List<CommentResponseDto> comments;
     private int totalPages;
 
     @Builder
-    public CommentsResponseDto(List<CommentDto> comments, int totalPages) {
+    public CommentsResponseDto(List<CommentResponseDto> comments, int totalPages) {
         this.comments = comments;
         this.totalPages = totalPages;
     }

@@ -11,7 +11,7 @@ public interface StarRatingRepository extends JpaRepository<StarRating, Long> {
     StarRating findByEpIdxAndUserIdx(@Param("epIdx") Long epIdx, @Param("userIdx") Long userIdx);
 
 
-    @Query(value = "SELECT AVG(s.rating) " +
+    @Query(value = " SELECT AVG(s.rating) " +
             "FROM star_rating s " +
             "GROUP BY s.ep_idx " +
             "HAVING s.ep_idx = :epIdx", nativeQuery = true)

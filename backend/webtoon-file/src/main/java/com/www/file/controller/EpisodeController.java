@@ -1,7 +1,7 @@
 package com.www.file.controller;
 
 import com.www.core.common.Response;
-import com.www.core.common.TokenChecker;
+import com.www.core.common.service.TokenChecker;
 import com.www.file.dto.EpisodeContents;
 import com.www.file.dto.EpisodeDto;
 import com.www.file.dto.EpisodePage;

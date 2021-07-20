@@ -1,4 +1,4 @@
-package com.www.core.common;
+package com.www.core.common.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -63,8 +63,8 @@ public class TokenChecker {
 			// access token bearer split
 			token = token.substring(7);
 			Date now = new Date();
-			long time = (Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration()
-					.getTime() - now.getTime());
+			long time = (Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration().getTime()
+					- now.getTime());
 			if (time < 1000L * 30) { //exp time 30초 미만일 경우 만료로 간주 
 				return 1; 
 			}

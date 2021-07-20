@@ -11,9 +11,8 @@ import com.www.core.file.enums.EndFlag;
 import com.www.core.file.enums.StoryGenre;
 import com.www.core.file.enums.StoryType;
 import com.www.core.platform.entity.Comment;
-import com.www.platform.dto.EpisodeStarRatingRequestDto;
-import com.www.platform.dto.EpisodeStarRatingResponseDto;
-import com.www.platform.service.StarRatingService;
+import com.www.platform.dto.CommentLikeDislikeCountResponseDto;
+import com.www.platform.service.CommentLikeDislikeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -54,10 +52,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(controllers = StarRatingController.class)
-public class StarRatingControllerTest {
+@WebMvcTest(controllers = CommentLikeDislikeController.class)
+class CommentLikeDislikeControllerTest {
+
     @MockBean
-    private StarRatingService starRatingService;
+    private CommentLikeDislikeService commentLikeDislikeService;
 
     @MockBean
     private TokenChecker tokenChecker;
@@ -86,97 +85,123 @@ public class StarRatingControllerTest {
                 preprocessResponse(prettyPrint()));
 
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation))
-                .alwaysDo(documentationHandler)
-                .alwaysDo(print())
-                .build();
+                                 .apply(documentationConfiguration(restDocumentation))
+                                 .alwaysDo(documentationHandler)
+                                 .alwaysDo(print())
+                                 .build();
 
         objectMapper = new ObjectMapper();
 
         user = User.builder()
-                .idx(1L)
-                .account("id123")
-                .name("철수")
-                .pw("1q2w3e4r")
-                .gender(Gender.MALE)
-                .email("test@email.com")
-                .build();
+                   .idx(1L)
+                   .account("id123")
+                   .name("철수")
+                   .pw("1q2w3e4r")
+                   .gender(Gender.MALE)
+                   .email("test@email.com")
+                   .build();
 
         webtoon = Webtoon.builder()
-                .idx(1L)
-                .title("웹툰 제목")
-                .storyType(StoryType.EPISODE)
-                .storyGenre1(StoryGenre.DAILY)
-                .storyGenre2(StoryGenre.GAG)
-                .summary("웹툰 한줄 요약")
-                .plot("줄거리")
-                .thumbnail("thumbnailTest.jpg")
-                .endFlag(EndFlag.ONGOING)
-                .build();
-
+                         .idx(1L)
+                         .title("웹툰 제목")
+                         .storyType(StoryType.EPISODE)
+                         .storyGenre1(StoryGenre.DAILY)
+                         .storyGenre2(StoryGenre.GAG)
+                         .summary("웹툰 한줄 요약")
+                         .plot("줄거리")
+                         .thumbnail("thumbnailTest.jpg")
+                         .endFlag(EndFlag.ONGOING)
+                         .build();
 
         episode = Episode.builder()
-                .idx(1L)
-                .epNo(1)
-                .title("에피소드 제목")
-                .webtoon(webtoon)
-                .authorComment("작가의 말")
-                .build();
+                         .idx(1L)
+                         .epNo(1)
+                         .title("에피소드 제목")
+                         .webtoon(webtoon)
+                         .authorComment("작가의 말")
+                         .build();
 
         comment = Comment.builder()
-                .idx(1L)
-                .user(user)
-                .ep(episode)
-                .content("댓글 내용 1")
-                .createdDate(LocalDateTime.of(2021, 4, 22, 05, 32))
-                .build();
+                         .idx(1L)
+                         .user(user)
+                         .ep(episode)
+                         .content("댓글 내용 1")
+                         .createdDate(LocalDateTime.of(2021, 4, 22, 05, 32))
+                         .build();
 
     }
 
-    @DisplayName("에피소드 별점 주기(등록)")
+    @DisplayName("댓글 좋아요 요청")
     @Test
-    void createStarRating() throws Exception {
+    void requestCommentLike() throws Exception {
         //given
-        float rating = 3f;
-        String requestBody = objectMapper.writeValueAsString(new EpisodeStarRatingRequestDto(rating));
-        EpisodeStarRatingResponseDto responseData = EpisodeStarRatingResponseDto.builder()
-                                                                                .ratingAvg(3.66667f)
-                                                                                .personTotal(3)
-                                                                                .build();
+        CommentLikeDislikeCountResponseDto responseData =
+                new CommentLikeDislikeCountResponseDto(comment.getLikeCount() + 1);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(starRatingService.createStarRating(episode.getIdx(), user.getIdx(), rating))
+        given(commentLikeDislikeService.requestLike(user.getIdx(), comment.getIdx()))
                 .willReturn(responseData);
 
         //when
-        ResultActions result = mockMvc.perform(post("/episodes/{ep_idx}/rating", episode.getIdx())
+        ResultActions result = mockMvc.perform(post("/comments/{cmt_idx}/like", comment.getIdx())
                 .header(AUTH_HEADER, ACCESS_TOKEN)
-                .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
         result.andExpect(status().isOk())
               .andExpect(jsonPath(ERROR_CODE).isEmpty())
               .andExpect(jsonPath(MESSAGE).value(ApiResponse.SUCCESS))
-              .andExpect(jsonPath("data.rating_avg").value(responseData.getRatingAvg()))
-              .andExpect(jsonPath("data.person_total").value(responseData.getPersonTotal()))
+              .andExpect(jsonPath("data.count").value(comment.getLikeCount() + 1))
               .andDo(this.documentationHandler.document(
                       requestHeaders(
                               headerWithName(AUTH_HEADER).description("유저의 AccessToken")
                       ),
                       pathParameters(
-                              parameterWithName("ep_idx").description("에피소드의 idx")
-                      ),
-                      requestFields(
-                              fieldWithPath("rating").description("등록할 별점")
+                              parameterWithName("cmt_idx").description("댓글의 idx")
                       ),
                       responseFields(
                               fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
                               fieldWithPath(MESSAGE).description("응답 메시지"),
                               subsectionWithPath(DATA).description("응답 데이터"),
-                              fieldWithPath("data.rating_avg").description("해당 에피소드 별점 평균").type(JsonFieldType.NUMBER),
-                              fieldWithPath("data.person_total").description("별점 등록 참여자 수").type(JsonFieldType.NUMBER)
+                              fieldWithPath("data.count").description("좋아요 수").type(JsonFieldType.NUMBER)
+                      )));
+    }
+
+    @DisplayName("댓글 싫어요 요청")
+    @Test
+    void requestCommentDislike() throws Exception {
+        //given
+        CommentLikeDislikeCountResponseDto responseData =
+                new CommentLikeDislikeCountResponseDto(comment.getDislikeCount() + 1);
+
+        given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
+        given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
+        given(commentLikeDislikeService.requestDislike(user.getIdx(), comment.getIdx()))
+                .willReturn(responseData);
+
+        //when
+        ResultActions result = mockMvc.perform(post("/comments/{cmt_idx}/dislike", comment.getIdx())
+                .header(AUTH_HEADER, ACCESS_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        result.andExpect(status().isOk())
+              .andExpect(jsonPath(ERROR_CODE).isEmpty())
+              .andExpect(jsonPath(MESSAGE).value(ApiResponse.SUCCESS))
+              .andExpect(jsonPath("data.count").value(comment.getDislikeCount() + 1))
+              .andDo(this.documentationHandler.document(
+                      requestHeaders(
+                              headerWithName(AUTH_HEADER).description("유저의 AccessToken")
+                      ),
+                      pathParameters(
+                              parameterWithName("cmt_idx").description("댓글의 idx")
+                      ),
+                      responseFields(
+                              fieldWithPath(ERROR_CODE).type(String.class).description("에러 코드 (에러 없을 시 null)"),
+                              fieldWithPath(MESSAGE).description("응답 메시지"),
+                              subsectionWithPath(DATA).description("응답 데이터"),
+                              fieldWithPath("data.count").description("싫어요 수").type(JsonFieldType.NUMBER)
                       )));
     }
 }

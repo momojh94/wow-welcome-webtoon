@@ -35,7 +35,7 @@ public class Comment extends BaseCreatedTimeEntity {
     @Column(nullable = false)
     private int dislikeCount;
 
-    @Column(columnDefinition = "TEXT", nullable = false, length = 300)
+    @Column(columnDefinition = "TEXT", nullable = false, length = 500)
     private String content;
 
     @Builder
@@ -48,6 +48,14 @@ public class Comment extends BaseCreatedTimeEntity {
         this.idx = idx;
         this.content = content;
         this.createdDate = createdDate;
+    }
+
+    public boolean wasWrittenBy(Long userIdx) {
+        return this.user.getIdx() == userIdx;
+    }
+
+    public boolean wasWrittenBy(User user) {
+        return this.user.getIdx() == user.getIdx();
     }
 }
 

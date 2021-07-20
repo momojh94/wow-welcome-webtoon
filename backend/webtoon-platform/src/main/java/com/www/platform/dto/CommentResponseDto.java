@@ -8,7 +8,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Getter
-public class CommentDto {
+public class CommentResponseDto {
+
     private Long idx;
     private String account;
     private int likeCount;
@@ -16,7 +17,7 @@ public class CommentDto {
     private String content;
     private String createdDate;
 
-    public CommentDto(Comment entity) {
+    public CommentResponseDto(Comment entity) {
         idx = entity.getIdx();
         account = entity.getUser().getAccount();
         likeCount = entity.getLikeCount();
