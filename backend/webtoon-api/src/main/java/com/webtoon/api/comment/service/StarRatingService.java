@@ -1,13 +1,13 @@
 package com.webtoon.api.comment.service;
 
-import com.webtoon.core.auth.entity.User;
-import com.webtoon.core.auth.repository.UserRepository;
+import com.webtoon.core.user.domain.User;
+import com.webtoon.core.user.domain.UserRepository;
 import com.webtoon.core.common.exception.ApplicationException;
-import com.webtoon.core.file.entity.Episode;
-import com.webtoon.core.file.repository.EpisodeRepository;
-import com.webtoon.core.file.repository.WebtoonRepository;
-import com.webtoon.core.platform.entity.StarRating;
-import com.webtoon.core.platform.repository.StarRatingRepository;
+import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.episode.domain.EpisodeRepository;
+import com.webtoon.core.webtoon.domain.WebtoonRepository;
+import com.webtoon.core.comment.domain.StarRating;
+import com.webtoon.core.comment.domain.StarRatingRepository;
 import com.webtoon.api.comment.dto.EpisodeStarRatingResponseDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

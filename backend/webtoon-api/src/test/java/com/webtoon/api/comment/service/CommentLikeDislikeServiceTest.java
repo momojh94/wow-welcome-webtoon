@@ -1,14 +1,14 @@
 package com.webtoon.api.comment.service;
 
-import com.webtoon.core.auth.entity.User;
-import com.webtoon.core.auth.enums.Gender;
-import com.webtoon.core.auth.repository.UserRepository;
-import com.webtoon.core.platform.entity.Comment;
-import com.webtoon.core.platform.entity.CommentDislike;
-import com.webtoon.core.platform.entity.CommentLike;
-import com.webtoon.core.platform.repository.CommentDislikeRepository;
-import com.webtoon.core.platform.repository.CommentLikeRepository;
-import com.webtoon.core.platform.repository.CommentRepository;
+import com.webtoon.core.user.domain.User;
+import com.webtoon.core.user.domain.enums.Gender;
+import com.webtoon.core.user.domain.UserRepository;
+import com.webtoon.core.comment.domain.Comment;
+import com.webtoon.core.comment.domain.CommentDislike;
+import com.webtoon.core.comment.domain.CommentLike;
+import com.webtoon.core.comment.domain.CommentDislikeRepository;
+import com.webtoon.core.comment.domain.CommentLikeRepository;
+import com.webtoon.core.comment.domain.CommentRepository;
 import com.webtoon.api.comment.dto.CommentLikeDislikeCountResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

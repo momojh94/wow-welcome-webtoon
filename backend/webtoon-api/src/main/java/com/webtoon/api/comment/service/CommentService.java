@@ -1,14 +1,14 @@
 package com.webtoon.api.comment.service;
 
-import com.webtoon.core.auth.entity.User;
-import com.webtoon.core.auth.repository.UserRepository;
+import com.webtoon.core.user.domain.User;
+import com.webtoon.core.user.domain.UserRepository;
 import com.webtoon.core.common.exception.ApplicationException;
-import com.webtoon.core.file.entity.Episode;
-import com.webtoon.core.file.repository.EpisodeRepository;
-import com.webtoon.core.platform.entity.Comment;
-import com.webtoon.core.platform.repository.CommentDislikeRepository;
-import com.webtoon.core.platform.repository.CommentLikeRepository;
-import com.webtoon.core.platform.repository.CommentRepository;
+import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.episode.domain.EpisodeRepository;
+import com.webtoon.core.comment.domain.Comment;
+import com.webtoon.core.comment.domain.CommentDislikeRepository;
+import com.webtoon.core.comment.domain.CommentLikeRepository;
+import com.webtoon.core.comment.domain.CommentRepository;
 import com.webtoon.api.comment.dto.CommentResponseDto;
 import com.webtoon.api.comment.dto.CommentsResponseDto;
 import com.webtoon.api.comment.dto.MyPageCommentResponseDto;

@@ -1,16 +1,16 @@
 package com.webtoon.api.comment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webtoon.core.auth.entity.User;
-import com.webtoon.core.auth.enums.Gender;
+import com.webtoon.core.user.domain.User;
+import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.common.service.TokenChecker;
-import com.webtoon.core.file.entity.Episode;
-import com.webtoon.core.file.entity.Webtoon;
-import com.webtoon.core.file.enums.EndFlag;
-import com.webtoon.core.file.enums.StoryGenre;
-import com.webtoon.core.file.enums.StoryType;
-import com.webtoon.core.platform.entity.Comment;
+import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.webtoon.domain.Webtoon;
+import com.webtoon.core.webtoon.domain.enums.EndFlag;
+import com.webtoon.core.webtoon.domain.enums.StoryGenre;
+import com.webtoon.core.webtoon.domain.enums.StoryType;
+import com.webtoon.core.comment.domain.Comment;
 import com.webtoon.api.comment.dto.CommentResponseDto;
 import com.webtoon.api.comment.dto.CommentCreateRequestDto;
 import com.webtoon.api.comment.dto.CommentsResponseDto;

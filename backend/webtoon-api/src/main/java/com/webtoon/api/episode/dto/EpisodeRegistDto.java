@@ -1,5 +1,6 @@
 package com.webtoon.api.episode.dto;
-import com.webtoon.core.file.entity.*;
+import com.webtoon.core.episode.domain.*;
+import com.webtoon.core.webtoon.domain.Webtoon;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

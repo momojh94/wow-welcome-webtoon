@@ -7,7 +7,7 @@ public enum ErrorType {
 
     // 댓글
     COMMENT_NOT_FOUND(404, "CMT000", "댓글이 존재하지 않습니다."),
-    USER_IS_NOT_COMMENTER(400, "CMT001", "User가 해당 댓글의 작성자가 아닙니다."),
+    USER_IS_NOT_COMMENTER(400, "CMT001", "User는 해당 댓글의 작성자가 아닙니다."),
     BAD_COMMENT_LIKE_REQUEST(400, "CMT002", "User 자신이 쓴 댓글에 좋아요 요청을 할 수 없습니다"),
     BAD_COMMENT_DISLIKE_REQUEST(400, "CMT003", "User 자신이 쓴 댓글에 싫어요 요청을 할 수 없습니다"),
 

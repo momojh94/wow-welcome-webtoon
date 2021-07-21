@@ -1,7 +1,7 @@
 package com.webtoon.api.user.dto;
 
-import com.webtoon.core.auth.enums.Gender;
-import com.webtoon.core.auth.entity.User;
+import com.webtoon.core.user.domain.enums.Gender;
+import com.webtoon.core.user.domain.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

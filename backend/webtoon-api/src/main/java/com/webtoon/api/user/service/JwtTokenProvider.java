@@ -12,7 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import com.webtoon.core.auth.repository.UserRepository;
+import com.webtoon.core.user.domain.UserRepository;
 
 import io.jsonwebtoken.*;
 

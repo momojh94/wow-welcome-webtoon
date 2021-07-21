@@ -1,6 +1,6 @@
 package com.webtoon.api.comment.dto;
 
-import com.webtoon.core.platform.entity.Comment;
+import com.webtoon.core.comment.domain.Comment;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

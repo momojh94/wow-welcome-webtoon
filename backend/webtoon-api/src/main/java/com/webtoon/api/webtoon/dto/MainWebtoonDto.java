@@ -1,6 +1,6 @@
 package com.webtoon.api.webtoon.dto;
 
-import com.webtoon.core.file.enums.StoryGenre;
+import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
