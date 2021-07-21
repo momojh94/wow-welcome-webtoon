@@ -1,5 +1,6 @@
 package com.webtoon.api.comment.service;
 
+import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.core.user.domain.UserRepository;
@@ -9,7 +10,7 @@ import com.webtoon.core.comment.domain.CommentLike;
 import com.webtoon.core.comment.domain.CommentDislikeRepository;
 import com.webtoon.core.comment.domain.CommentLikeRepository;
 import com.webtoon.core.comment.domain.CommentRepository;
-import com.webtoon.api.comment.dto.CommentLikeDislikeCountResponseDto;
+import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

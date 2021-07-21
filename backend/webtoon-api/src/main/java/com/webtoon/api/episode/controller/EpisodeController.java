@@ -1,9 +1,9 @@
 package com.webtoon.api.episode.controller;
 
-import com.webtoon.api.episode.dto.EpisodeContents;
-import com.webtoon.api.episode.dto.EpisodeDto;
-import com.webtoon.api.episode.dto.EpisodePage;
-import com.webtoon.api.episode.service.EpisodeService;
+import com.webtoon.core.episode.dto.EpisodeContents;
+import com.webtoon.core.episode.dto.EpisodeDto;
+import com.webtoon.core.episode.dto.EpisodePage;
+import com.webtoon.core.episode.service.EpisodeService;
 import com.webtoon.core.common.Response;
 import com.webtoon.core.common.service.TokenChecker;
 import org.springframework.web.bind.annotation.*;

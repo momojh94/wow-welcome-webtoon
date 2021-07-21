@@ -1,10 +1,10 @@
 package com.webtoon.api.comment.controller;
 
-import com.webtoon.core.common.ApiResponse;
+import com.webtoon.api.common.ApiResponse;
 import com.webtoon.core.common.service.TokenChecker;
-import com.webtoon.api.comment.dto.EpisodeStarRatingRequestDto;
-import com.webtoon.api.comment.dto.EpisodeStarRatingResponseDto;
-import com.webtoon.api.comment.service.StarRatingService;
+import com.webtoon.core.comment.dto.EpisodeStarRatingRequestDto;
+import com.webtoon.core.comment.dto.EpisodeStarRatingResponseDto;
+import com.webtoon.core.comment.service.StarRatingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

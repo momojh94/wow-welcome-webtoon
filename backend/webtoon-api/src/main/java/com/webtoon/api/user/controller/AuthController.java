@@ -1,13 +1,13 @@
 package com.webtoon.api.user.controller;
 
-import com.webtoon.api.user.dto.Response;
-import com.webtoon.api.user.dto.Tokens;
-import com.webtoon.api.user.dto.UserInfoDto;
-import com.webtoon.api.user.dto.UserInfoModifiedDto;
-import com.webtoon.api.user.dto.UserLoginDto;
-import com.webtoon.api.user.dto.UserRegisterDto;
-import com.webtoon.api.user.service.JwtTokenProvider;
-import com.webtoon.api.user.service.UserService;
+import com.webtoon.core.user.dto.Response;
+import com.webtoon.core.user.dto.Tokens;
+import com.webtoon.core.user.dto.UserInfoDto;
+import com.webtoon.core.user.dto.UserInfoModifiedDto;
+import com.webtoon.core.user.dto.UserLoginDto;
+import com.webtoon.core.user.dto.UserRegisterDto;
+import com.webtoon.core.user.service.JwtTokenProvider;
+import com.webtoon.core.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;

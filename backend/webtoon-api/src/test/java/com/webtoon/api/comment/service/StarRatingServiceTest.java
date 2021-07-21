@@ -1,5 +1,6 @@
 package com.webtoon.api.comment.service;
 
+import com.webtoon.core.comment.service.StarRatingService;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.core.user.domain.UserRepository;
@@ -12,7 +13,7 @@ import com.webtoon.core.episode.domain.EpisodeRepository;
 import com.webtoon.core.webtoon.domain.WebtoonRepository;
 import com.webtoon.core.comment.domain.StarRating;
 import com.webtoon.core.comment.domain.StarRatingRepository;
-import com.webtoon.api.comment.dto.EpisodeStarRatingResponseDto;
+import com.webtoon.core.comment.dto.EpisodeStarRatingResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

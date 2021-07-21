@@ -1,9 +1,9 @@
 package com.webtoon.api.webtoon.controller;
 
-import com.webtoon.api.webtoon.dto.MainWebtoonPage;
-import com.webtoon.api.webtoon.dto.WebtoonDto;
-import com.webtoon.api.webtoon.dto.WebtoonPage;
-import com.webtoon.api.webtoon.service.WebtoonService;
+import com.webtoon.core.webtoon.dto.MainWebtoonPage;
+import com.webtoon.core.webtoon.dto.WebtoonDto;
+import com.webtoon.core.webtoon.dto.WebtoonPage;
+import com.webtoon.core.webtoon.service.WebtoonService;
 import com.webtoon.core.common.Response;
 import com.webtoon.core.common.service.TokenChecker;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
