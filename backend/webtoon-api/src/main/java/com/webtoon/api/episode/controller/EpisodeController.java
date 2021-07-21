@@ -6,7 +6,15 @@ import com.webtoon.core.episode.dto.EpisodePage;
 import com.webtoon.core.episode.service.EpisodeService;
 import com.webtoon.core.common.Response;
 import com.webtoon.core.common.service.TokenChecker;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,9 +32,9 @@ public class EpisodeController {
 	// 에피소드 등록
 	@PostMapping("/webtoons/{webtoonIdx}/episodes")
 	public Response<EpisodeDto> createEpisode(@RequestHeader("Authorization") String accessToken,
-                                              @PathVariable("webtoonIdx") Long webtoonIdx, @RequestPart("thumbnail") MultipartFile thumbnail,
-                                              @RequestPart("manuscript") MultipartFile[] manuscripts, @RequestParam("title") String title,
-                                              @RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
+											  @PathVariable("webtoonIdx") Long webtoonIdx, @RequestPart("thumbnail") MultipartFile thumbnail,
+											  @RequestPart("manuscript") MultipartFile[] manuscripts, @RequestParam("title") String title,
+											  @RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
 		EpisodeDto episodeDto = new EpisodeDto(title, authorComment);
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
 		int n = tokenChecker.validateToken(accessToken);

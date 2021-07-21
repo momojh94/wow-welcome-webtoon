@@ -1,4 +1,4 @@
-package com.webtoon.api.comment.service;
+package com.webtoon.core.comment.service;
 
 import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import com.webtoon.core.user.domain.User;

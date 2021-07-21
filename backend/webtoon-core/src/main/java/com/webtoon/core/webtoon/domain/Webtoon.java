@@ -12,7 +12,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +31,7 @@ import java.util.List;
 @Setter
 @Entity
 public class Webtoon extends BaseTimeEntity {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idx;
@@ -58,13 +68,13 @@ public class Webtoon extends BaseTimeEntity {
 	@Column
 	private Long hits;
 
-	@OneToMany(fetch=FetchType.EAGER, orphanRemoval = true , cascade = CascadeType.REMOVE, mappedBy = "webtoon")
+	@OneToMany(fetch= FetchType.EAGER, orphanRemoval = true , cascade = CascadeType.REMOVE, mappedBy = "webtoon")
 	private List<Episode> episodes = new ArrayList<Episode>();
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_idx")
 	private User user;
-	
+
 	@Builder
 	public Webtoon(Long idx, String title, StoryType storyType, StoryGenre storyGenre1, StoryGenre storyGenre2,
 				   String summary, String plot, String thumbnail, EndFlag endFlag,
@@ -83,3 +93,5 @@ public class Webtoon extends BaseTimeEntity {
 		this.hits = 0L;
 	}
 }
+
+

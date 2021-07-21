@@ -4,7 +4,10 @@ plugins {
 }
 
 dependencies {
-    compile project(':webtoon-core')
+    implementation project(':webtoon-core')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.json:json:20190722'
+
     asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
