@@ -1,5 +1,4 @@
 rootProject.name = 'backend'
 include 'webtoon-auth'
-include 'webtoon-file'
 include 'webtoon-core'
 include 'webtoon-api'

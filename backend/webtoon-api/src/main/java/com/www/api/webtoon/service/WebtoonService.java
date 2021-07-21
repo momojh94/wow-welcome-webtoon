@@ -1,12 +1,16 @@
-package com.www.file.service;
+package com.www.api.webtoon.service;
 
+import com.www.api.webtoon.dto.MainWebtoonDto;
+import com.www.api.webtoon.dto.MainWebtoonPage;
+import com.www.api.webtoon.dto.WebtoonDto;
+import com.www.api.webtoon.dto.WebtoonListDto;
+import com.www.api.webtoon.dto.WebtoonPage;
 import com.www.core.auth.entity.User;
 import com.www.core.auth.repository.UserRepository;
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
 import com.www.core.file.repository.WebtoonRepository;
-import com.www.file.dto.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,7 +48,7 @@ public class WebtoonService {
 	@Value("${custom.path.upload-images}")
 	private String filePath;
 	
-	public void checkCondition(MultipartFile file,WebtoonDto webtoonDto,Response<WebtoonDto> res) {
+	public void checkCondition(MultipartFile file, WebtoonDto webtoonDto, Response<WebtoonDto> res) {
 		if (webtoonDto.getTitle() == null) {
 			res.setCode(10);
 			res.setMsg("insert fail: need to register title");

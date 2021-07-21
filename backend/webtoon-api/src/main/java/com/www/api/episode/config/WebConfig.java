@@ -1,4 +1,4 @@
-package com.www.file.config;
+package com.www.api.episode.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

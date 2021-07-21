@@ -1,14 +1,14 @@
-package com.www.file.controller;
+package com.www.api.webtoon.controller;
 
+import com.www.api.webtoon.dto.MainWebtoonPage;
+import com.www.api.webtoon.dto.WebtoonDto;
+import com.www.api.webtoon.dto.WebtoonPage;
+import com.www.api.webtoon.service.WebtoonService;
 import com.www.core.common.Response;
 import com.www.core.common.service.TokenChecker;
 import com.www.core.file.enums.EndFlag;
 import com.www.core.file.enums.StoryGenre;
 import com.www.core.file.enums.StoryType;
-import com.www.file.dto.MainWebtoonPage;
-import com.www.file.dto.WebtoonDto;
-import com.www.file.dto.WebtoonPage;
-import com.www.file.service.WebtoonService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,9 +27,9 @@ public class WebtoonController {
 	//새 웹툰 등록
 	@PostMapping("/webtoons")
 	public Response<WebtoonDto> createWebtoon(@RequestHeader("Authorization") String accessToken,
-											  @RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
-											  @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
-											  @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
+                                              @RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
+                                              @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
+                                              @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
 		WebtoonDto webtoonDto = new WebtoonDto(title, storyType, storyGenre1, storyGenre2, summary, plot, endFlag);
 		Response<WebtoonDto> res = new Response<WebtoonDto>();
 		int n = tokenChecker.validateToken(accessToken);
@@ -54,7 +54,7 @@ public class WebtoonController {
 	//내 웹툰 목록 출력 (한 페이지당 최대 20개)
 	@GetMapping("/users/webtoons")
 	public Response<WebtoonPage> getMyWebtoons(@RequestHeader("Authorization") String accessToken,
-											   @RequestParam(value="page", defaultValue = "1") Integer page){
+                                               @RequestParam(value="page", defaultValue = "1") Integer page){
 		Response<WebtoonPage> res = new Response<>();
 		int n = tokenChecker.validateToken(accessToken);
 		Long userIdx = tokenChecker.getUserIdx(accessToken);
@@ -78,7 +78,7 @@ public class WebtoonController {
 	// 웹툰 리스트 출력 (한 페이지당 최대 20개), 정렬 기준 마다 조회 방식 다름
 	@GetMapping("/webtoons")
 	public Response<MainWebtoonPage> getWebtoons(@RequestParam(value="page", defaultValue = "1") Integer page,
-												 @RequestParam(value="sortBy", defaultValue = "0") int sort ){
+                                                 @RequestParam(value="sortBy", defaultValue = "0") int sort ){
 		return webtoonService.getWebtoons(page, sort);
 	}
 

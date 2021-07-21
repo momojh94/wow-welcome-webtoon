@@ -1,4 +1,4 @@
-package com.www.file.dto;
+package com.www.api.episode.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

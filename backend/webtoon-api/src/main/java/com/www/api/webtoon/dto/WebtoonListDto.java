@@ -1,4 +1,4 @@
-package com.www.file.dto;
+package com.www.api.webtoon.dto;
 
 import lombok.Builder;
 import lombok.Getter;

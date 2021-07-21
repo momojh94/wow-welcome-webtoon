@@ -1,4 +1,4 @@
-package com.www.file.dto;
+package com.www.api.webtoon.dto;
 
 import com.www.core.file.enums.StoryGenre;
 import lombok.Builder;

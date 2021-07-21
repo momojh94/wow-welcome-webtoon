@@ -1,11 +1,15 @@
-package com.www.file.service;
+package com.www.api.episode.service;
 
+import com.www.api.episode.dto.EpisodeContents;
+import com.www.api.episode.dto.EpisodeDto;
+import com.www.api.episode.dto.EpisodeListDto;
+import com.www.api.episode.dto.EpisodePage;
+import com.www.api.episode.dto.EpisodeRegistDto;
 import com.www.core.common.Response;
 import com.www.core.file.entity.Episode;
 import com.www.core.file.entity.Webtoon;
 import com.www.core.file.repository.EpisodeRepository;
 import com.www.core.file.repository.WebtoonRepository;
-import com.www.file.dto.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

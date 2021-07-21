@@ -1,4 +1,4 @@
-package com.www.file.dto;
+package com.www.api.webtoon.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,11 +7,11 @@ import java.util.List;
 
 @Getter
 @Setter
-public class WebtoonPage {
-	private List<WebtoonListDto> webtoons;
+public class MainWebtoonPage {
+	private List<MainWebtoonDto> webtoons;
 	private int totalPages;
 	
-	public WebtoonPage(List<WebtoonListDto> webtoons, int totalPages) {
+	public MainWebtoonPage(List<MainWebtoonDto> webtoons, int totalPages) {
 		this.webtoons = webtoons;
 		this.totalPages = totalPages;
 	}

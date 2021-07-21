@@ -1,11 +1,11 @@
-package com.www.file.controller;
+package com.www.api.episode.controller;
 
+import com.www.api.episode.dto.EpisodeContents;
+import com.www.api.episode.dto.EpisodeDto;
+import com.www.api.episode.dto.EpisodePage;
+import com.www.api.episode.service.EpisodeService;
 import com.www.core.common.Response;
 import com.www.core.common.service.TokenChecker;
-import com.www.file.dto.EpisodeContents;
-import com.www.file.dto.EpisodeDto;
-import com.www.file.dto.EpisodePage;
-import com.www.file.service.EpisodeService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,9 +24,9 @@ public class EpisodeController {
 	// 에피소드 등록
 	@PostMapping("/webtoons/{webtoonIdx}/episodes")
 	public Response<EpisodeDto> createEpisode(@RequestHeader("Authorization") String accessToken,
-											  @PathVariable("webtoonIdx") Long webtoonIdx, @RequestPart("thumbnail") MultipartFile thumbnail,
-											  @RequestPart("manuscript") MultipartFile[] manuscripts, @RequestParam("title") String title,
-											  @RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
+                                              @PathVariable("webtoonIdx") Long webtoonIdx, @RequestPart("thumbnail") MultipartFile thumbnail,
+                                              @RequestPart("manuscript") MultipartFile[] manuscripts, @RequestParam("title") String title,
+                                              @RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
 		EpisodeDto episodeDto = new EpisodeDto(title, authorComment);
 		Response<EpisodeDto> res = new Response<EpisodeDto>();
 		int n = tokenChecker.validateToken(accessToken);
@@ -49,15 +49,15 @@ public class EpisodeController {
 
 	// 해당 웹툰의 에피소드 목록 출력
 	@GetMapping("/webtoons/{webtoonIdx}/episodes")
-	public Response<EpisodePage> getEpisodes( @PathVariable("webtoonIdx") Long webtoonIdx,
-											  @RequestParam(value="page", defaultValue = "1") Integer page){
+	public Response<EpisodePage> getEpisodes(@PathVariable("webtoonIdx") Long webtoonIdx,
+                                             @RequestParam(value="page", defaultValue = "1") Integer page){
 		return episodeService.getEpisodeList(webtoonIdx, page, -1L);
 	}
 
 	// 해당 웹툰과 에피소드 정보 출력
 	@GetMapping("/webtoons/{webtoonIdx}/episodes/{epNo}/detail")
 	public Response<EpisodeContents> getEpisodeWithWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx,
-												@PathVariable("epNo") int epNo) throws IOException {
+                                                           @PathVariable("epNo") int epNo) throws IOException {
 		return episodeService.showEpisode(webtoonIdx, epNo);
 	}
 
