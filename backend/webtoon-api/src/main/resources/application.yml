@@ -1,6 +1,6 @@
 server:
-    address: localhost
-    port: 8080
+  address: localhost
+  port: 8080
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -20,14 +20,5 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
-  servlet:
-    multipart:
-      enabled: true
-      max-file-size: 50MB
-      max-request-size: 50MB
   jackson:
     property-naming-strategy: SNAKE_CASE
-  custom:
-    path:
-      upload-images: 'D:/upload/'
-
