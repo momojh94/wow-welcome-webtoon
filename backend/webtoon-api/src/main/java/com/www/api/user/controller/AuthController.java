@@ -1,8 +1,13 @@
-package com.www.auth.controller;
+package com.www.api.user.controller;
 
-import com.www.auth.dto.*;
-import com.www.auth.service.JwtTokenProvider;
-import com.www.auth.service.UserService;
+import com.www.api.user.dto.Response;
+import com.www.api.user.dto.Tokens;
+import com.www.api.user.dto.UserInfoDto;
+import com.www.api.user.dto.UserInfoModifiedDto;
+import com.www.api.user.dto.UserLoginDto;
+import com.www.api.user.dto.UserRegisterDto;
+import com.www.api.user.service.JwtTokenProvider;
+import com.www.api.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;

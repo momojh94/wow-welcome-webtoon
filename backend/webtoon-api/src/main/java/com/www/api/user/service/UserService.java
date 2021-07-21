@@ -1,6 +1,10 @@
-package com.www.auth.service;
+package com.www.api.user.service;
 
-import com.www.auth.dto.*;
+import com.www.api.user.dto.Tokens;
+import com.www.api.user.dto.UserDto;
+import com.www.api.user.dto.UserInfoModifiedDto;
+import com.www.api.user.dto.UserLoginDto;
+import com.www.api.user.dto.UserRegisterDto;
 import com.www.core.auth.entity.User;
 import com.www.core.auth.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -71,7 +75,7 @@ public class UserService {
 	 * @param info
 	 * @return
 	 */
-	public int modifyInfo(Long userIdx,UserInfoModifiedDto info) {
+	public int modifyInfo(Long userIdx, UserInfoModifiedDto info) {
 		//pw encoding
 		String encoded_pw = passwordEncoder.encode(info.getPw());
 		//update

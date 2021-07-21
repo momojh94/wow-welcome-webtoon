@@ -1,4 +1,4 @@
-package com.www.auth.dto;
+package com.www.api.user.dto;
 
 import com.www.core.auth.enums.Gender;
 import com.www.core.auth.entity.User;

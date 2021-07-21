@@ -1,4 +1,4 @@
-package com.www.auth.dto;
+package com.www.api.user.dto;
 
 import java.sql.Date;
 

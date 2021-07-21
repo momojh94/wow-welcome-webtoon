@@ -1,4 +1,4 @@
-package com.www.auth.service;
+package com.www.api.user.service;
 
 import java.security.Key;
 import java.util.Date;
