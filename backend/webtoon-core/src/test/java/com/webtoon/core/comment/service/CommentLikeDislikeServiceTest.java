@@ -1,6 +1,5 @@
 package com.webtoon.core.comment.service;
 
-import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.core.user.domain.UserRepository;
@@ -10,7 +9,7 @@ import com.webtoon.core.comment.domain.CommentLike;
 import com.webtoon.core.comment.domain.CommentDislikeRepository;
 import com.webtoon.core.comment.domain.CommentLikeRepository;
 import com.webtoon.core.comment.domain.CommentRepository;
-import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponseDto;
+import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -97,7 +96,7 @@ public class CommentLikeDislikeServiceTest {
                 .willReturn(false);
 
         //when
-        CommentLikeDislikeCountResponseDto result
+        CommentLikeDislikeCountResponse result
                 = commentLikeDislikeService.requestLike(user.getIdx(), commentByOtherUser.getIdx());
 
         //then
@@ -126,7 +125,7 @@ public class CommentLikeDislikeServiceTest {
                 .willReturn(commentLike);
 
         //when
-        CommentLikeDislikeCountResponseDto result =
+        CommentLikeDislikeCountResponse result =
                 commentLikeDislikeService.requestLike(user.getIdx(), commentByOtherUser.getIdx());
 
         //then
@@ -148,7 +147,7 @@ public class CommentLikeDislikeServiceTest {
                 .willReturn(false);
 
         //when
-        CommentLikeDislikeCountResponseDto result =
+        CommentLikeDislikeCountResponse result =
                 commentLikeDislikeService.requestDislike(user.getIdx(), commentByOtherUser.getIdx());
 
         //then
@@ -177,7 +176,7 @@ public class CommentLikeDislikeServiceTest {
                 .willReturn(commentDislike);
 
         //when
-        CommentLikeDislikeCountResponseDto result =
+        CommentLikeDislikeCountResponse result =
                 commentLikeDislikeService.requestDislike(user.getIdx(), commentByOtherUser.getIdx());
 
         //then

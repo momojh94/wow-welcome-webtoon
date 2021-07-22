@@ -11,8 +11,8 @@ import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
 import com.webtoon.core.comment.domain.Comment;
-import com.webtoon.core.comment.dto.EpisodeStarRatingRequestDto;
-import com.webtoon.core.comment.dto.EpisodeStarRatingResponseDto;
+import com.webtoon.core.comment.dto.EpisodeStarRatingRequest;
+import com.webtoon.core.comment.dto.EpisodeStarRatingResponse;
 import com.webtoon.core.comment.service.StarRatingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -138,11 +138,11 @@ public class StarRatingControllerTest {
     void createStarRating() throws Exception {
         //given
         float rating = 3f;
-        String requestBody = objectMapper.writeValueAsString(new EpisodeStarRatingRequestDto(rating));
-        EpisodeStarRatingResponseDto responseData = EpisodeStarRatingResponseDto.builder()
-                                                                                .ratingAvg(3.66667f)
-                                                                                .personTotal(3)
-                                                                                .build();
+        String requestBody = objectMapper.writeValueAsString(new EpisodeStarRatingRequest(rating));
+        EpisodeStarRatingResponse responseData = EpisodeStarRatingResponse.builder()
+                                                                          .ratingAvg(3.66667f)
+                                                                          .personTotal(3)
+                                                                          .build();
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());

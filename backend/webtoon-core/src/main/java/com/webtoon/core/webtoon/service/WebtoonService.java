@@ -157,7 +157,7 @@ public class WebtoonService {
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 
 		if (!webtoon.wasDrawnBy(userIdx)) {
-			new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
+			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
 		}
 
 		// TODO : file is empty
@@ -175,7 +175,7 @@ public class WebtoonService {
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 
 		if (!webtoon.wasDrawnBy(userIdx)) {
-			new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
+			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
 		}
 
 		webtoonRepository.delete(webtoon);

@@ -2,7 +2,7 @@ package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.common.ApiResponse;
 import com.webtoon.core.user.service.TokenChecker;
-import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponseDto;
+import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
 import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,8 +24,8 @@ public class CommentLikeDislikeController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/comments/{cmtIdx}/like")
-    public ApiResponse<CommentLikeDislikeCountResponseDto> requestCommentLike(@RequestHeader("Authorization") String accessToken,
-                                                                              @PathVariable("cmtIdx") Long commentIdx) {
+    public ApiResponse<CommentLikeDislikeCountResponse> requestCommentLike(@RequestHeader("Authorization") String accessToken,
+                                                                           @PathVariable("cmtIdx") Long commentIdx) {
         switch (tokenChecker.validateToken(accessToken)) {
             case 0: // 유효한 토큰
                 Long userIdx = tokenChecker.getUserIdx(accessToken);
@@ -43,8 +43,8 @@ public class CommentLikeDislikeController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/comments/{cmtIdx}/dislike")
-    public ApiResponse<CommentLikeDislikeCountResponseDto> requestCommentDislike(@RequestHeader("Authorization") String accessToken,
-                                                                                 @PathVariable("cmtIdx") Long commentIdx) {
+    public ApiResponse<CommentLikeDislikeCountResponse> requestCommentDislike(@RequestHeader("Authorization") String accessToken,
+                                                                              @PathVariable("cmtIdx") Long commentIdx) {
         switch (tokenChecker.validateToken(accessToken)) {
             case 0: // 유효한 토큰
                 Long userIdx = tokenChecker.getUserIdx(accessToken);

@@ -8,18 +8,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Getter
-public class CommentResponseDto {
+public class MyPageCommentResponse {
 
     private Long idx;
-    private String account;
+    private String webtoonThumbnail;
+    private String webtoonTitle;
+    private int epNo;
     private int likeCount;
     private int dislikeCount;
     private String content;
     private String createdDate;
 
-    public CommentResponseDto(Comment entity) {
+    public MyPageCommentResponse(Comment entity) {
         idx = entity.getIdx();
-        account = entity.getUser().getAccount();
+        webtoonThumbnail = "http://localhost:8081/static/web_thumbnail/" + entity.getEp().getWebtoon().getThumbnail();
+        webtoonTitle = entity.getEp().getWebtoon().getTitle();
+        epNo = entity.getEp().getEpNo();
         likeCount = entity.getLikeCount();
         dislikeCount = entity.getDislikeCount();
         content = entity.getContent();

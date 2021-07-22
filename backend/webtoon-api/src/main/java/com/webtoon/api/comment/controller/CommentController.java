@@ -2,10 +2,10 @@ package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.common.ApiResponse;
 import com.webtoon.core.user.service.TokenChecker;
-import com.webtoon.core.comment.dto.CommentCreateRequestDto;
-import com.webtoon.core.comment.dto.CommentResponseDto;
-import com.webtoon.core.comment.dto.CommentsResponseDto;
-import com.webtoon.core.comment.dto.MyPageCommentsResponseDto;
+import com.webtoon.core.comment.dto.CommentCreateRequest;
+import com.webtoon.core.comment.dto.CommentResponse;
+import com.webtoon.core.comment.dto.CommentsResponse;
+import com.webtoon.core.comment.dto.MyPageCommentsResponse;
 import com.webtoon.core.comment.service.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,21 +34,21 @@ public class CommentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/episodes/{epIdx}/comments")
-    public ApiResponse<CommentsResponseDto> getComments(@PathVariable("epIdx") Long epIdx,
-                                                        @RequestParam("page") int page) {
+    public ApiResponse<CommentsResponse> getComments(@PathVariable("epIdx") Long epIdx,
+                                                     @RequestParam("page") int page) {
         return ApiResponse.succeed(commentService.getCommentsByPageRequest(epIdx, page));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/episodes/{epIdx}/comments/best")
-    public ApiResponse<List<CommentResponseDto>> getBestComments(@PathVariable("epIdx") Long epIdx) {
+    public ApiResponse<List<CommentResponse>> getBestComments(@PathVariable("epIdx") Long epIdx) {
         return ApiResponse.succeed(commentService.getBestComments(epIdx));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/users/comments")
-    public ApiResponse<MyPageCommentsResponseDto> getMyPageComments(@RequestHeader("Authorization") String accessToken,
-                                                                    @RequestParam("page") int page) {
+    public ApiResponse<MyPageCommentsResponse> getMyPageComments(@RequestHeader("Authorization") String accessToken,
+                                                                 @RequestParam("page") int page) {
         switch (tokenChecker.validateToken(accessToken)) {
             case 0: // 유효한 토큰
                 Long userIdx = tokenChecker.getUserIdx(accessToken);
@@ -68,7 +68,7 @@ public class CommentController {
     @PostMapping("/episodes/{epIdx}/comments")
     public ApiResponse<Void> create(@RequestHeader("Authorization") String accessToken,
                                     @PathVariable("epIdx") Long epIdx,
-                                    @RequestBody @Valid CommentCreateRequestDto request) {
+                                    @RequestBody @Valid CommentCreateRequest request) {
         switch (tokenChecker.validateToken(accessToken)) {
             case 0: // 유효한 토큰
                 Long userIdx = tokenChecker.getUserIdx(accessToken);

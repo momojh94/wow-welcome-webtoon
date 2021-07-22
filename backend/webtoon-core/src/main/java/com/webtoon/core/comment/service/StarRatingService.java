@@ -8,7 +8,7 @@ import com.webtoon.core.episode.domain.EpisodeRepository;
 import com.webtoon.core.webtoon.domain.WebtoonRepository;
 import com.webtoon.core.comment.domain.StarRating;
 import com.webtoon.core.comment.domain.StarRatingRepository;
-import com.webtoon.core.comment.dto.EpisodeStarRatingResponseDto;
+import com.webtoon.core.comment.dto.EpisodeStarRatingResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +34,7 @@ public class StarRatingService {
     }
 
     @Transactional
-    public EpisodeStarRatingResponseDto createStarRating(Long epIdx, Long userIdx, float rating) {
+    public EpisodeStarRatingResponse createStarRating(Long epIdx, Long userIdx, float rating) {
         if (starRatingRepository.existsByEpIdxAndUserIdx(epIdx, userIdx)) {
             throw new ApplicationException(USER_HAVE_ALREADY_RATED_EPISODE);
         }
@@ -55,11 +55,11 @@ public class StarRatingService {
         episodeRepository.updateRatingAvgAndPersonTotal(epIdx);
         webtoonRepository.updateRatingAvg(episode.getWebtoon().getIdx());
 
-        EpisodeStarRatingResponseDto result
-                = EpisodeStarRatingResponseDto.builder()
-                                              .ratingAvg(episode.getRatingAvg())
-                                              .personTotal(episode.getRatingPersonTotal())
-                                              .build();
+        EpisodeStarRatingResponse result
+                = EpisodeStarRatingResponse.builder()
+                                           .ratingAvg(episode.getRatingAvg())
+                                           .personTotal(episode.getRatingPersonTotal())
+                                           .build();
 
         return result;
     }

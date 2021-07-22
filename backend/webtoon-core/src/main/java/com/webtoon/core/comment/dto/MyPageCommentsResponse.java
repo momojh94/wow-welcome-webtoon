@@ -6,12 +6,12 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class MyPageCommentsResponseDto {
-    private List<MyPageCommentResponseDto> comments;
+public class MyPageCommentsResponse {
+    private List<MyPageCommentResponse> comments;
     private int totalPages;
 
     @Builder
-    public MyPageCommentsResponseDto(List<MyPageCommentResponseDto> comments, int totalPages) {
+    public MyPageCommentsResponse(List<MyPageCommentResponse> comments, int totalPages) {
         this.comments = comments;
         this.totalPages = totalPages;
     }

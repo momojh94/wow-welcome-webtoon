@@ -1,7 +1,7 @@
 package com.webtoon.core.comment.service;
 
-import com.webtoon.core.comment.dto.CommentResponseDto;
-import com.webtoon.core.comment.dto.CommentsResponseDto;
+import com.webtoon.core.comment.dto.CommentResponse;
+import com.webtoon.core.comment.dto.CommentsResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.UserRepository;
 import com.webtoon.core.common.exception.ApplicationException;
@@ -11,8 +11,8 @@ import com.webtoon.core.comment.domain.Comment;
 import com.webtoon.core.comment.domain.CommentDislikeRepository;
 import com.webtoon.core.comment.domain.CommentLikeRepository;
 import com.webtoon.core.comment.domain.CommentRepository;
-import com.webtoon.core.comment.dto.MyPageCommentResponseDto;
-import com.webtoon.core.comment.dto.MyPageCommentsResponseDto;
+import com.webtoon.core.comment.dto.MyPageCommentResponse;
+import com.webtoon.core.comment.dto.MyPageCommentsResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +53,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public CommentsResponseDto getCommentsByPageRequest(Long epIdx, int page) {
+    public CommentsResponse getCommentsByPageRequest(Long epIdx, int page) {
         page = page == 0 ? 1 : page;
         Pageable pageable = PageRequest.of(page - 1, COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = commentRepository.findAllByEpIdx(pageable, epIdx);
@@ -62,23 +62,23 @@ public class CommentService {
             //
         }*/
 
-        return CommentsResponseDto.builder()
-                                  .comments(commentsPage.stream()
-                                                        .map(CommentResponseDto::new)
+        return CommentsResponse.builder()
+                               .comments(commentsPage.stream()
+                                                        .map(CommentResponse::new)
                                                         .collect(Collectors.toList()))
-                                  .totalPages(commentsPage.getTotalPages())
-                                  .build();
+                               .totalPages(commentsPage.getTotalPages())
+                               .build();
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponseDto> getBestComments(Long epIdx) {
+    public List<CommentResponse> getBestComments(Long epIdx) {
         return commentRepository.findBestCommentsByEpIdx(epIdx)
-                                .map(CommentResponseDto::new)
+                                .map(CommentResponse::new)
                                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public MyPageCommentsResponseDto getMyPageComments(Long userIdx, int page){
+    public MyPageCommentsResponse getMyPageComments(Long userIdx, int page){
         page = page == 0 ? 1 : page;
         Pageable pageable = PageRequest.of(page - 1, MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = commentRepository.findAllByUserIdx(pageable, userIdx);
@@ -87,12 +87,12 @@ public class CommentService {
             //
         }*/
 
-        return MyPageCommentsResponseDto.builder()
-                                        .comments(commentsPage.stream()
-                                                              .map(MyPageCommentResponseDto::new)
+        return MyPageCommentsResponse.builder()
+                                     .comments(commentsPage.stream()
+                                                              .map(MyPageCommentResponse::new)
                                                               .collect(Collectors.toList()))
-                                        .totalPages(commentsPage.getTotalPages())
-                                        .build();
+                                     .totalPages(commentsPage.getTotalPages())
+                                     .build();
     }
 
     @Transactional

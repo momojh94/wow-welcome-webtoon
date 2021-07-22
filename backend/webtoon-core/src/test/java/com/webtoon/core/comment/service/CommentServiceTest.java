@@ -1,6 +1,6 @@
 package com.webtoon.core.comment.service;
 
-import com.webtoon.core.comment.service.CommentService;
+import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.core.user.domain.UserRepository;
@@ -14,10 +14,9 @@ import com.webtoon.core.comment.domain.Comment;
 import com.webtoon.core.comment.domain.CommentDislikeRepository;
 import com.webtoon.core.comment.domain.CommentLikeRepository;
 import com.webtoon.core.comment.domain.CommentRepository;
-import com.webtoon.core.comment.dto.CommentResponseDto;
-import com.webtoon.core.comment.dto.CommentsResponseDto;
-import com.webtoon.core.comment.dto.MyPageCommentResponseDto;
-import com.webtoon.core.comment.dto.MyPageCommentsResponseDto;
+import com.webtoon.core.comment.dto.CommentsResponse;
+import com.webtoon.core.comment.dto.MyPageCommentResponse;
+import com.webtoon.core.comment.dto.MyPageCommentsResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -184,7 +183,7 @@ public class CommentServiceTest {
         given(commentRepository.findAllByEpIdx(pageable, episode.getIdx())).willReturn(commentsPage);
 
         //when
-        CommentsResponseDto result = commentService.getCommentsByPageRequest(episode.getIdx(), page);
+        CommentsResponse result = commentService.getCommentsByPageRequest(episode.getIdx(), page);
 
         //then
         assertAll(
@@ -215,7 +214,7 @@ public class CommentServiceTest {
                 .willReturn(bestCommentList.stream());
 
         //when
-        List<CommentResponseDto> result = commentService.getBestComments(epIdx);
+        List<CommentResponse> result = commentService.getBestComments(epIdx);
 
         //then
         assertAll(
@@ -223,7 +222,7 @@ public class CommentServiceTest {
                                                        .map(Comment::getIdx)
                                                        .toArray(Long[]::new),
                         result.stream()
-                              .map(CommentResponseDto::getIdx)
+                              .map(CommentResponse::getIdx)
                               .toArray(Long[]::new))
         );
     }
@@ -253,7 +252,7 @@ public class CommentServiceTest {
         given(commentRepository.findAllByUserIdx(pageable, user.getIdx())).willReturn(commentsPage);
 
         //when
-        MyPageCommentsResponseDto result = commentService.getMyPageComments(user.getIdx(), page);
+        MyPageCommentsResponse result = commentService.getMyPageComments(user.getIdx(), page);
 
         //then
         assertAll(
@@ -267,7 +266,7 @@ public class CommentServiceTest {
                                                .map(Comment::getIdx)
                                                .toArray(Long[]::new),
                         result.getComments().stream()
-                              .map(MyPageCommentResponseDto::getIdx)
+                              .map(MyPageCommentResponse::getIdx)
                               .toArray(Long[]::new))
         );
     }

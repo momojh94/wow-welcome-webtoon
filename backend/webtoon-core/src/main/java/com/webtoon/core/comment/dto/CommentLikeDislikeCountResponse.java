@@ -3,11 +3,11 @@ package com.webtoon.core.comment.dto;
 import lombok.Getter;
 
 @Getter
-public class CommentLikeDislikeCountResponseDto {
+public class CommentLikeDislikeCountResponse {
 
     private int count;
 
-    public CommentLikeDislikeCountResponseDto(int count) {
+    public CommentLikeDislikeCountResponse(int count) {
         this.count = count;
     }
 }

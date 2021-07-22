@@ -11,7 +11,7 @@ import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
 import com.webtoon.core.comment.domain.Comment;
-import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponseDto;
+import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
 import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -136,8 +136,8 @@ class CommentLikeDislikeControllerTest {
     @Test
     void requestCommentLike() throws Exception {
         //given
-        CommentLikeDislikeCountResponseDto responseData =
-                new CommentLikeDislikeCountResponseDto(comment.getLikeCount() + 1);
+        CommentLikeDislikeCountResponse responseData =
+                new CommentLikeDislikeCountResponse(comment.getLikeCount() + 1);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
@@ -173,8 +173,8 @@ class CommentLikeDislikeControllerTest {
     @Test
     void requestCommentDislike() throws Exception {
         //given
-        CommentLikeDislikeCountResponseDto responseData =
-                new CommentLikeDislikeCountResponseDto(comment.getDislikeCount() + 1);
+        CommentLikeDislikeCountResponse responseData =
+                new CommentLikeDislikeCountResponse(comment.getDislikeCount() + 1);
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());

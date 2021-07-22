@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class EpisodeStarRatingResponseDto {
+public class EpisodeStarRatingResponse {
 
     private float ratingAvg;
     private int personTotal;
 
     @Builder
-    public EpisodeStarRatingResponseDto(float ratingAvg, int personTotal) {
+    public EpisodeStarRatingResponse(float ratingAvg, int personTotal) {
         this.ratingAvg = ratingAvg;
         this.personTotal = personTotal;
     }

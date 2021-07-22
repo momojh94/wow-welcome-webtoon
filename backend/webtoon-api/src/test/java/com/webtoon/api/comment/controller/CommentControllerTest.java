@@ -1,6 +1,7 @@
 package com.webtoon.api.comment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.api.common.ApiResponse;
@@ -11,11 +12,10 @@ import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
 import com.webtoon.core.comment.domain.Comment;
-import com.webtoon.core.comment.dto.CommentResponseDto;
-import com.webtoon.core.comment.dto.CommentCreateRequestDto;
-import com.webtoon.core.comment.dto.CommentsResponseDto;
-import com.webtoon.core.comment.dto.MyPageCommentResponseDto;
-import com.webtoon.core.comment.dto.MyPageCommentsResponseDto;
+import com.webtoon.core.comment.dto.CommentCreateRequest;
+import com.webtoon.core.comment.dto.CommentsResponse;
+import com.webtoon.core.comment.dto.MyPageCommentResponse;
+import com.webtoon.core.comment.dto.MyPageCommentsResponse;
 import com.webtoon.core.comment.service.CommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -158,12 +158,12 @@ public class CommentControllerTest {
                                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                                    .build());
         }
-        CommentsResponseDto responseData = CommentsResponseDto.builder()
-                                                              .comments(commentList.stream()
-                                                                                   .map(CommentResponseDto::new)
+        CommentsResponse responseData = CommentsResponse.builder()
+                                                        .comments(commentList.stream()
+                                                                                   .map(CommentResponse::new)
                                                                                    .collect(Collectors.toList()))
-                                                              .totalPages(1)
-                                                              .build();
+                                                        .totalPages(1)
+                                                        .build();
 
         given(commentService.getCommentsByPageRequest(episode.getIdx(), pageNumber)).willReturn(responseData);
 
@@ -216,9 +216,9 @@ public class CommentControllerTest {
                                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                                    .build());
         }
-        List<CommentResponseDto> responseData = commentList.stream()
-                                                           .map(CommentResponseDto::new)
-                                                           .collect(Collectors.toList());
+        List<CommentResponse> responseData = commentList.stream()
+                                                        .map(CommentResponse::new)
+                                                        .collect(Collectors.toList());
 
         given(commentService.getBestComments(episode.getIdx()))
                 .willReturn(responseData);
@@ -267,13 +267,13 @@ public class CommentControllerTest {
                                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                                    .build());
         }
-        MyPageCommentsResponseDto responseData
-                = MyPageCommentsResponseDto.builder()
-                                           .comments(commentList.stream()
-                                                                .map(MyPageCommentResponseDto::new)
+        MyPageCommentsResponse responseData
+                = MyPageCommentsResponse.builder()
+                                        .comments(commentList.stream()
+                                                                .map(MyPageCommentResponse::new)
                                                                 .collect(Collectors.toList()))
-                                           .totalPages(1)
-                                           .build();
+                                        .totalPages(1)
+                                        .build();
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
@@ -322,7 +322,7 @@ public class CommentControllerTest {
     void createComment() throws Exception {
         //given
         String requestBody = objectMapper.writeValueAsString(
-                new CommentCreateRequestDto(comment.getContent()));
+                new CommentCreateRequest(comment.getContent()));
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());

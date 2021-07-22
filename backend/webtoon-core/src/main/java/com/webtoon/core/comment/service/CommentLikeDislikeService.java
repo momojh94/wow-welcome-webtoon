@@ -1,6 +1,6 @@
 package com.webtoon.core.comment.service;
 
-import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponseDto;
+import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.UserRepository;
 import com.webtoon.core.common.exception.ApplicationException;
@@ -36,7 +36,7 @@ public class CommentLikeDislikeService {
     }
 
     @Transactional
-    public CommentLikeDislikeCountResponseDto requestLike(Long userIdx, Long commentIdx) {
+    public CommentLikeDislikeCountResponse requestLike(Long userIdx, Long commentIdx) {
         User user = userRepository.findById(userIdx)
                                   .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
         Comment comment = commentRepository.findById(commentIdx)
@@ -54,8 +54,8 @@ public class CommentLikeDislikeService {
             commentLikeRepository.deleteByIdx(commentLike.getIdx());
             commentRepository.updateLikeCount(comment.getIdx(), -1);
 
-            CommentLikeDislikeCountResponseDto result =
-                    new CommentLikeDislikeCountResponseDto(comment.getLikeCount() - 1);
+            CommentLikeDislikeCountResponse result =
+                    new CommentLikeDislikeCountResponse(comment.getLikeCount() - 1);
             return result;
         }
 
@@ -67,15 +67,15 @@ public class CommentLikeDislikeService {
         commentLikeRepository.save(commentLike);
         commentRepository.updateLikeCount(comment.getIdx(), 1);
 
-        CommentLikeDislikeCountResponseDto result =
-                new CommentLikeDislikeCountResponseDto(comment.getLikeCount() + 1);
+        CommentLikeDislikeCountResponse result =
+                new CommentLikeDislikeCountResponse(comment.getLikeCount() + 1);
 
         return result;
     }
 
 
     @Transactional
-    public CommentLikeDislikeCountResponseDto requestDislike(Long userIdx, Long commentIdx) {
+    public CommentLikeDislikeCountResponse requestDislike(Long userIdx, Long commentIdx) {
         User user = userRepository.findById(userIdx)
                                   .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
         Comment comment = commentRepository.findById(commentIdx)
@@ -93,8 +93,8 @@ public class CommentLikeDislikeService {
             commentDislikeRepository.deleteByIdx(commentDislike.getIdx());
             commentRepository.updateDislikeCount(comment.getIdx(), -1);
 
-            CommentLikeDislikeCountResponseDto result =
-                    new CommentLikeDislikeCountResponseDto(comment.getDislikeCount() - 1);
+            CommentLikeDislikeCountResponse result =
+                    new CommentLikeDislikeCountResponse(comment.getDislikeCount() - 1);
             return result;
         }
 
@@ -106,8 +106,8 @@ public class CommentLikeDislikeService {
         commentDislikeRepository.save(commentDislike);
         commentRepository.updateDislikeCount(comment.getIdx(), 1);
 
-        CommentLikeDislikeCountResponseDto result =
-                new CommentLikeDislikeCountResponseDto(comment.getDislikeCount() + 1);
+        CommentLikeDislikeCountResponse result =
+                new CommentLikeDislikeCountResponse(comment.getDislikeCount() + 1);
 
         return result;
     }
