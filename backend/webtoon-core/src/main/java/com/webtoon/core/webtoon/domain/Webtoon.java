@@ -23,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,6 +92,32 @@ public class Webtoon extends BaseTimeEntity {
 		this.user = user;
 		this.ratingAvg = ratingAvg;
 		this.hits = 0L;
+	}
+
+	public boolean wasDrawnBy(Long userIdx) {
+		return this.user.getIdx() == userIdx;
+	}
+
+	public LocalDateTime getLastUpdatedDate() {
+		if(episodes.isEmpty()) {
+			return getCreatedDate();
+		}
+
+		return episodes.get(episodes.size() - 1)
+					   .getUpdatedDate();
+	}
+
+	public Webtoon update(Webtoon requestWebtoon) {
+		this.title = requestWebtoon.title;
+		this.storyType = requestWebtoon.storyType;
+		this.storyGenre1 = requestWebtoon.storyGenre1;
+		this.storyGenre2 = requestWebtoon.storyGenre2;
+		this.summary = requestWebtoon.summary;
+		this.plot = requestWebtoon.plot;
+		this.thumbnail = requestWebtoon.thumbnail;
+		this.endFlag = requestWebtoon.endFlag;
+
+		return this;
 	}
 }
 

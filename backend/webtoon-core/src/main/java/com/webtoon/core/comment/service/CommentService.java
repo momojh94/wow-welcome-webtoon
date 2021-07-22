@@ -52,40 +52,6 @@ public class CommentService {
         this.episodeRepository = episodeRepository;
     }
 
-    // 예외 발생시 모든 DB작업 초기화 해주는 어노테이션 ( 완료시에만 커밋해줌 )
-    @Transactional
-    public void create(Long userIdx, Long epIdx, String content) {
-        User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
-        Episode episode = episodeRepository.findById(epIdx)
-                                           .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
-
-        Comment comment = Comment.builder()
-                                 .user(user)
-                                 .ep(episode)
-                                 .content(content)
-                                 .build();
-
-        commentRepository.save(comment);
-    }
-
-    @Transactional
-    public void delete(Long userIdx, Long commentIdx) {
-        User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
-        Comment comment = commentRepository.findById(commentIdx)
-                                           .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
-
-        if (!comment.wasWrittenBy(user)) {
-            throw new ApplicationException(USER_IS_NOT_COMMENTER);
-        }
-
-        commentLikeRepository.deleteAllByCommentIdx(commentIdx);
-        commentDislikeRepository.deleteAllBycommentIdx(commentIdx);
-        commentRepository.deleteById(commentIdx);
-    }
-
-
     @Transactional(readOnly = true)
     public CommentsResponseDto getCommentsByPageRequest(Long epIdx, int page) {
         page = page == 0 ? 1 : page;
@@ -127,5 +93,37 @@ public class CommentService {
                                                               .collect(Collectors.toList()))
                                         .totalPages(commentsPage.getTotalPages())
                                         .build();
+    }
+
+    @Transactional
+    public void create(Long userIdx, Long epIdx, String content) {
+        User user = userRepository.findById(userIdx)
+                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+        Episode episode = episodeRepository.findById(epIdx)
+                                           .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
+
+        Comment comment = Comment.builder()
+                                 .user(user)
+                                 .ep(episode)
+                                 .content(content)
+                                 .build();
+
+        commentRepository.save(comment);
+    }
+
+    @Transactional
+    public void delete(Long userIdx, Long commentIdx) {
+        User user = userRepository.findById(userIdx)
+                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+        Comment comment = commentRepository.findById(commentIdx)
+                                           .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
+
+        if (!comment.wasWrittenBy(user)) {
+            throw new ApplicationException(USER_IS_NOT_COMMENTER);
+        }
+
+        commentLikeRepository.deleteAllByCommentIdx(commentIdx);
+        commentDislikeRepository.deleteAllBycommentIdx(commentIdx);
+        commentRepository.deleteById(commentIdx);
     }
 }

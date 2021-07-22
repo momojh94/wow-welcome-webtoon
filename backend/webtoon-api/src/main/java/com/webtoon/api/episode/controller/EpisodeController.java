@@ -5,7 +5,7 @@ import com.webtoon.core.episode.dto.EpisodeDto;
 import com.webtoon.core.episode.dto.EpisodePage;
 import com.webtoon.core.episode.service.EpisodeService;
 import com.webtoon.core.common.Response;
-import com.webtoon.core.common.service.TokenChecker;
+import com.webtoon.core.user.service.TokenChecker;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

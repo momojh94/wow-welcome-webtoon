@@ -1,16 +1,17 @@
 package com.webtoon.core.webtoon.service;
 
-import com.webtoon.core.webtoon.dto.MainWebtoonDto;
-import com.webtoon.core.webtoon.dto.MainWebtoonPage;
-import com.webtoon.core.webtoon.dto.WebtoonDto;
-import com.webtoon.core.webtoon.dto.WebtoonListDto;
-import com.webtoon.core.webtoon.dto.WebtoonPage;
+import com.webtoon.core.common.exception.ApplicationException;
+import com.webtoon.core.webtoon.dto.MyWebtoonResponse;
+import com.webtoon.core.webtoon.dto.MyWebtoonsResponse;
+import com.webtoon.core.webtoon.dto.WebtoonCreateRequest;
+import com.webtoon.core.webtoon.dto.WebtoonEditRequest;
+import com.webtoon.core.webtoon.dto.WebtoonMainPageResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.UserRepository;
-import com.webtoon.core.common.Response;
-import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.WebtoonRepository;
+import com.webtoon.core.webtoon.dto.WebtoonResponse;
+import com.webtoon.core.webtoon.dto.WebtoonsMainPageResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,18 +23,21 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static com.webtoon.core.common.exception.ErrorType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
+import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
+import static com.webtoon.core.common.exception.ErrorType.WEBTOON_NOT_FOUND;
 
 @Service
 public class WebtoonService {
 	private final WebtoonRepository webtoonRepository;
 	private final UserRepository userRepository;
 
-	public WebtoonService(WebtoonRepository webtoonRepository, UserRepository userRepository) {
+	public WebtoonService(WebtoonRepository webtoonRepository,
+						  UserRepository userRepository) {
 		this.webtoonRepository = webtoonRepository;
 		this.userRepository = userRepository;
 	}
@@ -46,37 +50,38 @@ public class WebtoonService {
 	private static final int PAGE_EPISODE_COUNT = 7;
 	
 	@Value("${custom.path.upload-images}")
-	private String filePath;
-	
-	public void checkCondition(MultipartFile file, WebtoonDto webtoonDto, Response<WebtoonDto> res) {
-		if (webtoonDto.getTitle() == null) {
-			res.setCode(10);
-			res.setMsg("insert fail: need to register title");
-			return;
-		}
-		if (webtoonDto.getPlot() == null) {
-			res.setCode(11);
-			res.setMsg("insert fail: need to register plot");
-			return;
-		}
-		if (webtoonDto.getSummary() == null) {
-			res.setCode(12);
-			res.setMsg("insert fail: need to register summary");
-			return;
-		}
-		if (file.isEmpty()) {
-			res.setCode(13);
-			res.setMsg("insert fail: need to register thumbnail");
-			return;
-		}
-		
-		res.setCode(0);
-		res.setMsg("insert complete");
+	private static String BASE_FILE_PATH;
+	private static final String THUMBNAIL_PATH = "/web_thumbnail";
+
+	private String thumbnailOf(MultipartFile file) {
+		return new StringBuilder().append(UUID.randomUUID())
+								  .append("_")
+								  .append(file.getOriginalFilename())
+								  .toString();
 	}
 
-	@Transactional
-	public Response<MainWebtoonPage> getWebtoons(Integer pageNum, int sort) {
-		Response<MainWebtoonPage> res = new Response<>();
+	private String filePathOf(String thumbnail) {
+		return new StringBuilder().append(BASE_FILE_PATH)
+								  .append(THUMBNAIL_PATH)
+								  .append("/")
+								  .append(thumbnail)
+								  .toString();
+	}
+
+	private void transferFile(MultipartFile file, String filename) throws IOException {
+		// TODO : file IOException CustomException으로 묶기
+		File destinationFile = new File(filename);
+		destinationFile.getParentFile().mkdir();
+		file.transferTo(destinationFile);
+	}
+
+	public WebtoonResponse getWebtoon(Long webtoonIdx){
+		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
+										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
+		return new WebtoonResponse(webtoon);
+	}
+
+	public WebtoonsMainPageResponse getWebtoons(Integer pageNum, int sort) {
 		Page<Webtoon> page = null;
 		switch(sort) {
 			//기본정렬
@@ -94,230 +99,85 @@ public class WebtoonService {
 						Sort.by(Sort.Direction.DESC,"ratingAvg")));
 				break;
 			default:
-				res.setCode(1);
-				res.setMsg("fail : sortNum is not valid");
+				// TODO : fail : sortNum is not valid
 				break;
 		}
 
 		List<Webtoon> webtoons = page.getContent();
-		List<MainWebtoonDto> webtoonListDto = new ArrayList<>();
-		int totalpages = page.getTotalPages();
+		int totalPages = page.getTotalPages();
 
 		//등록된 웹툰이 없을 경우
-		if (totalpages == 0) {
-			totalpages = 1;
+		if (totalPages == 0) {
+			totalPages = 1;
 		}
 
-		//요청한 페이지 번호가 유효한 범위인지 체크
-		if (pageNum > 0 && pageNum <= totalpages) {
-			for (Webtoon webtoon : webtoons) {
-				MainWebtoonDto webtoonDto = MainWebtoonDto.builder()
-						.idx(webtoon.getIdx())
-						.title(webtoon.getTitle())
-						.thumbnail("http://localhost:8081/static/web_thumbnail/" + webtoon.getThumbnail())
-						.storyGenre1(webtoon.getStoryGenre1())
-						.storyGenre2(webtoon.getStoryGenre2())
-						.author(webtoon.getUser().getName())
-						.hits(webtoon.getHits())
-						.ratingAvg(webtoon.getRatingAvg())
-						.build();
-				webtoonListDto.add(webtoonDto);
-			}
-			res.setCode(0);
-			res.setMsg("show complete");
-		} else {
-			res.setCode(1);
-			res.setMsg("fail : pageNum is not in valid range");
-		}
+		// TODO : 요청한 페이지 번호 > totalPages 일 때 처리
 
-		MainWebtoonPage mainWebtoonPage = new MainWebtoonPage(webtoonListDto, totalpages);
-		res.setData(mainWebtoonPage);
-		return res;
+		return new WebtoonsMainPageResponse(webtoons.stream()
+													.map(WebtoonMainPageResponse::new)
+													.collect(Collectors.toList()), totalPages);
 	}
-	
-	@Transactional
-	public Response<WebtoonDto> createWebtoon(MultipartFile file, WebtoonDto webtoonDto, Long userIdx) throws IOException {
-		Response<WebtoonDto> res = new Response<WebtoonDto>();
-		Optional<User> users = userRepository.findById(userIdx);
-		User user = users.get();
-		//필수 조건 체크
-		checkCondition(file,webtoonDto,res);
-		if (res.getCode() != 0) {
-			return res;
-		} else {
-			//필수 입력 조건 만족시
-			UUID uuid = UUID.randomUUID();
-			String fileName = uuid + "_" + file.getOriginalFilename();
-			webtoonDto.setThumbnail(fileName);
 
-			//file 외부 폴더로 이동
-			File destinationFile = new File(filePath + "/web_thumbnail/" + fileName);
-			destinationFile.getParentFile().mkdir();
-			file.transferTo(destinationFile);
-
-			Webtoon webtoon = Webtoon.builder()
-					.title(webtoonDto.getTitle())
-					.storyType(webtoonDto.getStoryType())
-					.storyGenre1(webtoonDto.getStoryGenre1())
-					.storyGenre2(webtoonDto.getStoryGenre2())
-					.summary(webtoonDto.getSummary())
-					.plot(webtoonDto.getPlot())
-					.endFlag(webtoonDto.getEndFlag())
-					.user(user)
-					.thumbnail(fileName)
-					.build();
-			webtoonRepository.save(webtoon);
-
-			res.setData(webtoonDto);
-			return res;
-		}
-		
-	}
-	
-	@Transactional
-	public Response<WebtoonPage> getMyWebtoons(Integer pageNum, Long userIdx) {
-		Response<WebtoonPage> res = new Response<>();
-		Pageable pageable = PageRequest.of(pageNum-1, PAGE_WEBTOON_COUNT);
+	public MyWebtoonsResponse getMyWebtoons(Integer pageNum, Long userIdx) {
+		Pageable pageable = PageRequest.of(pageNum - 1, PAGE_WEBTOON_COUNT);
 		Page<Webtoon> page = webtoonRepository.findAllByUserIdx(pageable, userIdx);
-	    List<WebtoonListDto> webtoonListDto = new ArrayList<>();
-		WebtoonPage webtoonPage = null;
-		int totalpages = page.getTotalPages();
-		if (totalpages == 0) {
-			totalpages = 1;
-		}
-		
-		//요청한 페이지 번호가 유효한 범위인지 체크
-		if (pageNum > 0 && pageNum <= totalpages) {
-			List<Webtoon> webtoons = page.getContent();
-			for (Webtoon webtoon : webtoons) {
-				WebtoonListDto webtoonDto = WebtoonListDto.builder()
-						.idx(webtoon.getIdx())
-						.title(webtoon.getTitle())
-						.thumbnail("http://localhost:8081/static/web_thumbnail/" + webtoon.getThumbnail())
-						.createdDate(webtoon.getCreatedDate())
-						.build();
 
-				List<Episode> episodeList = webtoon.getEpisodes();
-
-				//웹툰 업데이트일 필드 
-				//회차가 1개 이상 등록된 경우 가장 최신 회차의 업데이트 시간으로 설정
-				if (!episodeList.isEmpty()) {
-					Episode e = episodeList.get(episodeList.size() - 1);
-					LocalDateTime lastUpdate = e.getUpdatedDate();
-					webtoonDto.setLastUpdated(lastUpdate);
-				}
-
-				//회차가 등록되어있지 않은 경우 웹툰 생성시간으로 설정
-				else {
-					webtoonDto.setLastUpdated(webtoon.getCreatedDate());
-				}
-				webtoonListDto.add(webtoonDto);
-			}
-			webtoonPage = new WebtoonPage(webtoonListDto, totalpages);
-			res.setCode(0);
-			res.setMsg("show complete");
-		} else {
-			res.setCode(1);
-			res.setMsg("fail : pageNum is not in valid range");
+		List<Webtoon> webtoons = page.getContent();
+		int totalPages = page.getTotalPages();
+		if (totalPages == 0) {
+			totalPages = 1;
 		}
 
-		res.setData(webtoonPage);
-	    return res;
+		// TODO : 요청한 페이지 번호 > totalPages 일 때 처리
+
+		return new MyWebtoonsResponse(webtoons.stream()
+											  .map(MyWebtoonResponse::new)
+											  .collect(Collectors.toList()), totalPages);
 	}
-	
-	
+
 	@Transactional
-	public Response<WebtoonDto> editWebtoon(Long idx, MultipartFile file, WebtoonDto webtoonDto) throws IOException {
-		Response<WebtoonDto> res = new Response<WebtoonDto>();
-		
-		if(!webtoonRepository.existsById(idx)) {
-      		res.setCode(1);
-      		res.setMsg("fail: Webtoon do not exists");
-      		return res;
-        }
-		
-		checkCondition(file, webtoonDto, res);
+	public void createWebtoon(Long userIdx, MultipartFile file,
+							  WebtoonCreateRequest request) throws IOException {
+		User user = userRepository.findById(userIdx)
+								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+		// TODO : file is empty
+		String thumbnail = thumbnailOf(file);
+		String filePath = filePathOf(thumbnail);
 
-		if (res.getCode() != 0) {
-			return res;
-		} else {
-			Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(idx);
-			Webtoon webtoon = WebtoonEntityWrapper.get();
+		transferFile(file, filePath);
 
-			webtoon.setEndFlag(webtoonDto.getEndFlag());
-			webtoon.setStoryGenre1(webtoonDto.getStoryGenre1());
-			webtoon.setStoryGenre2(webtoonDto.getStoryGenre2());
-			webtoon.setPlot(webtoonDto.getPlot());
-			webtoon.setSummary(webtoonDto.getSummary());
-			webtoon.setTitle(webtoonDto.getTitle());
-			webtoon.setStoryType(webtoonDto.getStoryType());
-
-			if (!file.isEmpty()) {
-				UUID uuid = UUID.randomUUID();
-				String fileName = uuid + "_" + file.getOriginalFilename();
-				System.out.println(fileName);
-				webtoonDto.setThumbnail(fileName);
-				//file 외부 폴더로 이동
-				File destinationFile = new File(filePath + "/web_thumbnail/" + fileName);
-				destinationFile.getParentFile().mkdir();
-				file.transferTo(destinationFile);
-			}
-
-			webtoonRepository.save(webtoon);
-			res.setData(webtoonDto);
-			return res;
-		}
+		Webtoon webtoon = request.toEntityWith(thumbnail, user);
+		webtoonRepository.save(webtoon);
 	}
-	
-	public Response<Long> deleteWebtoon(Long webtoonIdx, Long userIdx) {
-		Response<Long> res = new Response<Long>();
 
-        //해당 웹툰 idx가 유효한지 체크
-		if (!webtoonRepository.existsById(webtoonIdx)) {
-			res.setCode(1);
-			res.setMsg("delete fail: Webtoon do not exists");
-		} else {
-			Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(webtoonIdx);
-			Webtoon webtoon = WebtoonEntityWrapper.get();
-			if (webtoon.getUser().getIdx() != userIdx) {
-				res.setMsg("delete fail: user do not have authority");
-				res.setCode(1);
-			} else {
-				webtoonRepository.delete(webtoon);
-				res.setMsg("delete complete");
-				res.setCode(0);
-			}
+	@Transactional
+	public void editWebtoon(Long webtoonIdx, Long userIdx, MultipartFile file,
+							WebtoonEditRequest request) throws IOException {
+		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
+										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
+
+		if (!webtoon.wasDrawnBy(userIdx)) {
+			new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
 		}
 
-        return res;
+		// TODO : file is empty
+		String thumbnail = thumbnailOf(file);
+		String filePath = filePathOf(thumbnail);
+
+		transferFile(file, filePath);
+
+		webtoon = webtoon.update(request.toEntityWtih(thumbnail));
 	}
-	
-	public Response<WebtoonDto> getWebtoon(Long webtoonIdx){
-		Response<WebtoonDto> res = new Response<WebtoonDto>();
 
-		if (!webtoonRepository.existsById(webtoonIdx)) {
-			res.setCode(1);
-			res.setMsg("Webtoon do not exist");
-			return res;
+	@Transactional
+	public void deleteWebtoon(Long webtoonIdx, Long userIdx) {
+		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
+										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
+
+		if (!webtoon.wasDrawnBy(userIdx)) {
+			new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
 		}
 
-		Optional<Webtoon> WebtoonEntityWrapper = webtoonRepository.findById(webtoonIdx);
-        Webtoon webtoon = WebtoonEntityWrapper.get();
-        
-		WebtoonDto webtoonDto = WebtoonDto.builder()
-				.title(webtoon.getTitle())
-				.storyType(webtoon.getStoryType())
-				.storyGenre1(webtoon.getStoryGenre1())
-				.storyGenre2(webtoon.getStoryGenre2())
-				.summary(webtoon.getSummary())
-				.plot(webtoon.getPlot())
-				.endFlag(webtoon.getEndFlag())
-				.thumbnail(webtoon.getThumbnail())
-				.build();
-		res.setData(webtoonDto);
-		res.setCode(0);
-		res.setMsg("get webtoon info");
-		
-		return res;
+		webtoonRepository.delete(webtoon);
 	}
 }

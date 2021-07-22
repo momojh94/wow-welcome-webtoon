@@ -11,13 +11,16 @@ public enum ErrorType {
     BAD_COMMENT_LIKE_REQUEST(400, "CMT002", "User 자신이 쓴 댓글에 좋아요 요청을 할 수 없습니다"),
     BAD_COMMENT_DISLIKE_REQUEST(400, "CMT003", "User 자신이 쓴 댓글에 싫어요 요청을 할 수 없습니다"),
 
-    // User
+    // 유저
     USER_NOT_FOUND(404, "U000", "유저가 존재하지 않습니다."),
 
-    // 에피소드
+    // 에피소드(회차)
     EPISODE_NOT_FOUND(404, "EP000", "에피소드(회차)가 존재하지 않습니다."),
-    USER_HAVE_ALREADY_RATED_EPISODE(400, "EP001", "유저는 이미 해당 에피소드에 별점을 등록했습니다.");
+    USER_HAVE_ALREADY_RATED_EPISODE(400, "EP001", "유저는 이미 해당 에피소드에 별점을 등록했습니다."),
 
+    // 웹툰
+    WEBTOON_NOT_FOUND(404, "WT000", "웹툰이 존재하지 않습니다."),
+    USER_IS_NOT_AUTHOR_OF_WEBTOON(400, "WT001", "유저는 해당 웹툰의 작가가 아닙니다.");
 
     private final int status;
     private final String code;

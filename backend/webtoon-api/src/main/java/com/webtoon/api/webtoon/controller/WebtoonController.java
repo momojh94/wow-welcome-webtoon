@@ -1,15 +1,19 @@
 package com.webtoon.api.webtoon.controller;
 
-import com.webtoon.core.webtoon.dto.MainWebtoonPage;
-import com.webtoon.core.webtoon.dto.WebtoonDto;
-import com.webtoon.core.webtoon.dto.WebtoonPage;
+import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.webtoon.dto.WebtoonEditRequest;
+import com.webtoon.core.webtoon.dto.WebtoonsMainPageResponse;
+import com.webtoon.core.webtoon.dto.WebtoonCreateRequest;
+import com.webtoon.core.webtoon.dto.MyWebtoonsResponse;
+import com.webtoon.core.webtoon.dto.WebtoonResponse;
 import com.webtoon.core.webtoon.service.WebtoonService;
 import com.webtoon.core.common.Response;
-import com.webtoon.core.common.service.TokenChecker;
+import com.webtoon.core.user.service.TokenChecker;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,117 +38,110 @@ public class WebtoonController {
 		this.tokenChecker = tokenChecker;
 	}
 
-	//새 웹툰 등록
-	@PostMapping("/webtoons")
-	public Response<WebtoonDto> createWebtoon(@RequestHeader("Authorization") String accessToken,
-											  @RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
-											  @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
-											  @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
-		WebtoonDto webtoonDto = new WebtoonDto(title, storyType, storyGenre1, storyGenre2, summary, plot, endFlag);
-		Response<WebtoonDto> res = new Response<WebtoonDto>();
-		int n = tokenChecker.validateToken(accessToken);
-		Long userIdx = tokenChecker.getUserIdx(accessToken);
-
-		switch(n) {
-			case 0: //유효한 토큰
-				return webtoonService.createWebtoon(file, webtoonDto, userIdx);
-			case 1: //만료된 토큰
-				res.setCode(40);
-				res.setMsg("reissue tokens");
-				break;
-			case 2: //유효하지 않은 토큰
-				res.setCode(42);
-				res.setMsg("access denied : maybe captured or faked token");
-				break;
-		}
-
-		return res;
-	}
-
-	//내 웹툰 목록 출력 (한 페이지당 최대 20개)
-	@GetMapping("/users/webtoons")
-	public Response<WebtoonPage> getMyWebtoons(@RequestHeader("Authorization") String accessToken,
-                                               @RequestParam(value="page", defaultValue = "1") Integer page){
-		Response<WebtoonPage> res = new Response<>();
-		int n = tokenChecker.validateToken(accessToken);
-		Long userIdx = tokenChecker.getUserIdx(accessToken);
-
-		switch(n) {
-			case 0: //유효한 토큰
-				res = webtoonService.getMyWebtoons(page, userIdx);
-			case 1:
-				res.setCode(40);
-				res.setMsg("reissue tokens");
-				break;
-			case 2:
-				res.setCode(42);
-				res.setMsg("access denied : maybe captured or faked token");
-				break;
-		}
-
-		return res;
-	}
-
-	// 웹툰 리스트 출력 (한 페이지당 최대 20개), 정렬 기준 마다 조회 방식 다름
-	@GetMapping("/webtoons")
-	public Response<MainWebtoonPage> getWebtoons(@RequestParam(value="page", defaultValue = "1") Integer page,
-                                                 @RequestParam(value="sortBy", defaultValue = "0") int sort ){
-		return webtoonService.getWebtoons(page, sort);
-	}
 
 	// 해당 웹툰 정보 출력
 	@GetMapping("/webtoons/{webtoonIdx}")
-	public Response<WebtoonDto> getWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx) throws IOException {
-		return webtoonService.getWebtoon(webtoonIdx);
+	public ApiResponse<WebtoonResponse> getWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx) throws IOException {
+		return ApiResponse.succeed(webtoonService.getWebtoon(webtoonIdx));
 	}
-	
+
+	// 웹툰 리스트 출력 (한 페이지당 최대 20개), 정렬 기준 마다 조회 방식 다름
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/webtoons")
+	public ApiResponse<WebtoonsMainPageResponse> getWebtoons(@RequestParam(value="page", defaultValue = "1") Integer page,
+														  @RequestParam(value="sortBy", defaultValue = "0") int sort ){
+		return ApiResponse.succeed(webtoonService.getWebtoons(page, sort));
+	}
+
+	//내 웹툰 목록 출력 (한 페이지당 최대 20개)
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/users/webtoons")
+	public ApiResponse<MyWebtoonsResponse> getMyWebtoons(@RequestHeader("Authorization") String accessToken,
+														 @RequestParam(value="page", defaultValue = "1") Integer page){
+		switch (tokenChecker.validateToken(accessToken)) {
+			case 0: // 유효한 토큰
+				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				if (userIdx == -1) {
+					break;
+				}
+				return ApiResponse.succeed(webtoonService.getMyWebtoons(page, userIdx));
+			case 1: // 만료된 토큰
+				return ApiResponse.fail("44", "access denied : invalid access token");
+			default:
+		}
+
+		return ApiResponse.fail("42", "access denied : maybe captured or faked token");
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@PostMapping("/webtoons")
+	public ApiResponse<Void> createWebtoon(@RequestHeader("Authorization") String accessToken, @RequestPart("thumbnail") MultipartFile file,
+										   @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
+										   @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
+										   @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
+		WebtoonCreateRequest request = new WebtoonCreateRequest(title, storyType, storyGenre1,
+				storyGenre2, summary, plot, endFlag);
+
+		switch (tokenChecker.validateToken(accessToken)) {
+			case 0: // 유효한 토큰
+				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				if (userIdx == -1) {
+					break;
+				}
+				webtoonService.createWebtoon(userIdx, file, request);
+				return ApiResponse.succeed();
+			case 1: // 만료된 토큰
+				return ApiResponse.fail("44", "access denied : invalid access token");
+			default:
+		}
+
+		return ApiResponse.fail("42", "access denied : maybe captured or faked token");
+	}
+
 	//내 웹툰 정보 수정
+	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/webtoons/{webtoonIdx}")
-	public Response<WebtoonDto> editWebtoon(@RequestHeader("Authorization") String accessToken, @PathVariable("webtoonIdx") Long idx,
-											@RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
-											@RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
-											@RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
-		WebtoonDto webtoonDto = new WebtoonDto(title, storyType, storyGenre1, storyGenre2, summary, plot, endFlag);
-		Response<WebtoonDto> res = new Response<WebtoonDto>();
-		int n = tokenChecker.validateToken(accessToken);
-		
-		switch(n) {
-			case 0:
-				return webtoonService.editWebtoon(idx, file, webtoonDto);
-			case 1:
-				res.setCode(40);
-				res.setMsg("reissue tokens");
-				break;
-			case 2:
-				res.setCode(42);
-				res.setMsg("access denied : maybe captured or faked token");
-				break;
+	public ApiResponse<Void> editWebtoon(@RequestHeader("Authorization") String accessToken, @PathVariable("webtoonIdx") Long webtoonIdx,
+										 @RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
+										 @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
+										 @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
+		WebtoonEditRequest request = new WebtoonEditRequest(title, storyType, storyGenre1,
+				storyGenre2, summary, plot, endFlag);
+
+		switch (tokenChecker.validateToken(accessToken)) {
+			case 0: // 유효한 토큰
+				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				if (userIdx == -1) {
+					break;
+				}
+				webtoonService.editWebtoon(userIdx, webtoonIdx, file, request);
+				return ApiResponse.succeed();
+			case 1: // 만료된 토큰
+				return ApiResponse.fail("44", "access denied : invalid access token");
+			default:
 		}
-		
-		return res;
+
+		return ApiResponse.fail("42", "access denied : maybe captured or faked token");
 	}
 
-	//내 웹툰 삭제 
+	//내 웹툰 삭제
+	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/webtoons/{webtoonIdx}")
-	public Response<Long> deleteWebtoon(@RequestHeader("Authorization") String accessToken,
-										@PathVariable("webtoonIdx") Long idx){
-		Response<Long> res = new Response<Long>();
-		int n = tokenChecker.validateToken(accessToken);
-		Long userIdx = tokenChecker.getUserIdx(accessToken);
-
-		switch(n) {
-			case 0:
-				return  webtoonService.deleteWebtoon(idx, userIdx);
-			case 1:
-				res.setCode(40);
-				res.setMsg("reissue tokens");
-				break;
-			case 2:
-				res.setCode(42);
-				res.setMsg("access denied : maybe captured or faked token");
-				break;
+	public ApiResponse<Void> deleteWebtoon(@RequestHeader("Authorization") String accessToken,
+										   @PathVariable("webtoonIdx") Long webtoonIdx){
+		switch (tokenChecker.validateToken(accessToken)) {
+			case 0: // 유효한 토큰
+				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				if (userIdx == -1) {
+					break;
+				}
+				webtoonService.deleteWebtoon(webtoonIdx, userIdx);
+				return ApiResponse.succeed();
+			case 1: // 만료된 토큰
+				return ApiResponse.fail("44", "access denied : invalid access token");
+			default:
 		}
-		
-		return res;
+
+		return ApiResponse.fail("42", "access denied : maybe captured or faked token");
 	}
 }

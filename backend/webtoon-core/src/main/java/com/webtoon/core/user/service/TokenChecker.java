@@ -1,4 +1,4 @@
-package com.webtoon.core.common.service;
+package com.webtoon.core.user.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

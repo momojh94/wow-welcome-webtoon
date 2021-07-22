@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.api.common.ApiResponse;
-import com.webtoon.core.common.service.TokenChecker;
+import com.webtoon.core.user.service.TokenChecker;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;

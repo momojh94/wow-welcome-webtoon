@@ -1,7 +1,7 @@
 package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.common.ApiResponse;
-import com.webtoon.core.common.service.TokenChecker;
+import com.webtoon.core.user.service.TokenChecker;
 import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponseDto;
 import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import org.springframework.http.HttpStatus;
