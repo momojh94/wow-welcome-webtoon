@@ -40,30 +40,30 @@ public class WebtoonController {
 
 	// 해당 웹툰 정보 출력
 	@GetMapping("/webtoons/{webtoonIdx}")
-	public ApiResponse<WebtoonResponse> getWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx) throws IOException {
-		return ApiResponse.succeed(webtoonService.getWebtoon(webtoonIdx));
+	public ApiResponse<WebtoonResponse> findWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx) throws IOException {
+		return ApiResponse.succeed(webtoonService.findWebtoon(webtoonIdx));
 	}
 
 	// 웹툰 리스트 출력 (한 페이지당 최대 20개), 정렬 기준 마다 조회 방식 다름
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/webtoons")
-	public ApiResponse<WebtoonsMainPageResponse> getWebtoons(@RequestParam(value="page", defaultValue = "1") Integer page,
-														  @RequestParam(value="sortBy", defaultValue = "0") int sort ){
-		return ApiResponse.succeed(webtoonService.getWebtoons(page, sort));
+	public ApiResponse<WebtoonsMainPageResponse> findAllWebtoon(@RequestParam(value="page", defaultValue = "1") Integer page,
+																@RequestParam(value="sortBy", defaultValue = "0") int sort ){
+		return ApiResponse.succeed(webtoonService.findAllWebtoon(page, sort));
 	}
 
 	//내 웹툰 목록 출력 (한 페이지당 최대 20개)
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/users/webtoons")
-	public ApiResponse<MyWebtoonsResponse> getMyWebtoons(@RequestHeader("Authorization") String accessToken,
-														 @RequestParam(value="page", defaultValue = "1") Integer page){
+	public ApiResponse<MyWebtoonsResponse> findAllMyWebtoon(@RequestHeader("Authorization") String accessToken,
+															@RequestParam(value="page", defaultValue = "1") Integer page){
 		switch (tokenChecker.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
 				Long userIdx = tokenChecker.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}
-				return ApiResponse.succeed(webtoonService.getMyWebtoons(page, userIdx));
+				return ApiResponse.succeed(webtoonService.findAllMyWebtoon(page, userIdx));
 			case 1: // 만료된 토큰
 				return ApiResponse.fail("44", "access denied : invalid access token");
 			default:
@@ -74,10 +74,10 @@ public class WebtoonController {
 
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("/webtoons")
-	public ApiResponse<Void> createWebtoon(@RequestHeader("Authorization") String accessToken, @RequestPart("thumbnail") MultipartFile thumbnailFile,
-										   @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
-										   @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
-										   @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
+	public ApiResponse<Void> create(@RequestHeader("Authorization") String accessToken, @RequestPart("thumbnail") MultipartFile thumbnailFile,
+									@RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
+									@RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
+									@RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
 		WebtoonCreateRequest request = new WebtoonCreateRequest(title, storyType, storyGenre1,
 				storyGenre2, summary, plot, endFlag);
 
@@ -87,7 +87,7 @@ public class WebtoonController {
 				if (userIdx == -1) {
 					break;
 				}
-				webtoonService.createWebtoon(userIdx, thumbnailFile, request);
+				webtoonService.create(userIdx, thumbnailFile, request);
 				return ApiResponse.succeed();
 			case 1: // 만료된 토큰
 				return ApiResponse.fail("44", "access denied : invalid access token");
@@ -100,10 +100,10 @@ public class WebtoonController {
 	//내 웹툰 정보 수정
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/webtoons/{webtoonIdx}")
-	public ApiResponse<Void> editWebtoon(@RequestHeader("Authorization") String accessToken, @PathVariable("webtoonIdx") Long webtoonIdx,
-										 @RequestPart("thumbnail") MultipartFile thumbnailFile, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
-										 @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
-										 @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
+	public ApiResponse<Void> update(@RequestHeader("Authorization") String accessToken, @PathVariable("webtoonIdx") Long webtoonIdx,
+									@RequestPart("thumbnail") MultipartFile thumbnailFile, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
+									@RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
+									@RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
 		WebtoonEditRequest request = new WebtoonEditRequest(title, storyType, storyGenre1,
 				storyGenre2, summary, plot, endFlag);
 
@@ -113,7 +113,7 @@ public class WebtoonController {
 				if (userIdx == -1) {
 					break;
 				}
-				webtoonService.editWebtoon(userIdx, webtoonIdx, thumbnailFile, request);
+				webtoonService.update(userIdx, webtoonIdx, thumbnailFile, request);
 				return ApiResponse.succeed();
 			case 1: // 만료된 토큰
 				return ApiResponse.fail("44", "access denied : invalid access token");
@@ -126,15 +126,15 @@ public class WebtoonController {
 	//내 웹툰 삭제
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/webtoons/{webtoonIdx}")
-	public ApiResponse<Void> deleteWebtoon(@RequestHeader("Authorization") String accessToken,
-										   @PathVariable("webtoonIdx") Long webtoonIdx){
+	public ApiResponse<Void> delete(@RequestHeader("Authorization") String accessToken,
+									@PathVariable("webtoonIdx") Long webtoonIdx){
 		switch (tokenChecker.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
 				Long userIdx = tokenChecker.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}
-				webtoonService.deleteWebtoon(webtoonIdx, userIdx);
+				webtoonService.delete(webtoonIdx, userIdx);
 				return ApiResponse.succeed();
 			case 1: // 만료된 토큰
 				return ApiResponse.fail("44", "access denied : invalid access token");

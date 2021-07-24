@@ -183,7 +183,7 @@ public class CommentServiceTest {
         given(commentRepository.findAllByEpIdx(pageable, episode.getIdx())).willReturn(commentsPage);
 
         //when
-        CommentsResponse result = commentService.getCommentsByPageRequest(episode.getIdx(), page);
+        CommentsResponse result = commentService.findAllComment(episode.getIdx(), page);
 
         //then
         assertAll(
@@ -214,7 +214,7 @@ public class CommentServiceTest {
                 .willReturn(bestCommentList.stream());
 
         //when
-        List<CommentResponse> result = commentService.getBestComments(epIdx);
+        List<CommentResponse> result = commentService.findAllBestComment(epIdx);
 
         //then
         assertAll(
@@ -252,7 +252,7 @@ public class CommentServiceTest {
         given(commentRepository.findAllByUserIdx(pageable, user.getIdx())).willReturn(commentsPage);
 
         //when
-        MyPageCommentsResponse result = commentService.getMyPageComments(user.getIdx(), page);
+        MyPageCommentsResponse result = commentService.findAllMyPageComment(user.getIdx(), page);
 
         //then
         assertAll(

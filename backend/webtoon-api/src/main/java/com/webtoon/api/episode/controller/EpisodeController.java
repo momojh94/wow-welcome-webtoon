@@ -60,10 +60,10 @@ public class EpisodeController {
 	// 에피소드 등록
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("/webtoons/{webtoonIdx}/episodes")
-	public ApiResponse<Void> createEpisode(@RequestHeader("Authorization") String accessToken,
-										   @PathVariable("webtoonIdx") Long webtoonIdx, @RequestPart("thumbnail") MultipartFile thumbnailFile,
-										   @RequestPart("manuscript") MultipartFile[] contentImages, @RequestParam("title") String title,
-										   @RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
+	public ApiResponse<Void> create(@RequestHeader("Authorization") String accessToken,
+									@PathVariable("webtoonIdx") Long webtoonIdx, @RequestPart("thumbnail") MultipartFile thumbnailFile,
+									@RequestPart("manuscript") MultipartFile[] contentImages, @RequestParam("title") String title,
+									@RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
 		EpisodeCreateRequest request = new EpisodeCreateRequest(title, authorComment);
 
 		switch (tokenChecker.validateToken(accessToken)) {
@@ -72,7 +72,7 @@ public class EpisodeController {
 				if (userIdx == -1) {
 					break;
 				}
-				episodeService.createEpisode(webtoonIdx, userIdx, request, thumbnailFile, contentImages);
+				episodeService.create(webtoonIdx, userIdx, request, thumbnailFile, contentImages);
 				return ApiResponse.succeed();
 			case 1: // 만료된 토큰
 				return ApiResponse.fail("44", "access denied : invalid access token");
@@ -85,10 +85,10 @@ public class EpisodeController {
 	// 에피소드 정보 수정
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/webtoons/{webtoonIdx}/episodes/{epNo}")
-	public ApiResponse<Void> updateEpisode(@RequestHeader("Authorization") String accessToken,
-										   @PathVariable("webtoonIdx") Long webtoonIdx, @PathVariable("epNo") int epNo,
-										   @RequestPart("thumbnail") MultipartFile thumbnailFile, @RequestPart("manuscript") MultipartFile[] contentImages,
-										   @RequestParam("title") String title, @RequestParam("author_comment") String authorComment) throws IOException {
+	public ApiResponse<Void> update(@RequestHeader("Authorization") String accessToken,
+									@PathVariable("webtoonIdx") Long webtoonIdx, @PathVariable("epNo") int epNo,
+									@RequestPart("thumbnail") MultipartFile thumbnailFile, @RequestPart("manuscript") MultipartFile[] contentImages,
+									@RequestParam("title") String title, @RequestParam("author_comment") String authorComment) throws IOException {
 		EpisodeUpdateRequest request = new EpisodeUpdateRequest(title, authorComment);
 
 		switch (tokenChecker.validateToken(accessToken)) {
@@ -97,7 +97,7 @@ public class EpisodeController {
 				if (userIdx == -1) {
 					break;
 				}
-				episodeService.updateEpisode(userIdx, webtoonIdx, epNo, request, thumbnailFile, contentImages);
+				episodeService.update(userIdx, webtoonIdx, epNo, request, thumbnailFile, contentImages);
 				return ApiResponse.succeed();
 			case 1: // 만료된 토큰
 				return ApiResponse.fail("44", "access denied : invalid access token");
@@ -110,16 +110,16 @@ public class EpisodeController {
 	// 에피소드 삭제
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/webtoons/{webtoonIdx}/episodes/{epNo}")
-	public ApiResponse<Void> deleteEpisode(@RequestHeader("Authorization") String accessToken,
-										   @PathVariable("webtoonIdx") Long webtoonIdx,
-										   @PathVariable("epNo") int epNo){
+	public ApiResponse<Void> delete(@RequestHeader("Authorization") String accessToken,
+									@PathVariable("webtoonIdx") Long webtoonIdx,
+									@PathVariable("epNo") int epNo){
 		switch (tokenChecker.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
 				Long userIdx = tokenChecker.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}
-				episodeService.deleteEpisode(webtoonIdx, epNo, userIdx);
+				episodeService.delete(webtoonIdx, epNo, userIdx);
 				return ApiResponse.succeed();
 			case 1: // 만료된 토큰
 				return ApiResponse.fail("44", "access denied : invalid access token");

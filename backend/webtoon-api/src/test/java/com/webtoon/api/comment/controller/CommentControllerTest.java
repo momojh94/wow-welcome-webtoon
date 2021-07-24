@@ -165,7 +165,7 @@ public class CommentControllerTest {
                                                         .totalPages(1)
                                                         .build();
 
-        given(commentService.getCommentsByPageRequest(episode.getIdx(), pageNumber)).willReturn(responseData);
+        given(commentService.findAllComment(episode.getIdx(), pageNumber)).willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(get("/episodes/{ep_idx}/comments", episode.getIdx())
@@ -220,7 +220,7 @@ public class CommentControllerTest {
                                                         .map(CommentResponse::new)
                                                         .collect(Collectors.toList());
 
-        given(commentService.getBestComments(episode.getIdx()))
+        given(commentService.findAllBestComment(episode.getIdx()))
                 .willReturn(responseData);
 
         //when
@@ -277,7 +277,7 @@ public class CommentControllerTest {
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(commentService.getMyPageComments(user.getIdx(), pageNumber)).willReturn(responseData);
+        given(commentService.findAllMyPageComment(user.getIdx(), pageNumber)).willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(get("/users/comments", episode.getIdx())

@@ -94,7 +94,7 @@ public class StarRatingServiceTest {
 
         //when
         EpisodeStarRatingResponse result =
-                starRatingService.createStarRating(episode.getIdx(), user.getIdx(), rating);
+                starRatingService.create(episode.getIdx(), user.getIdx(), rating);
 
         //then
         assertAll(

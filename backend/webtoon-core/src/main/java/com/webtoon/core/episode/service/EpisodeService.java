@@ -83,8 +83,8 @@ public class EpisodeService {
 	}
 	
 	@Transactional
-	public void createEpisode(Long webtoonIdx, Long userIdx, EpisodeCreateRequest request,
-							  MultipartFile thumbnailFile, MultipartFile[] contentImages) throws IOException {
+	public void create(Long webtoonIdx, Long userIdx, EpisodeCreateRequest request,
+					   MultipartFile thumbnailFile, MultipartFile[] contentImages) throws IOException {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 
@@ -100,8 +100,8 @@ public class EpisodeService {
 	}
 
 	@Transactional
-	public void updateEpisode(Long userIdx, Long webtoonIdx, int epNo, EpisodeUpdateRequest request,
-							  MultipartFile thumbnailFile, MultipartFile[] contentImages) throws IOException {
+	public void update(Long userIdx, Long webtoonIdx, int epNo, EpisodeUpdateRequest request,
+					   MultipartFile thumbnailFile, MultipartFile[] contentImages) throws IOException {
 		Episode episode = episodeRepository.findByWebtoonIdxAndEpNo(webtoonIdx, epNo)
 										   .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
 		Webtoon webtoon = episode.getWebtoon();
@@ -117,7 +117,7 @@ public class EpisodeService {
 	}
 
 	@Transactional
-	public void deleteEpisode(Long webtoonIdx, int epNo, Long userIdx) {
+	public void delete(Long webtoonIdx, int epNo, Long userIdx) {
 		Episode episode = episodeRepository.findByWebtoonIdxAndEpNo(webtoonIdx, epNo)
 										   .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
 		Webtoon webtoon = episode.getWebtoon();

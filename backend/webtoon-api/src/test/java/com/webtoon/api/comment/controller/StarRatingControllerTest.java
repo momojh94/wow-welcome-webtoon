@@ -146,7 +146,7 @@ public class StarRatingControllerTest {
 
         given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(starRatingService.createStarRating(episode.getIdx(), user.getIdx(), rating))
+        given(starRatingService.create(episode.getIdx(), user.getIdx(), rating))
                 .willReturn(responseData);
 
         //when

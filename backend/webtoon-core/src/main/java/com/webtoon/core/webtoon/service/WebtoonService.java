@@ -51,13 +51,13 @@ public class WebtoonService {
 	//한 페이지 내 최대 회차 출력 갯수
 	private static final int PAGE_EPISODE_COUNT = 7;
 
-	public WebtoonResponse getWebtoon(Long webtoonIdx){
+	public WebtoonResponse findWebtoon(Long webtoonIdx){
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 		return new WebtoonResponse(webtoon);
 	}
 
-	public WebtoonsMainPageResponse getWebtoons(Integer pageNum, int sort) {
+	public WebtoonsMainPageResponse findAllWebtoon(Integer pageNum, int sort) {
 		Page<Webtoon> page = null;
 		switch(sort) {
 			//기본정렬
@@ -94,7 +94,7 @@ public class WebtoonService {
 													.collect(Collectors.toList()), totalPages);
 	}
 
-	public MyWebtoonsResponse getMyWebtoons(Integer pageNum, Long userIdx) {
+	public MyWebtoonsResponse findAllMyWebtoon(Integer pageNum, Long userIdx) {
 		Pageable pageable = PageRequest.of(pageNum - 1, PAGE_WEBTOON_COUNT);
 		Page<Webtoon> page = webtoonRepository.findAllByUserIdx(pageable, userIdx);
 
@@ -112,8 +112,8 @@ public class WebtoonService {
 	}
 
 	@Transactional
-	public void createWebtoon(Long userIdx, MultipartFile thumbnailFile,
-							  WebtoonCreateRequest request) throws IOException {
+	public void create(Long userIdx, MultipartFile thumbnailFile,
+					   WebtoonCreateRequest request) throws IOException {
 		User user = userRepository.findById(userIdx)
 								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 		// TODO : file is empty
@@ -124,8 +124,8 @@ public class WebtoonService {
 	}
 
 	@Transactional
-	public void editWebtoon(Long webtoonIdx, Long userIdx, MultipartFile thumbnailFile,
-							WebtoonEditRequest request) throws IOException {
+	public void update(Long webtoonIdx, Long userIdx, MultipartFile thumbnailFile,
+					   WebtoonEditRequest request) throws IOException {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 
@@ -140,7 +140,7 @@ public class WebtoonService {
 	}
 
 	@Transactional
-	public void deleteWebtoon(Long webtoonIdx, Long userIdx) {
+	public void delete(Long webtoonIdx, Long userIdx) {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 

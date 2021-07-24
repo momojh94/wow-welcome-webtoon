@@ -34,7 +34,7 @@ public class StarRatingService {
     }
 
     @Transactional
-    public EpisodeStarRatingResponse createStarRating(Long epIdx, Long userIdx, float rating) {
+    public EpisodeStarRatingResponse create(Long epIdx, Long userIdx, float rating) {
         if (starRatingRepository.existsByEpIdxAndUserIdx(epIdx, userIdx)) {
             throw new ApplicationException(USER_HAVE_ALREADY_RATED_EPISODE);
         }

@@ -28,16 +28,16 @@ public class StarRatingController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/episodes/{epIdx}/rating")
-    public ApiResponse<EpisodeStarRatingResponse> createStarRating(@RequestHeader("Authorization") String accessToken,
-                                                                   @PathVariable("epIdx") Long epIdx,
-                                                                   @RequestBody @Valid EpisodeStarRatingRequest request) {
+    public ApiResponse<EpisodeStarRatingResponse> create(@RequestHeader("Authorization") String accessToken,
+                                                         @PathVariable("epIdx") Long epIdx,
+                                                         @RequestBody @Valid EpisodeStarRatingRequest request) {
         switch (tokenChecker.validateToken(accessToken)) {
             case 0: // 유효한 토큰
                 Long userIdx = tokenChecker.getUserIdx(accessToken);
                 if (userIdx == -1) {
                     break;
                 }
-                return ApiResponse.succeed(starRatingService.createStarRating(epIdx, userIdx, request.getRating()));
+                return ApiResponse.succeed(starRatingService.create(epIdx, userIdx, request.getRating()));
             case 1: // 만료된 토큰
                 return ApiResponse.fail("44", "access denied : invalid access token");
             default:
