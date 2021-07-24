@@ -49,7 +49,7 @@ export default function Webtoon() {
     const [episodes, setEpisodes] = React.useState([]);
     const [webtoon_thumbnail, setWebtoon_thumbnail] = React.useState("");
     const [title, setTitle] = React.useState("");
-    const [writer, setWriter] = React.useState("");
+    const [author, setAuthor] = React.useState("");
     const [plot, setPlot] = React.useState("");
 
     const classes = useStyles();
@@ -67,8 +67,8 @@ export default function Webtoon() {
                 setEpisodes(result.data.episodes)
                 setWebtoon_thumbnail(result.data.webtoon_thumbnail)
                 setTitle(result.data.title)
-                setWriter(result.data.writer)
                 setPlot(result.data.plot)
+                setAuthor(result.data.author)
             })
             .catch(error => console.log('error', error));
     }, []);
@@ -92,7 +92,7 @@ export default function Webtoon() {
                 <div className={classes.title} style={{ display: "flex" }}>
                     <img src={webtoon_thumbnail} alt="thumbnail" style={{ margin: 10, height: 120, }} />
                     <div>
-                        <h2>{title} ({writer})</h2>
+                        <h2>{title} ({author})</h2>
                         <span>{plot}</span>
                     </div>
                 </div>

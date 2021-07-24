@@ -51,9 +51,9 @@ export default function EditEpisode() {
     const [episodes, setEpisodes] = React.useState([]);
     const [webtoon_thumbnail, setWebtoon_thumbnail] = React.useState("");
     const [title, setTitle] = React.useState("");
-    const [writer, setWriter] = React.useState("");
+    const [author, setAuthor] = React.useState("");
     const [plot, setPlot] = React.useState("");
-    const [rating, setRating]=React.useState("");
+    const [rating_avg, setRatingAvg]=React.useState("");
 
     React.useEffect(() => {
         var myHeaders = new Headers();
@@ -71,10 +71,9 @@ export default function EditEpisode() {
                 console.log(result)
                 setEpisodes(result.data.episodes)
                 setWebtoon_thumbnail(result.data.webtoon_thumbnail)
-                setTitle(result.data.title)
-                setWriter(result.data.writer)
+                setTitle(result.data.webtoon_title)
                 setPlot(result.data.plot)
-                setRating(result.data.rating_avg)
+                setAuthor(result.data.author)
             })
             .catch(error => console.log('error', error));
     }, []);
@@ -132,7 +131,7 @@ export default function EditEpisode() {
                 <div className={classes.title} style={{ display: "flex" }}>
                     <img src={webtoon_thumbnail} alt="thumbnail" style={{ margin: 10, height: 120, }} width="128" height="128" />
                     <div>
-                        <h2>{title} ({writer})</h2>
+                        <h2>{title} ({author})</h2>
                         <h5>{plot}</h5>
                         <Button variant="contained" href={"/mypage/upload?webtoon_idx=" + webtoonIdx + "&ep_idx=" + (episodes.length + 1)} style={{ marginLeft: 5 }}>
                             <span style={{ color: "#212121", fontWeight: 520 }}>새 회차 등록</span>
@@ -164,7 +163,7 @@ export default function EditEpisode() {
                                     </TableCell>
                                     <TableCell align="center">
                                         <Box component="span" mb={0} borderColor="transparent">
-                                            <Rating name="read-only" value={episode.rating} readOnly />
+                                            <Rating name="read-only" value={episode.rating_avg} readOnly />
                                         </Box>
                                     </TableCell>
                                     <TableCell align="center">{episode.created_date.slice(0, 10)}</TableCell>
