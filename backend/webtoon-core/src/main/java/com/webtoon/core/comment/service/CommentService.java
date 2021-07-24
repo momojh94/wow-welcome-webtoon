@@ -64,8 +64,8 @@ public class CommentService {
 
         return CommentsResponse.builder()
                                .comments(commentsPage.stream()
-                                                        .map(CommentResponse::new)
-                                                        .collect(Collectors.toList()))
+                                                     .map(CommentResponse::new)
+                                                     .collect(Collectors.toList()))
                                .totalPages(commentsPage.getTotalPages())
                                .build();
     }
@@ -89,8 +89,8 @@ public class CommentService {
 
         return MyPageCommentsResponse.builder()
                                      .comments(commentsPage.stream()
-                                                              .map(MyPageCommentResponse::new)
-                                                              .collect(Collectors.toList()))
+                                                           .map(MyPageCommentResponse::new)
+                                                           .collect(Collectors.toList()))
                                      .totalPages(commentsPage.getTotalPages())
                                      .build();
     }

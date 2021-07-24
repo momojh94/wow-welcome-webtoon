@@ -1,6 +1,8 @@
 package com.webtoon.core.webtoon.service;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.webtoon.core.common.exception.ApplicationException;
+import com.webtoon.core.common.util.FileUploader;
 import com.webtoon.core.webtoon.dto.MyWebtoonResponse;
 import com.webtoon.core.webtoon.dto.MyWebtoonsResponse;
 import com.webtoon.core.webtoon.dto.WebtoonCreateRequest;
@@ -48,32 +50,6 @@ public class WebtoonService {
 	private static final int PAGE_WEBTOON_COUNT = 10;
 	//한 페이지 내 최대 회차 출력 갯수
 	private static final int PAGE_EPISODE_COUNT = 7;
-	
-	@Value("${custom.path.upload-images}")
-	private static String BASE_FILE_PATH;
-	private static final String THUMBNAIL_PATH = "/web_thumbnail";
-
-	private String thumbnailOf(MultipartFile file) {
-		return new StringBuilder().append(UUID.randomUUID())
-								  .append("_")
-								  .append(file.getOriginalFilename())
-								  .toString();
-	}
-
-	private String filePathOf(String thumbnail) {
-		return new StringBuilder().append(BASE_FILE_PATH)
-								  .append(THUMBNAIL_PATH)
-								  .append("/")
-								  .append(thumbnail)
-								  .toString();
-	}
-
-	private void transferFile(MultipartFile file, String filename) throws IOException {
-		// TODO : file IOException CustomException으로 묶기
-		File destinationFile = new File(filename);
-		destinationFile.getParentFile().mkdir();
-		file.transferTo(destinationFile);
-	}
 
 	public WebtoonResponse getWebtoon(Long webtoonIdx){
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
@@ -136,22 +112,19 @@ public class WebtoonService {
 	}
 
 	@Transactional
-	public void createWebtoon(Long userIdx, MultipartFile file,
+	public void createWebtoon(Long userIdx, MultipartFile thumbnailFile,
 							  WebtoonCreateRequest request) throws IOException {
 		User user = userRepository.findById(userIdx)
 								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 		// TODO : file is empty
-		String thumbnail = thumbnailOf(file);
-		String filePath = filePathOf(thumbnail);
-
-		transferFile(file, filePath);
+		String thumbnail = FileUploader.uploadWebtoonThumbnail(thumbnailFile);
 
 		Webtoon webtoon = request.toEntityWith(thumbnail, user);
 		webtoonRepository.save(webtoon);
 	}
 
 	@Transactional
-	public void editWebtoon(Long webtoonIdx, Long userIdx, MultipartFile file,
+	public void editWebtoon(Long webtoonIdx, Long userIdx, MultipartFile thumbnailFile,
 							WebtoonEditRequest request) throws IOException {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
@@ -161,12 +134,9 @@ public class WebtoonService {
 		}
 
 		// TODO : file is empty
-		String thumbnail = thumbnailOf(file);
-		String filePath = filePathOf(thumbnail);
+		String thumbnail = FileUploader.uploadWebtoonThumbnail(thumbnailFile);
 
-		transferFile(file, filePath);
-
-		webtoon = webtoon.update(request.toEntityWtih(thumbnail));
+		webtoon.update(request.toEntityWtih(thumbnail));
 	}
 
 	@Transactional

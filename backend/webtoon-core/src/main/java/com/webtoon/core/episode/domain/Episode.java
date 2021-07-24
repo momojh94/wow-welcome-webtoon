@@ -72,4 +72,20 @@ public class Episode extends BaseTimeEntity {
 		this.ratingAvg = ratingAvg;
 		this.ratingPersonTotal = ratingPersonTotal;
 	}
+
+	public void increaseHits() {
+		this.hits++;
+	}
+
+	public Episode update(Episode requestEpisode) {
+		this.title = requestEpisode.title;
+		this.title = requestEpisode.title;
+		this.epNo = requestEpisode.epNo;
+		this.authorComment = requestEpisode.authorComment;
+		this.thumbnail = requestEpisode.thumbnail;
+		this.contents = requestEpisode.contents;
+		this.webtoon = requestEpisode.webtoon;
+
+		return this;
+	}
 }

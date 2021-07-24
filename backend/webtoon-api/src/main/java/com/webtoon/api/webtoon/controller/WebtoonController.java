@@ -7,7 +7,6 @@ import com.webtoon.core.webtoon.dto.WebtoonCreateRequest;
 import com.webtoon.core.webtoon.dto.MyWebtoonsResponse;
 import com.webtoon.core.webtoon.dto.WebtoonResponse;
 import com.webtoon.core.webtoon.service.WebtoonService;
-import com.webtoon.core.common.Response;
 import com.webtoon.core.user.service.TokenChecker;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
@@ -75,7 +74,7 @@ public class WebtoonController {
 
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("/webtoons")
-	public ApiResponse<Void> createWebtoon(@RequestHeader("Authorization") String accessToken, @RequestPart("thumbnail") MultipartFile file,
+	public ApiResponse<Void> createWebtoon(@RequestHeader("Authorization") String accessToken, @RequestPart("thumbnail") MultipartFile thumbnailFile,
 										   @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
 										   @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
 										   @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
@@ -88,7 +87,7 @@ public class WebtoonController {
 				if (userIdx == -1) {
 					break;
 				}
-				webtoonService.createWebtoon(userIdx, file, request);
+				webtoonService.createWebtoon(userIdx, thumbnailFile, request);
 				return ApiResponse.succeed();
 			case 1: // 만료된 토큰
 				return ApiResponse.fail("44", "access denied : invalid access token");
@@ -102,7 +101,7 @@ public class WebtoonController {
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/webtoons/{webtoonIdx}")
 	public ApiResponse<Void> editWebtoon(@RequestHeader("Authorization") String accessToken, @PathVariable("webtoonIdx") Long webtoonIdx,
-										 @RequestPart("thumbnail") MultipartFile file, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
+										 @RequestPart("thumbnail") MultipartFile thumbnailFile, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
 										 @RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
 										 @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
 		WebtoonEditRequest request = new WebtoonEditRequest(title, storyType, storyGenre1,
@@ -114,7 +113,7 @@ public class WebtoonController {
 				if (userIdx == -1) {
 					break;
 				}
-				webtoonService.editWebtoon(userIdx, webtoonIdx, file, request);
+				webtoonService.editWebtoon(userIdx, webtoonIdx, thumbnailFile, request);
 				return ApiResponse.succeed();
 			case 1: // 만료된 토큰
 				return ApiResponse.fail("44", "access denied : invalid access token");

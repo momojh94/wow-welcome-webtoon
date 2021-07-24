@@ -7,9 +7,6 @@ import org.springframework.data.repository.query.Param;
 public interface StarRatingRepository extends JpaRepository<StarRating, Long> {
     boolean existsByEpIdxAndUserIdx(@Param("epIdx") Long epIdx, @Param("userIdx") Long userIdx);
 
-    StarRating findByEpIdxAndUserIdx(@Param("epIdx") Long epIdx, @Param("userIdx") Long userIdx);
-
-
     @Query(value = " SELECT AVG(s.rating) " +
             "FROM star_rating s " +
             "GROUP BY s.ep_idx " +

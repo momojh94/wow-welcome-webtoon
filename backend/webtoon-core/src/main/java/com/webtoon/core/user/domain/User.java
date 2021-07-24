@@ -30,6 +30,8 @@ public class User extends BaseTimeEntity {
 	@Column(length = 64, nullable = false)
 	private String pw;
 
+	// TODO : nickName 필드 만들기, webtoon author 계정 id나 이름(실명) 들어내는게 별로
+	
 	@Column(length = 12, nullable = false)
 	private String name;
 

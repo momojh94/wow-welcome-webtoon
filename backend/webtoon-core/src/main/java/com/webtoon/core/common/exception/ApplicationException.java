@@ -1,7 +1,5 @@
 package com.webtoon.core.common.exception;
 
-import com.webtoon.core.common.exception.ErrorType;
-
 public class ApplicationException extends RuntimeException{
     private final ErrorType errorType;
 

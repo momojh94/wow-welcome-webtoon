@@ -6,6 +6,7 @@ import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,9 +28,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @Entity
 public class Webtoon extends BaseTimeEntity {
 
@@ -105,6 +106,23 @@ public class Webtoon extends BaseTimeEntity {
 
 		return episodes.get(episodes.size() - 1)
 					   .getUpdatedDate();
+	}
+
+	public int getNewEpNo() {
+		if(episodes.isEmpty()) {
+			return 1;
+		}
+		int lastEpNo = episodes.get(episodes.size() - 1)
+							   .getEpNo();
+		return lastEpNo + 1;
+	}
+
+	public String getAuthor() {
+		return user.getAccount();
+	}
+
+	public void increaseHits() {
+		this.hits++;
 	}
 
 	public Webtoon update(Webtoon requestWebtoon) {
