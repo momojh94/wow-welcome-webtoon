@@ -1,6 +1,5 @@
 package com.webtoon.core.episode.domain;
 
-import com.webtoon.core.webtoon.domain.Webtoon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,6 +22,4 @@ public interface EpisodeRepository extends JpaRepository<Episode, Long> {
 			"e.rating_person_total = e.rating_person_total + 1 " +
 			"WHERE e.idx = :epIdx", nativeQuery = true)
 	void updateRatingAvgAndPersonTotal(@Param("epIdx") Long epIdx);
-
-
 }

@@ -3,10 +3,6 @@ plugins {
     id "org.asciidoctor.convert" version "1.5.10"
 }
 
-jar {
-    enabled = true;
-}
-
 dependencies {
     implementation project(':webtoon-core')
     implementation 'org.springframework.boot:spring-boot-starter-web'

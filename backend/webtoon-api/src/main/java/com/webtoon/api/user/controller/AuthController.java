@@ -1,6 +1,7 @@
 package com.webtoon.api.user.controller;
 
-import com.webtoon.core.user.dto.Response;
+
+import com.webtoon.core.common.Response;
 import com.webtoon.core.user.dto.Tokens;
 import com.webtoon.core.user.dto.UserInfoDto;
 import com.webtoon.core.user.dto.UserInfoModifiedDto;
@@ -11,7 +12,15 @@ import com.webtoon.core.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -92,7 +101,7 @@ public class AuthController {
 	 */
 	@DeleteMapping("/{idx}/token")
 	public Response<String> Logout(@RequestHeader("Authorization") String AccessToken, @RequestBody String data,
-			@PathVariable("idx") Long useridx) {
+								   @PathVariable("idx") Long useridx) {
 
 		Response<String> result = new Response<String>();
 		// access token bearer split

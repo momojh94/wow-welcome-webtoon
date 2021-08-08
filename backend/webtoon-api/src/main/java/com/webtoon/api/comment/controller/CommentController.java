@@ -1,12 +1,12 @@
 package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.common.ApiResponse;
-import com.webtoon.core.user.service.TokenChecker;
 import com.webtoon.core.comment.dto.CommentCreateRequest;
 import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.comment.dto.CommentsResponse;
 import com.webtoon.core.comment.dto.MyPageCommentsResponse;
 import com.webtoon.core.comment.service.CommentService;
+import com.webtoon.core.user.service.TokenChecker;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,20 +1,20 @@
 package com.webtoon.core.user.service;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-
+import com.webtoon.core.user.domain.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import com.webtoon.core.user.domain.UserRepository;
-
-import io.jsonwebtoken.*;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+import java.security.Key;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class JwtTokenProvider {
@@ -30,7 +30,7 @@ public class JwtTokenProvider {
 	@Autowired
 	RedisTemplate<String, Object> redisTemplate;
 	@Autowired
-    UserRepository userRepository;
+	UserRepository userRepository;
 
 	// access jwt 발급
 	public String createAccessToken(Long user_idx, String user_name) {

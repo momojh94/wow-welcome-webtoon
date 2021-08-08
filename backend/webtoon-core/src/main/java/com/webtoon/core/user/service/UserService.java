@@ -1,12 +1,12 @@
 package com.webtoon.core.user.service;
 
+import com.webtoon.core.user.domain.User;
+import com.webtoon.core.user.domain.UserRepository;
 import com.webtoon.core.user.dto.Tokens;
 import com.webtoon.core.user.dto.UserDto;
 import com.webtoon.core.user.dto.UserInfoModifiedDto;
 import com.webtoon.core.user.dto.UserLoginDto;
 import com.webtoon.core.user.dto.UserRegisterDto;
-import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.domain.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -17,8 +17,8 @@ public class EnumConverterUtils {
 
     public static <E extends Enum<E> & PersistableEnum<T>, T> E toEntityAttribute(Class<E> enumClass, T dbData) {
         return EnumSet.allOf(enumClass).stream()
-                .filter(e -> e.getDatabaseValue() == dbData)
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("Unknown " + dbData));
+                      .filter(e -> e.getDatabaseValue() == dbData)
+                      .findAny()
+                      .orElseThrow(() -> new IllegalArgumentException("Unknown " + dbData));
     }
 }

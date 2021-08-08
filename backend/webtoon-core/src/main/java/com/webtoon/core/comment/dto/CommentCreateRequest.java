@@ -1,5 +1,6 @@
 package com.webtoon.core.comment.dto;
 
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

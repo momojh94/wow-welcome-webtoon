@@ -1,7 +1,8 @@
 package com.webtoon.core.user.domain;
 
-import com.webtoon.core.user.domain.enums.Gender;
+
 import com.webtoon.core.common.BaseTimeEntity;
+import com.webtoon.core.user.domain.enums.Gender;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Date;
-
+import java.util.Date;
 
 @Getter
 @Entity

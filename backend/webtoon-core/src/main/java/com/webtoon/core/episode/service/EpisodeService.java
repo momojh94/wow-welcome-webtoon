@@ -1,17 +1,16 @@
-
 package com.webtoon.core.episode.service;
 
 import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.common.util.FileUploader;
+import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.episode.domain.EpisodeRepository;
 import com.webtoon.core.episode.dto.EpisodeCreateRequest;
 import com.webtoon.core.episode.dto.EpisodeDetailResponse;
 import com.webtoon.core.episode.dto.EpisodeResponse;
-import com.webtoon.core.episode.dto.EpisodeViewPageResponse;
 import com.webtoon.core.episode.dto.EpisodeUpdateRequest;
+import com.webtoon.core.episode.dto.EpisodeViewPageResponse;
 import com.webtoon.core.episode.dto.EpisodesViewPageResponse;
-import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.webtoon.domain.Webtoon;
-import com.webtoon.core.episode.domain.EpisodeRepository;
 import com.webtoon.core.webtoon.domain.WebtoonRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -19,16 +18,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
 import static com.webtoon.core.common.exception.ErrorType.EPISODE_NOT_FOUND;
 import static com.webtoon.core.common.exception.ErrorType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
 import static com.webtoon.core.common.exception.ErrorType.WEBTOON_NOT_FOUND;
-
 
 @Service
 public class EpisodeService {
