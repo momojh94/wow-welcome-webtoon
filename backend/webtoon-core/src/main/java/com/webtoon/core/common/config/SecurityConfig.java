@@ -1,4 +1,4 @@
-package com.webtoon.core.user.config;
+package com.webtoon.core.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
