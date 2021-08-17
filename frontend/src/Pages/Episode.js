@@ -128,7 +128,7 @@ export default function Episode() {
             redirect: 'follow'
         };
         
-        fetch("/webtoons/" + webtoonIdx + "/episodes/" + epNo + "/detail", requestOptions)
+        fetch("/api/webtoons/" + webtoonIdx + "/episodes/" + epNo + "/detail", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -150,7 +150,7 @@ export default function Episode() {
         loadComment(1);
 
         // 베스트 댓글 로드
-        fetch("/episodes/" + epIdx + "/comments/best", requestOptions)
+        fetch("/api/episodes/" + epIdx + "/comments/best", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -189,7 +189,7 @@ export default function Episode() {
             redirect: 'follow'
         };
 
-        fetch("/episodes/" + epIdx + "/comments?page=" + page, requestOptions)
+        fetch("/api/episodes/" + epIdx + "/comments?page=" + page, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -227,7 +227,7 @@ export default function Episode() {
                 redirect: 'follow'
             };
 
-            fetch("/episodes/" + epIdx + "/comments", requestOptions)
+            fetch("/api/episodes/" + epIdx + "/comments", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)
@@ -279,7 +279,7 @@ export default function Episode() {
             redirect: 'follow'
         };
 
-        fetch("/episodes/" + epIdx + "/rating", requestOptions)
+        fetch("/api/episodes/" + epIdx + "/rating", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

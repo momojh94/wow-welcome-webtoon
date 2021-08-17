@@ -19,7 +19,7 @@ export function ReToken() {
 
   var userIdx = localStorage.getItem("USER_IDX")
 
-  fetch("/users/" + userIdx + "/token", requestOptions)
+  fetch("/api/users/" + userIdx + "/token", requestOptions)
     .then(response => {
       localStorage.setItem("AUTHORIZATION", response.headers.get('Authorization'))
       response.json().then(

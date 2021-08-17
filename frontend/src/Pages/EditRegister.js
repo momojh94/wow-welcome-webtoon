@@ -64,7 +64,7 @@ export default function EditRegister() {
             redirect: 'follow'
         };
 
-        fetch("/webtoons/" + webtoonIdx, requestOptions)
+        fetch("/api/webtoons/" + webtoonIdx, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -227,7 +227,7 @@ export default function EditRegister() {
                 redirect: 'follow'
             };
 
-            fetch("/webtoons/" + webtoonIdx, requestOptions)
+            fetch("/api/webtoons/" + webtoonIdx, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)
@@ -259,7 +259,7 @@ export default function EditRegister() {
             redirect: 'follow'
         };
 
-        fetch("/webtoons/" + webtoonIdx, requestOptions)
+        fetch("/api/webtoons/" + webtoonIdx, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

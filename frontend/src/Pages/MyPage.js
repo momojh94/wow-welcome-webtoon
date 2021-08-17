@@ -81,7 +81,7 @@ export default function MyPage() {
             redirect: 'follow',
         };
 
-        fetch("/users/webtoons?page="+page, requestOptions)
+        fetch("/api/users/webtoons?page="+page, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

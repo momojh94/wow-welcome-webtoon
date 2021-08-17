@@ -21,7 +21,7 @@ function LogoutButton() {
         };
 
         var userIdx = localStorage.getItem("user_idx");
-        fetch("/users/" + userIdx + "/token", requestOptions)
+        fetch("/api/users/" + userIdx + "/token", requestOptions)
             .then(response => response.text())
             .then(result => {
                 console.log(result)

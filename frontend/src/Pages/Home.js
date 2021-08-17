@@ -152,7 +152,7 @@ export default function Home() {
             redirect: 'follow'
         };
     
-        fetch("/webtoons?page=" + page + "&sortBy=" + sortBy, requestOptions)
+        fetch("/api/webtoons?page=" + page + "&sortBy=" + sortBy, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

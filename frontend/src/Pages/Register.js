@@ -176,7 +176,7 @@ export default function Register() {
                 redirect: 'follow'
             };
 
-            fetch("/webtoons", requestOptions)
+            fetch("/api/webtoons", requestOptions)
                 .then(response => response.json())
                 .then(result =>{ 
                     console.log(result)

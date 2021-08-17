@@ -54,7 +54,7 @@ export default function Login() {
                 redirect: 'follow'
             };
 
-            fetch("/users/token", requestOptions)
+            fetch("/api/users/token", requestOptions)
                 .then(response => {
                     console.log(response);
                     response.json().then(

@@ -115,7 +115,7 @@ function commentLoading() {
     };
 
     //url 수정
-    fetch("/episodes/" + epIdx + "/comments?page=1", requestOptions)
+    fetch("/api/episodes/" + epIdx + "/comments?page=1", requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result)
@@ -147,7 +147,7 @@ function bestCommentLoading() {
         redirect: 'follow'
     };
 
-    fetch("/episodes/" + epIdx + "/comments/best", requestOptions)
+    fetch("/api/episodes/" + epIdx + "/comments/best", requestOptions)
         .then(response => response.json())
         .then(result => {
             console.log(result)
@@ -183,7 +183,7 @@ export default function MyEpisode() {
             redirect: 'follow'
         };
 
-        fetch("/webtoons/" + webtoonIdx + "/episodes/" + epNo + "/detail", requestOptions)
+        fetch("/api/webtoons/" + webtoonIdx + "/episodes/" + epNo + "/detail", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

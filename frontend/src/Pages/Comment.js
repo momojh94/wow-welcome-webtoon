@@ -95,7 +95,7 @@ export default function Comment() {
             redirect: 'follow'
         };
 
-        fetch("/users/comments?page="+page, requestOptions)
+        fetch("/api/users/comments?page="+page, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -136,7 +136,7 @@ export default function Comment() {
         };
 
         console.log("/comments/" + idx);
-        fetch("/comments/" + idx, requestOptions)
+        fetch("/api/comments/" + idx, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

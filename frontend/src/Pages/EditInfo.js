@@ -102,7 +102,7 @@ export default function EditInfo() {
 
             var userIdx = localStorage.getItem("userIdx")
 
-            fetch("/users/" + userIdx, requestOptions)
+            fetch("/api/users/" + userIdx, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)
@@ -140,7 +140,7 @@ export default function EditInfo() {
 
         var userIdx = localStorage.getItem("userIdx")
         
-        fetch("/users/" + userIdx, requestOptions)
+        fetch("/api/users/" + userIdx, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

@@ -127,7 +127,7 @@ export default function Signup() {
                 redirect: 'follow'
             };
 
-            fetch("/users", requestOptions)
+            fetch("/api/users", requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result);

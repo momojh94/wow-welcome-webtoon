@@ -60,7 +60,7 @@ export default function Webtoon() {
             redirect: 'follow'
         };
     
-        fetch("/webtoons/" + webtoonIdx + "/episodes", requestOptions)
+        fetch("/api/webtoons/" + webtoonIdx + "/episodes", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)

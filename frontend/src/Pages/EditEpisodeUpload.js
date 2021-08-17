@@ -75,7 +75,7 @@ export default function EditUpload() {
             redirect: 'follow'
         };
 
-        fetch("/webtoons/" + webtoonIdx + "/episodes/" + epNo, requestOptions)
+        fetch("/api/webtoons/" + webtoonIdx + "/episodes/" + epNo, requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -213,7 +213,7 @@ export default function EditUpload() {
                 redirect: 'follow'
             };
 
-            fetch("/webtoons/" + webtoonIdx + "/episodes/" + epNo, requestOptions)
+            fetch("/api/webtoons/" + webtoonIdx + "/episodes/" + epNo, requestOptions)
                 .then(response => response.json())
                 .then(result => {
                     console.log(result)

@@ -20,7 +20,7 @@ class Comment extends Component {
             redirect: 'follow'
         };
 
-        fetch("/comments/" + this.props.cmtIdx + "/like", requestOptions)
+        fetch("/api/comments/" + this.props.cmtIdx + "/like", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
@@ -66,7 +66,7 @@ class Comment extends Component {
             redirect: 'follow'
         };
 
-        fetch("/comments/" + this.props.cmtIdx + "/dislike", requestOptions)
+        fetch("/api/comments/" + this.props.cmtIdx + "/dislike", requestOptions)
             .then(response => response.json())
             .then(result => {
                 console.log(result)
