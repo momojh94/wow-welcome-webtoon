@@ -2,7 +2,7 @@ package com.webtoon.core.user.service;
 
 import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.domain.UserRepository;
+import com.webtoon.core.user.repository.UserRepository;
 import com.webtoon.core.user.dto.TokensResponse;
 import com.webtoon.core.user.dto.UserSignupRequest;
 import com.webtoon.core.user.dto.UserUpdateRequest;

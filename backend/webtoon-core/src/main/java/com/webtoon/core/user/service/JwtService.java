@@ -1,14 +1,12 @@
 package com.webtoon.core.user.service;
 
 import com.webtoon.core.common.exception.ApplicationException;
-import com.webtoon.core.common.exception.ErrorType;
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.domain.UserRepository;
+import com.webtoon.core.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;

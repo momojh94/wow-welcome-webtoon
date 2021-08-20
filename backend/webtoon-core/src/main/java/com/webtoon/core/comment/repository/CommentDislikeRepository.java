@@ -1,6 +1,7 @@
-package com.webtoon.core.comment.domain;
+package com.webtoon.core.comment.repository;
 
 
+import com.webtoon.core.comment.domain.CommentDislike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,5 +1,6 @@
-package com.webtoon.core.user.domain;
+package com.webtoon.core.user.repository;
 
+import com.webtoon.core.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
