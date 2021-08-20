@@ -69,7 +69,7 @@ public class EpisodeService {
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 
 		pageNum = pageNum == 0 ? 1 : pageNum;
-		Pageable pageable = PageRequest.of(pageNum - 1, PAGE_EPISODE_COUNT, Sort.Direction.DESC, "ep_no");
+		Pageable pageable = PageRequest.of(pageNum - 1, PAGE_EPISODE_COUNT, Sort.Direction.DESC, "epNo");
 		Page<Episode> page = episodeRepository.findAllByWebtoonIdx(pageable, webtoonIdx);
 
 		int totalPages = page.getTotalPages() == 0 ? 1 : page.getTotalPages();
