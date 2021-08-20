@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,6 +47,7 @@ public class User extends BaseTimeEntity {
 	@Column(length = 45, nullable = false)
 	private String email;
 
+	@CreatedDate
 	@Column
 	private LocalDateTime loginDate;
 

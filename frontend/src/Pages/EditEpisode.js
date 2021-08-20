@@ -1,188 +1,251 @@
-import React, { Component } from 'react';
-import Header from '../Components/Header';
-import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { Component } from "react";
+import Header from "../Components/Header";
+import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
 //테이블
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 //별점
-import Box from '@material-ui/core/Box';
-import Rating from '@material-ui/lab/Rating';
+import Box from "@material-ui/core/Box";
+import Rating from "@material-ui/lab/Rating";
 // 토큰 재발급
 var ReToken = require("../AuthRoute");
 
-const useStyles = makeStyles(theme => ({
-    menu: {
-        '& > *': {
-            margin: theme.spacing(5, 0, 3, 8),
-        },
+const useStyles = makeStyles((theme) => ({
+  menu: {
+    "& > *": {
+      margin: theme.spacing(5, 0, 3, 8),
     },
-    button: {
-        '& > *': {
-            margin: theme.spacing(1),
-        },
+  },
+  button: {
+    "& > *": {
+      margin: theme.spacing(1),
     },
-    title: {
-        padding: theme.spacing(2, 35),
-        margin: theme.spacing(0, 0, 5, 0),
-        height: 100,
-    },
-    table: {
-        width: 1000,
-    },
+  },
+  title: {
+    padding: theme.spacing(2, 35),
+    margin: theme.spacing(0, 0, 5, 0),
+    height: 100,
+  },
+  table: {
+    width: 1000,
+  },
 }));
 
 //주소 파싱하여 idx 알아오기
 function getParameterByName(name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(window.location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+    results = regex.exec(window.location.search);
+  return results === null
+    ? ""
+    : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-const webtoonIdx = getParameterByName('webtoon_idx');
+const webtoonIdx = getParameterByName("webtoon_idx");
 
 export default function EditEpisode() {
-    const [episodes, setEpisodes] = React.useState([]);
-    const [webtoon_thumbnail, setWebtoon_thumbnail] = React.useState("");
-    const [title, setTitle] = React.useState("");
-    const [author, setAuthor] = React.useState("");
-    const [plot, setPlot] = React.useState("");
-    const [rating_avg, setRatingAvg]=React.useState("");
+  const [episodes, setEpisodes] = React.useState([]);
+  const [webtoon_thumbnail, setWebtoon_thumbnail] = React.useState("");
+  const [title, setTitle] = React.useState("");
+  const [author, setAuthor] = React.useState("");
+  const [plot, setPlot] = React.useState("");
+  const [rating_avg, setRatingAvg] = React.useState("");
 
-    React.useEffect(() => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", localStorage.getItem("AUTHORIZATION"));
+  React.useEffect(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("authorization"));
 
-        var requestOptions = {
-            headers: myHeaders,
-            method: 'GET',
-            redirect: 'follow'
-        };
+    var requestOptions = {
+      headers: myHeaders,
+      method: "GET",
+      redirect: "follow",
+    };
 
-        fetch("/api/webtoons/" + webtoonIdx + "/episodes?page=1", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result)
-                setEpisodes(result.data.episodes)
-                setWebtoon_thumbnail(result.data.webtoon_thumbnail)
-                setTitle(result.data.webtoon_title)
-                setPlot(result.data.plot)
-                setAuthor(result.data.author)
-            })
-            .catch(error => console.log('error', error));
-    }, []);
+    fetch("/api/webtoons/" + webtoonIdx + "/episodes?page=1", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        setEpisodes(result.data.episodes);
+        setWebtoon_thumbnail(result.data.webtoon_thumbnail);
+        setTitle(result.data.webtoon_title);
+        setPlot(result.data.plot);
+        setAuthor(result.data.author);
+      })
+      .catch((error) => console.log("error", error));
+  }, []);
 
-    const classes = useStyles();
+  const classes = useStyles();
 
-    function episodeDelete(epNo) {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", localStorage.getItem("AUTHORIZATION"));
+  function episodeDelete(ep_no) {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("authorization"));
 
-        var requestOptions = {
-            headers: myHeaders,
-            method: 'DELETE',
-            redirect: 'follow'
-        };
+    var requestOptions = {
+      headers: myHeaders,
+      method: "DELETE",
+      redirect: "follow",
+    };
 
-        fetch("/api/webtoons/" + webtoonIdx + "/episodes/" + epNo, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                console.log(result)
-                if (result.code == 0) {
-                    alert("회차가 삭제되었습니다!")
-                    window.location.reload();
-                }
-                else if (result.code == 44){
-                    ReToken.ReToken()
-                }
-                else if(result.code==42){
-                    alert("[ERROR 42] 잘못된 접근입니다, 관리자에게 문의하세요.")
-                }
-                else{
-                    alert("잘못된 접근입니다, 관리자에게 문의하세요.")
-                }
-            })
-            .catch(error => console.log('error', error));
+    fetch("/api/webtoons/" + webtoonIdx + "/episodes/" + ep_no, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        if (result.error_code != null) {
+          if (result.error_code == 44) {
+            ReToken.ReToken();
+            return;
+          }
 
-    }
+          if (result.error_code == 42) {
+            // 로그인 필요한 경우
+            if (!localStorage.getItem("authorization")) {
+              alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
+              window.location.href = "/login";
+            } else {
+              alert("잘못된 접근입니다.");
+            }
+            return;
+          }
 
-    return (
-        <div>
-            <Header />
+          alert(result.message);
+          return;
+        }
 
-            <div className={classes.menu}>
-                <div className={classes.button}>
-                    <Button variant="contained" color="primary" href="/">
-                        <span style={{ color: "#fafafa", fontWeight: 550 }}>도전만화</span>
-                    </Button>
-                    <Button variant="contained" href="/mypage">
-                        <span style={{ color: "#212121", fontWeight: 520 }}>마이페이지</span>
-                    </Button>
-                </div>
-            </div>
+        alert("회차가 삭제되었습니다!");
+        window.location.reload();
+      })
+      .catch((error) => console.log("error", error));
+  }
 
-            <div style={{ border: '1px solid grey', minHeight: 600, }}>
-                <div className={classes.title} style={{ display: "flex" }}>
-                    <img src={webtoon_thumbnail} alt="thumbnail" style={{ margin: 10, height: 120, }} width="128" height="128" />
-                    <div>
-                        <h2>{title} ({author})</h2>
-                        <h5>{plot}</h5>
-                        <Button variant="contained" href={"/mypage/upload?webtoon_idx=" + webtoonIdx + "&ep_idx=" + (episodes.length + 1)} style={{ marginLeft: 5 }}>
-                            <span style={{ color: "#212121", fontWeight: 520 }}>새 회차 등록</span>
-                        </Button>
-                    </div>
-                </div>
-                <TableContainer component={Paper} align="center">
-                    <Table className={classes.table} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center">이미지</TableCell>
-                                <TableCell align="center">회차</TableCell>
-                                <TableCell align="center">별점</TableCell>
-                                <TableCell align="center">등록일</TableCell>
-                                <TableCell align="center">수정</TableCell>
-                                <TableCell align="center">삭제</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {episodes.map(episode => (
-                                <TableRow key={episode.title}>
-                                    <TableCell align="center">
-                                        <img src={episode.thumnail} width="64" height="64" />
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        <a href={"/mypage/myEpisode?webtoon_idx=" + webtoonIdx + "&ep_no=" + episode.ep_no + "&ep_idx=" + episode.idx} style={{}}>
-                                            {episode.ep_no}화. {episode.title}
-                                        </a>
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        <Box component="span" mb={0} borderColor="transparent">
-                                            <Rating name="read-only" value={episode.rating_avg} readOnly />
-                                        </Box>
-                                    </TableCell>
-                                    <TableCell align="center">{episode.created_date.slice(0, 10)}</TableCell>
-                                    <TableCell align="center">
-                                        <Button variant="contained" href={"/mypage/editUpload?webtoon_idx=" + webtoonIdx + "&ep_no=" + episode.ep_no}>
-                                            <span style={{ color: "#212121", fontWeight: 520 }}>수정</span>
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        <Button variant="contained" onClick={() => episodeDelete(episode.ep_no)}>
-                                            <span style={{ color: "#212121", fontWeight: 520 }}>삭제</span>
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </div>
+  return (
+    <div>
+      <Header />
+
+      <div className={classes.menu}>
+        <div className={classes.button}>
+          <Button variant="contained" color="primary" href="/">
+            <span style={{ color: "#fafafa", fontWeight: 550 }}>도전만화</span>
+          </Button>
+          <Button variant="contained" href="/mypage">
+            <span style={{ color: "#212121", fontWeight: 520 }}>
+              마이페이지
+            </span>
+          </Button>
         </div>
-    )
+      </div>
+
+      <div style={{ border: "1px solid grey", minHeight: 600 }}>
+        <div className={classes.title} style={{ display: "flex" }}>
+          <img
+            src={webtoon_thumbnail}
+            alt="thumbnail"
+            style={{ margin: 10, height: 120 }}
+            width="128"
+            height="128"
+          />
+          <div>
+            <h2>
+              {title} ({author})
+            </h2>
+            <h5>{plot}</h5>
+            <Button
+              variant="contained"
+              href={
+                "/mypage/upload?webtoon_idx=" +
+                webtoonIdx +
+                "&ep_idx=" +
+                (episodes.length + 1)
+              }
+              style={{ marginLeft: 5 }}
+            >
+              <span style={{ color: "#212121", fontWeight: 520 }}>
+                새 회차 등록
+              </span>
+            </Button>
+          </div>
+        </div>
+        <TableContainer component={Paper} align="center">
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">이미지</TableCell>
+                <TableCell align="center">회차</TableCell>
+                <TableCell align="center">별점</TableCell>
+                <TableCell align="center">등록일</TableCell>
+                <TableCell align="center">수정</TableCell>
+                <TableCell align="center">삭제</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {episodes.map((episode) => (
+                <TableRow key={episode.title}>
+                  <TableCell align="center">
+                    <img src={episode.thumnail} width="64" height="64" />
+                  </TableCell>
+                  <TableCell align="left">
+                    <a
+                      href={
+                        "/mypage/myEpisode?webtoon_idx=" +
+                        webtoonIdx +
+                        "&ep_no=" +
+                        episode.ep_no +
+                        "&ep_idx=" +
+                        episode.idx
+                      }
+                      style={{}}
+                    >
+                      {episode.ep_no}화. {episode.title}
+                    </a>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Box component="span" mb={0} borderColor="transparent">
+                      <Rating
+                        name="read-only"
+                        value={episode.rating_avg}
+                        readOnly
+                      />
+                    </Box>
+                  </TableCell>
+                  <TableCell align="center">
+                    {episode.created_date.slice(0, 10)}
+                  </TableCell>
+                  <TableCell align="center">
+                    <Button
+                      variant="contained"
+                      href={
+                        "/mypage/editUpload?webtoon_idx=" +
+                        webtoonIdx +
+                        "&ep_no=" +
+                        episode.ep_no
+                      }
+                    >
+                      <span style={{ color: "#212121", fontWeight: 520 }}>
+                        수정
+                      </span>
+                    </Button>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Button
+                      variant="contained"
+                      onClick={() => episodeDelete(episode.ep_no)}
+                    >
+                      <span style={{ color: "#212121", fontWeight: 520 }}>
+                        삭제
+                      </span>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    </div>
+  );
 }

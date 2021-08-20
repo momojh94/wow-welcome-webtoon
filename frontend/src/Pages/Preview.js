@@ -1,11 +1,8 @@
-import React from 'react'
+import React from "react";
 
 export default function Preview() {
-    var tempImage = new Image();
-    var reader = new FileReader();
+  var tempImage = new Image();
+  var reader = new FileReader();
 
-    return (
-        <div id="scripts">
-        </div>
-    )
+  return <div id="scripts"></div>;
 }

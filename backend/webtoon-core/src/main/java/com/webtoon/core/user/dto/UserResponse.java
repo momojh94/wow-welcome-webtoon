@@ -1,18 +1,13 @@
 package com.webtoon.core.user.dto;
 
-import com.webtoon.core.common.util.FileUploader;
-import com.webtoon.core.episode.dto.EpisodeViewPageResponse;
-import com.webtoon.core.episode.dto.EpisodesViewPageResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
-import com.webtoon.core.webtoon.domain.Webtoon;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

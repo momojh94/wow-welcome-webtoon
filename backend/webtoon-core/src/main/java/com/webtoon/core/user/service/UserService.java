@@ -16,7 +16,6 @@ import static com.webtoon.core.common.exception.ErrorType.WRONG_PASSWORD;
 
 @Service
 public class UserService {
-
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtService jwtService;
@@ -64,7 +63,7 @@ public class UserService {
 		User user = userRepository.findById(userIdx)
 								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 
-		String encodedPassword = passwordEncoder.encode(request.getPw());
+		String encodedPassword = passwordEncoder.encode(request.getPassword());
 		user.update(request.toUser(encodedPassword));
 	}
 

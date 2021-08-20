@@ -32,19 +32,19 @@ import static com.webtoon.core.common.exception.ErrorType.WEBTOON_NOT_FOUND;
 public class EpisodeService {
 	private final WebtoonRepository webtoonRepository;
 	private final EpisodeRepository episodeRepository;
+	private final FileUploader fileUploader;
 
 	//한 블럭 내 최대 페이지 번호 수
 	private static final int BLOCK_PAGE_NUM_COUNT = 5;
 	//한 페이지 내 최대 회차 출력 갯수
 	private static final int PAGE_EPISODE_COUNT = 7;
 
-	@Value("${custom.path.upload-images}")
-	private String filePath;
-
 	public EpisodeService(WebtoonRepository webtoonRepository,
-						  EpisodeRepository episodeRepository) {
+						  EpisodeRepository episodeRepository,
+						  FileUploader fileUploader) {
 		this.webtoonRepository = webtoonRepository;
 		this.episodeRepository = episodeRepository;
+		this.fileUploader = fileUploader;
 	}
 
 	@Transactional
@@ -91,8 +91,8 @@ public class EpisodeService {
 		}
         
         int newEpNo = webtoon.getNewEpNo();
-		String thumbnail = FileUploader.uploadEpisodeThumbnail(thumbnailFile);
-		String contents = FileUploader.uploadContentImages(contentImages);
+		String thumbnail = fileUploader.uploadEpisodeThumbnail(thumbnailFile);
+		String contents = fileUploader.uploadContentImages(contentImages);
 
 		episodeRepository.save(request.toEpisode(newEpNo, thumbnail, contents, webtoon));
 	}
@@ -108,8 +108,8 @@ public class EpisodeService {
 			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
 		}
 
-		String thumbnail = FileUploader.uploadEpisodeThumbnail(thumbnailFile);
-		String contents = FileUploader.uploadContentImages(contentImages);
+		String thumbnail = fileUploader.uploadEpisodeThumbnail(thumbnailFile);
+		String contents = fileUploader.uploadContentImages(contentImages);
 
 		episode.update(request.toEpisode(thumbnail, contents, webtoon));
 	}

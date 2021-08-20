@@ -23,15 +23,15 @@ import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
 
 @Service
 public class JwtService {
+	private final RedisTemplate<String, Object> redisTemplate;
+	private final UserRepository userRepository;
 
+	private final String BEARER = "bearer ";
 	private String secretKey = "secretkeyhelloimjwtsecretkeysecretkeyhelloimkeyjwtplz";
 	private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 	private byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secretKey);
 	private Key KEY = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 	private long tokenValidMilisecond = 1000L * 60 * 60; // 1000ms(1sec), 1000 * 60 * 60 == 한시간
-
-	private final RedisTemplate<String, Object> redisTemplate;
-	private final UserRepository userRepository;
 
 	public JwtService(RedisTemplate<String, Object> redisTemplate,
 					  UserRepository userRepository) {
@@ -93,8 +93,10 @@ public class JwtService {
 
 	public int validateToken(String token) {
 		try {
-			// access token bearer split
-			token = token.substring(7);
+			String type = token.substring(0, 7);
+			if(type.equals(BEARER)) {
+				token = token.substring(7);
+			}
 			Date now = new Date();
 			long time = (Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration().getTime()
 					- now.getTime());
@@ -121,13 +123,13 @@ public class JwtService {
 		if (accessTokenValidity < 2 && refreshTokenValidity < 2 && getUserIdx(accessToken) == userIdx) {
 			try {
 				ValueOperations<String, Object> vop = redisTemplate.opsForValue();
-				String redisToken = (String) vop.get(user.getAccount());
+				String refreshTokenInRedis = (String) vop.get(user.getAccount());
 
-				if (redisToken == null) {
+				if (refreshTokenInRedis == null) {
 					return 41; //refresh token 만료 (로그아웃)
 				}
 
-				if (redisToken.equals(refreshToken)) {
+				if (refreshTokenInRedis.equals(refreshToken)) {
 					if (accessTokenValidity == 1 && refreshTokenValidity == 0) {
 						return 40; //access token 재발급 가능
 					}
@@ -146,7 +148,6 @@ public class JwtService {
 		return 42; //유효하지 않은 토큰들
 	}
 
-	// redis refresh token 체크
 	public void expireToken(Long idx) {
 		User user = userRepository.findById(idx)
 								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));

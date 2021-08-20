@@ -9,5 +9,5 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserLoginRequest {
 	private String account;
-	private String pw;
+	private String password;
 }

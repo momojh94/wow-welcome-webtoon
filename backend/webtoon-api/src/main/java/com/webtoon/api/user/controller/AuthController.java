@@ -45,7 +45,7 @@ public class AuthController {
 	@PostMapping("/token")
 	public ResponseEntity<ApiResponse<UserLoginResponse>> login(@RequestBody UserLoginRequest request) {
 		UserResponse userResponse = userService.findByAccount(request.getAccount());
-		TokensResponse tokensResponse = userService.login(request.getAccount(), request.getPw());
+		TokensResponse tokensResponse = userService.login(request.getAccount(), request.getPassword());
 
 		return ResponseEntity.ok()
 							 .header(HttpHeaders.AUTHORIZATION, tokensResponse.getAccessToken())
@@ -56,9 +56,8 @@ public class AuthController {
 	@DeleteMapping("/{idx}/token")
 	public ApiResponse<String> logout(@RequestHeader("Authorization") String accessToken,
 									  @PathVariable("idx") Long useridx, @RequestBody String data) {
-		accessToken = accessToken.substring(7);
 		JSONObject body = new JSONObject(data);
-		String refreshToken = body.getString("refreshToken");
+		String refreshToken = body.getString("refresh_token");
 
 		int r = jwtService.checkRefreshToken(accessToken, refreshToken, useridx);
 		switch (r) {
@@ -78,9 +77,8 @@ public class AuthController {
 	public ApiResponse<Void> reissueToken(@RequestHeader("Authorization") String accessToken,
 										  @PathVariable("idx") Long userIdx, @RequestBody String data) {
 		// access token bearer split
-		accessToken = accessToken.substring(7);
 		JSONObject body = new JSONObject(data);
-		String refreshToken = body.getString("refreshToken");
+		String refreshToken = body.getString("refresh_token");
 
 		switch (jwtService.checkRefreshToken(accessToken, refreshToken, userIdx)) {
 			case 40: // 재발급 (code 0)
@@ -117,10 +115,7 @@ public class AuthController {
 
 	@DeleteMapping("/{idx}")
 	public ApiResponse<Void> delete(@RequestHeader("Authorization") String accessToken,
-									  @PathVariable("idx") Long userIdx) {
-		// access token bearer split
-		accessToken = accessToken.substring(7);
-
+									@PathVariable("idx") Long userIdx) {
 		// access token 유효한가
 		switch (jwtService.validateToken(accessToken)) {
 			case 1:

@@ -11,13 +11,13 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserUpdateRequest {
-	private String pw;
+	private String password;
 	private String name;
 	private Date birth;
 	private Gender gender;
 
-	public UserUpdateRequest(String pw, String name, Date birth, Gender gender) {
-		this.pw = pw;
+	public UserUpdateRequest(String password, String name, Date birth, Gender gender) {
+		this.password = password;
 		this.name = name;
 		this.birth = birth;
 		this.gender = gender;

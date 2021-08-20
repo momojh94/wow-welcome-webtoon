@@ -1,6 +1,5 @@
 package com.webtoon.core.webtoon.service;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.common.util.FileUploader;
 import com.webtoon.core.webtoon.dto.MyWebtoonResponse;
@@ -14,7 +13,6 @@ import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.WebtoonRepository;
 import com.webtoon.core.webtoon.dto.WebtoonResponse;
 import com.webtoon.core.webtoon.dto.WebtoonsMainPageResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.webtoon.core.common.exception.ErrorType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
@@ -37,11 +33,14 @@ import static com.webtoon.core.common.exception.ErrorType.WEBTOON_NOT_FOUND;
 public class WebtoonService {
 	private final WebtoonRepository webtoonRepository;
 	private final UserRepository userRepository;
+	private final FileUploader fileUploader;
 
 	public WebtoonService(WebtoonRepository webtoonRepository,
-						  UserRepository userRepository) {
+						  UserRepository userRepository,
+						  FileUploader fileUploader) {
 		this.webtoonRepository = webtoonRepository;
 		this.userRepository = userRepository;
+		this.fileUploader = fileUploader;
 	}
 
 	//한 블럭 내 최대 페이지 번호 수
@@ -117,9 +116,9 @@ public class WebtoonService {
 		User user = userRepository.findById(userIdx)
 								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
 		// TODO : file is empty
-		String thumbnail = FileUploader.uploadWebtoonThumbnail(thumbnailFile);
+		String thumbnail = fileUploader.uploadWebtoonThumbnail(thumbnailFile);
 
-		Webtoon webtoon = request.toEntityWith(thumbnail, user);
+		Webtoon webtoon = request.toWebtoon(thumbnail, user);
 		webtoonRepository.save(webtoon);
 	}
 
@@ -134,9 +133,9 @@ public class WebtoonService {
 		}
 
 		// TODO : file is empty
-		String thumbnail = FileUploader.uploadWebtoonThumbnail(thumbnailFile);
+		String thumbnail = fileUploader.uploadWebtoonThumbnail(thumbnailFile);
 
-		webtoon.update(request.toEntityWtih(thumbnail));
+		webtoon.update(request.toWebtoon(thumbnail));
 	}
 
 	@Transactional

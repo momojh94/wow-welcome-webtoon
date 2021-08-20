@@ -46,7 +46,7 @@ public class EpisodeController {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/webtoons/{webtoonIdx}/episodes/{epNo}")
 	public ApiResponse<EpisodeResponse> findEpisode(@PathVariable("webtoonIdx") Long webtoonIdx,
-													@PathVariable("epNo") int epNo) throws IOException {
+													@PathVariable("epNo") int epNo) {
 		return ApiResponse.succeed(episodeService.findEpisode(webtoonIdx, epNo));
 	}
 

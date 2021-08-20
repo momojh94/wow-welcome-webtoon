@@ -39,7 +39,7 @@ public class WebtoonCreateRequest {
 		this.endFlag = endFlag;
 	}
 
-	public Webtoon toEntityWith(String thumbnail, User user) {
+	public Webtoon toWebtoon(String thumbnail, User user) {
 		return Webtoon.builder()
 					  .title(title)
 					  .storyType(storyType)

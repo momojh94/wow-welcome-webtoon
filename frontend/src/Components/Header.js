@@ -1,52 +1,52 @@
-import React from 'react';
-import { fade, makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import Box from '@material-ui/core/Box';
-import PropTypes from 'prop-types';
-import LogoutButton from './LogoutButton';
+import React from "react";
+import { fade, makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import InputBase from "@material-ui/core/InputBase";
+import Box from "@material-ui/core/Box";
+import PropTypes from "prop-types";
+import LogoutButton from "./LogoutButton";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
   searchIcon: {
     width: theme.spacing(7),
-    height: '55%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "55%",
+    position: "absolute",
+    pointerEvents: "none",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     padding: theme.spacing(0, 0, 0, 1),
   },
   search: {
     flexGrow: 1,
-    position: 'static',
+    position: "static",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
+    "&:hover": {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(1),
     marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(3),
-      width: 'auto',
+      width: "auto",
     },
   },
   inputRoot: {
-    color: 'inherit',
+    color: "inherit",
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7),
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
       width: 300,
     },
   },
@@ -81,7 +81,7 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
 }
 
@@ -114,20 +114,29 @@ export default function Header() {
             />
           </div> */}
           <div className={classes.buttonMargin}>
-            <Button variant="contained" color="primary" href="http://localhost:3000/login" >
-              <span style={{ color: "#fafafa", fontWeight: 550 }}>만화 업로드</span>
+            <Button
+              variant="contained"
+              color="primary"
+              href="http://localhost:3000/login"
+            >
+              <span style={{ color: "#fafafa", fontWeight: 550 }}>
+                만화 업로드
+              </span>
             </Button>
           </div>
-          {localStorage.getItem("AUTHORIZATION") ? (
-            <LogoutButton/>
-          ) :
-            <Button variant="contained" color="primary" href="http://localhost:3000/login">
+          {localStorage.getItem("authorization") ? (
+            <LogoutButton />
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              href="http://localhost:3000/login"
+            >
               <span style={{ color: "#fafafa", fontWeight: 550 }}>로그인</span>
             </Button>
-          }
+          )}
         </Toolbar>
       </AppBar>
-
     </div>
   );
 }
