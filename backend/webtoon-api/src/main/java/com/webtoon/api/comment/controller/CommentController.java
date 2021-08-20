@@ -6,7 +6,8 @@ import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.comment.dto.CommentsResponse;
 import com.webtoon.core.comment.dto.MyPageCommentsResponse;
 import com.webtoon.core.comment.service.CommentService;
-import com.webtoon.core.user.service.TokenChecker;
+import com.webtoon.core.user.service.JwtService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +25,12 @@ import java.util.List;
 @RestController
 public class CommentController {
     private final CommentService commentService;
-    private final TokenChecker tokenChecker;
+    private final JwtService jwtService;
 
     public CommentController(CommentService commentService,
-                             TokenChecker tokenChecker) {
+                             JwtService jwtService) {
         this.commentService = commentService;
-        this.tokenChecker = tokenChecker;
+        this.jwtService = jwtService;
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -49,9 +50,9 @@ public class CommentController {
     @GetMapping("/users/comments")
     public ApiResponse<MyPageCommentsResponse> findAllMyPageComment(@RequestHeader("Authorization") String accessToken,
                                                                     @RequestParam("page") int page) {
-        switch (tokenChecker.validateToken(accessToken)) {
+        switch (jwtService.validateToken(accessToken)) {
             case 0: // 유효한 토큰
-                Long userIdx = tokenChecker.getUserIdx(accessToken);
+                Long userIdx = jwtService.getUserIdx(accessToken);
                 if (userIdx == -1) {
                     break;
                 }
@@ -69,9 +70,9 @@ public class CommentController {
     public ApiResponse<Void> create(@RequestHeader("Authorization") String accessToken,
                                     @PathVariable("epIdx") Long epIdx,
                                     @RequestBody @Valid CommentCreateRequest request) {
-        switch (tokenChecker.validateToken(accessToken)) {
+        switch (jwtService.validateToken(accessToken)) {
             case 0: // 유효한 토큰
-                Long userIdx = tokenChecker.getUserIdx(accessToken);
+                Long userIdx = jwtService.getUserIdx(accessToken);
                 if (userIdx == -1) {
                     break;
                 }
@@ -90,9 +91,9 @@ public class CommentController {
     @DeleteMapping("/comments/{cmtIdx}")
     public ApiResponse<Void> delete(@RequestHeader("Authorization") String accessToken,
                                     @PathVariable("cmtIdx") Long commentIdx) {
-        switch (tokenChecker.validateToken(accessToken)) {
+        switch (jwtService.validateToken(accessToken)) {
             case 0: // 유효한 토큰
-                Long userIdx = tokenChecker.getUserIdx(accessToken);
+                Long userIdx = jwtService.getUserIdx(accessToken);
                 if (userIdx == -1) {
                     break;
                 }

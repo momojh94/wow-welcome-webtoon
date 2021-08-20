@@ -4,7 +4,8 @@ import com.webtoon.api.common.ApiResponse;
 import com.webtoon.core.comment.dto.EpisodeStarRatingRequest;
 import com.webtoon.core.comment.dto.EpisodeStarRatingResponse;
 import com.webtoon.core.comment.service.StarRatingService;
-import com.webtoon.core.user.service.TokenChecker;
+
+import com.webtoon.core.user.service.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,12 +19,12 @@ import javax.validation.Valid;
 @RestController
 public class StarRatingController {
     private final StarRatingService starRatingService;
-    private final TokenChecker tokenChecker;
+    private final JwtService jwtService;
 
     public StarRatingController(StarRatingService starRatingService,
-                                TokenChecker tokenChecker) {
+                                JwtService jwtService) {
         this.starRatingService = starRatingService;
-        this.tokenChecker = tokenChecker;
+        this.jwtService = jwtService;
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -31,9 +32,9 @@ public class StarRatingController {
     public ApiResponse<EpisodeStarRatingResponse> create(@RequestHeader("Authorization") String accessToken,
                                                          @PathVariable("epIdx") Long epIdx,
                                                          @RequestBody @Valid EpisodeStarRatingRequest request) {
-        switch (tokenChecker.validateToken(accessToken)) {
+        switch (jwtService.validateToken(accessToken)) {
             case 0: // 유효한 토큰
-                Long userIdx = tokenChecker.getUserIdx(accessToken);
+                Long userIdx = jwtService.getUserIdx(accessToken);
                 if (userIdx == -1) {
                     break;
                 }

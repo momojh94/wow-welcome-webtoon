@@ -3,7 +3,7 @@ package com.webtoon.api.comment.controller;
 import com.webtoon.api.common.ApiResponse;
 import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
 import com.webtoon.core.comment.service.CommentLikeDislikeService;
-import com.webtoon.core.user.service.TokenChecker;
+import com.webtoon.core.user.service.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,21 +14,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CommentLikeDislikeController {
     private final CommentLikeDislikeService commentLikeDislikeService;
-    private final TokenChecker tokenChecker;
+    private final JwtService jwtService;
 
     public CommentLikeDislikeController(CommentLikeDislikeService commentLikeDislikeService,
-                                        TokenChecker tokenChecker) {
+                                        JwtService jwtService) {
         this.commentLikeDislikeService = commentLikeDislikeService;
-        this.tokenChecker = tokenChecker;
+        this.jwtService = jwtService;
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/comments/{cmtIdx}/like")
     public ApiResponse<CommentLikeDislikeCountResponse> requestCommentLike(@RequestHeader("Authorization") String accessToken,
                                                                            @PathVariable("cmtIdx") Long commentIdx) {
-        switch (tokenChecker.validateToken(accessToken)) {
+        switch (jwtService.validateToken(accessToken)) {
             case 0: // 유효한 토큰
-                Long userIdx = tokenChecker.getUserIdx(accessToken);
+                Long userIdx = jwtService.getUserIdx(accessToken);
                 if (-1 == userIdx) {
                     break;
                 }
@@ -45,9 +45,9 @@ public class CommentLikeDislikeController {
     @PostMapping("/comments/{cmtIdx}/dislike")
     public ApiResponse<CommentLikeDislikeCountResponse> requestCommentDislike(@RequestHeader("Authorization") String accessToken,
                                                                               @PathVariable("cmtIdx") Long commentIdx) {
-        switch (tokenChecker.validateToken(accessToken)) {
+        switch (jwtService.validateToken(accessToken)) {
             case 0: // 유효한 토큰
-                Long userIdx = tokenChecker.getUserIdx(accessToken);
+                Long userIdx = jwtService.getUserIdx(accessToken);
                 if (-1 == userIdx) {
                     break;
                 }

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.api.common.ApiResponse;
-import com.webtoon.core.user.service.TokenChecker;
 import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.user.service.JwtService;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
@@ -60,7 +60,7 @@ public class StarRatingControllerTest {
     private StarRatingService starRatingService;
 
     @MockBean
-    private TokenChecker tokenChecker;
+    private JwtService jwtService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -144,8 +144,8 @@ public class StarRatingControllerTest {
                                                                           .personTotal(3)
                                                                           .build();
 
-        given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
-        given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
+        given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
+        given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
         given(starRatingService.create(episode.getIdx(), user.getIdx(), rating))
                 .willReturn(responseData);
 
