@@ -84,13 +84,13 @@ export default function MyPage() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        if (result.error_code != null) {
-          if (result.error_code == 44) {
+        if (result.error_code !== null) {
+          if (result.error_code === 44) {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code == 42) {
+          if (result.error_code === 42) {
             // 로그인 필요한 경우
             if (!localStorage.getItem("authorization")) {
               alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");

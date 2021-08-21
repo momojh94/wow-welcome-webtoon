@@ -56,8 +56,8 @@ export default function Login() {
           console.log(response);
           response.json().then((result) => {
             console.log(result);
-            if (result.error_code != null) {
-              if (result.error_code == 42) {
+            if (result.error_code !== null) {
+              if (result.error_code === 42) {
                 // 로그인 필요한 경우
                 if (!localStorage.getItem("authorization")) {
                   alert(

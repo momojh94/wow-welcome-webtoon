@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 //주소 파싱하여 idx 알아오기
 function getParameterByName(name) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");
   var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(window.location.search);
   return results === null
@@ -69,13 +69,13 @@ export default function EditRegister() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        if (result.error_code != null) {
-          if (result.error_code == 44) {
+        if (result.error_code !== null) {
+          if (result.error_code === 44) {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code == 42) {
+          if (result.error_code === 42) {
             // 로그인 필요한 경우
             if (!localStorage.getItem("authorization")) {
               alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
@@ -167,7 +167,7 @@ export default function EditRegister() {
     reader.readAsDataURL(file);
     if (file.length === 0) {
       alert("파일이 선택되지 않았습니다.");
-    } else if (file.type != "image/jpeg") {
+    } else if (file.type !== "image/jpeg") {
       alert("jpg 타입의 파일을 선택해주세요!");
     } else if (file.size > 1048576) {
       alert("파일의 크기가 너무 큽니다");
@@ -191,7 +191,7 @@ export default function EditRegister() {
   const handleSubmit = () => {
     let genreNum = 0;
     for (var i = 0; i < genreArray.length; i++) {
-      if (genreArray[i] == true) {
+      if (genreArray[i] === true) {
         genreNum += 1;
       }
     }
@@ -206,16 +206,16 @@ export default function EditRegister() {
       let genre1 = 0;
       let genre2 = 0;
       var j = 0;
-      for (var i = 0; i < genreArray.length; i++) {
-        if (genreArray[i] == true) {
-          genreTrue[j] = genreStr[i];
+      for (var k = 0; k < genreArray.length; k++) {
+        if (genreArray[k] === true) {
+          genreTrue[j] = genreStr[k];
           j++;
         }
       }
-      if (j == 0) {
+      if (j === 0) {
         genre1 = 0;
         genre2 = 0;
-      } else if (j == 1) {
+      } else if (j === 1) {
         genre1 = genreTrue[0];
         genre2 = 0;
       } else {
@@ -249,13 +249,13 @@ export default function EditRegister() {
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
-          if (result.error_code != null) {
-            if (result.error_code == 44) {
+          if (result.error_code !== null) {
+            if (result.error_code === 44) {
               ReToken.ReToken();
               return;
             }
 
-            if (result.error_code == 42) {
+            if (result.error_code === 42) {
               // 로그인 필요한 경우
               if (!localStorage.getItem("authorization")) {
                 alert(
@@ -293,13 +293,13 @@ export default function EditRegister() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        if (result.error_code != null) {
-          if (result.error_code == 44) {
+        if (result.error_code !== null) {
+          if (result.error_code === 44) {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code == 42) {
+          if (result.error_code === 42) {
             // 로그인 필요한 경우
             if (!localStorage.getItem("authorization")) {
               alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");

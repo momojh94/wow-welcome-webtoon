@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Header from "../Components/Header";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -14,8 +14,7 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 //comment component
 import Comment from "../Components/Comment";
-//paging
-import Pagination from "@material-ui/lab/Pagination";
+
 // 토큰 재발급
 var ReToken = require("../AuthRoute");
 
@@ -54,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 //주소 파싱하여 idx 알아오기
 function getParameterByName(name) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");
   var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(window.location.search);
   return results === null
@@ -77,7 +76,7 @@ let comments = [
   },
 ];
 let best_comments = [];
-let comment_page = 1;
+//let comment_page = 1;
 
 //탭 관련
 function TabPanel(props) {
@@ -121,15 +120,15 @@ function commentLoading() {
     .then((response) => response.json())
     .then((result) => {
       console.log(result);
-      if (result.error_code != null) {
+      if (result.error_code !== null) {
         // TODO 23
 
-        if (result.error_code == 44) {
+        if (result.error_code === 44) {
           ReToken.ReToken();
           return;
         }
 
-        if (result.error_code == 42) {
+        if (result.error_code === 42) {
           // 로그인 필요한 경우
           if (!localStorage.getItem("authorization")) {
             alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
@@ -146,7 +145,7 @@ function commentLoading() {
 
       comments = result.data.comments;
       console.log(comments);
-      comment_page = result.data.total_pages;
+      //comment_page = result.data.total_pages;
     })
     .catch((error) => console.log("error", error));
 }
@@ -161,7 +160,7 @@ function bestCommentLoading() {
     .then((response) => response.json())
     .then((result) => {
       console.log(result);
-      if (result.error_code != null) {
+      if (result.error_code !== null) {
         alert(result.message);
         return;
       }

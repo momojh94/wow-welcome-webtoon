@@ -11,5 +11,4 @@ export { default as EditInfo } from "./EditInfo";
 export { default as EditRegister } from "./EditRegister";
 export { default as EditEpisode } from "./EditEpisode";
 export { default as EditUpload } from "./EditEpisodeUpload";
-export { default as Preview } from "./Preview";
 export { default as MyEpisode } from "./MyEpisode";

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -30,7 +30,7 @@ class PlusWebtoon extends Component {
           <CardActionArea href="/mypage/register">
             <CardContent>
               <div className={classes.iconBox}>
-                <img className={classes.icon} src="/Icon/plusIcon.png" />
+                <img className={classes.icon} src="/Icon/plusIcon.png" alt=""/>
                 <h4>새로운 작품 등록</h4>
               </div>
             </CardContent>

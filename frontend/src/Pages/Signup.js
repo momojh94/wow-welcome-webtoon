@@ -53,8 +53,8 @@ function checkPassword(password) {
 }
 
 function checkEmail(email) {
-  var exptext = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
-  if (exptext.test(email) == false) {
+  var exptext = /^[A-Za-z0-9_.-]+@[A-Za-z0-9-]+\.[A-Za-z0-9-]+/;
+  if (exptext.test(email) === false) {
     return true;
   }
   return false;
@@ -139,7 +139,7 @@ export default function Signup() {
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
-          if (result.error_code != null) {
+          if (result.error_code !== null) {
             alert(result.message);
             return;
           }

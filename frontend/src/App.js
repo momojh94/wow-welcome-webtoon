@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Route, Switch } from "react-router-dom";
 import {
   Home,
@@ -15,7 +15,6 @@ import {
   EditRegister,
   EditEpisode,
   EditUpload,
-  Preview,
 } from "./Pages";
 import AuthRoute from "./AuthRoute";
 
@@ -62,10 +61,6 @@ export default function App() {
         <AuthRoute
           path="/mypage/editUpload"
           render={(props) => <EditUpload {...props} />}
-        />
-        <AuthRoute
-          path="/mypage/upload/preview"
-          render={(props) => <Preview {...props} />}
         />
         <AuthRoute
           path="/mypage/myEpisode"

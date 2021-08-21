@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Header from "../Components/Header";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 //주소 파싱하여 idx 알아오기
 function getParameterByName(name) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");
   var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(window.location.search);
   return results === null
@@ -120,7 +120,7 @@ export default function Webtoon() {
               {episodes.map((episode) => (
                 <TableRow key={episode.idx}>
                   <TableCell align="center">
-                    <img src={episode.thumnail} width="64" height="64" />
+                    <img src={episode.thumnail} width="64" height="64" alt=""/>
                   </TableCell>
                   <TableCell align="left">
                     <a

@@ -149,9 +149,9 @@ export default function EditInfo() {
           alert("회원 탈퇴가 성공적으로 마무리되었습니다.");
           localStorage.clear();
           window.location.href = "/";
-        } else if (result.error_code == 44) {
+        } else if (result.error_code === 44) {
           ReToken.ReToken();
-        } else if (result.error_code == 42) {
+        } else if (result.error_code === 42) {
           alert("[ERROR 42] 잘못된 접근입니다, 관리자에게 문의하세요.");
         } else {
           alert("잘못된 접근입니다, 관리자에게 문의하세요.");

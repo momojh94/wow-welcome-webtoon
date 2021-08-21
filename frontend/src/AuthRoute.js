@@ -26,7 +26,7 @@ export function ReToken() {
       localStorage.setItem("authorization", response.headers.get("Authorization"));
       response.json().then((result) => {
         console.log(result);
-        if (result.error_code != null) {
+        if (result.error_code !== null) {
           alert("재로그인이 필요합니다.");
           window.location.href = "/login";
         }
@@ -40,7 +40,7 @@ function AuthRoute({ component: Component, render, ...rest }) {
     var temp = localStorage.getItem("authorization");
     var jwt_decode = require("jwt-decode");
     var decodeToken;
-    if (temp == null) {
+    if (temp === null) {
       decodeToken = jwt_decode(temp.replace("bearer ", ""));
       // token 유효시간 체크
       if (decodeToken.exp * 1000 - Date.now() < 1000 * 30) {

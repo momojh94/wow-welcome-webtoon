@@ -7,8 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 //색상
 import { grey } from "@material-ui/core/colors";
-//preview
-import Preview from "./Preview";
+
 // 토큰 재발급
 var ReToken = require("../AuthRoute");
 
@@ -56,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 
 //주소 파싱하여 idx 알아오기
 function getParameterByName(name) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");
   var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(window.location.search);
   return results === null
@@ -95,7 +94,7 @@ export default function Upload() {
     reader.readAsDataURL(file);
     if (file.length === 0) {
       alert("파일이 선택되지 않았습니다.");
-    } else if (file.type != "image/jpeg") {
+    } else if (file.type !== "image/jpeg") {
       alert("jpg 타입의 파일을 선택해주세요!");
     } else if (file.size > 1048576) {
       alert("파일의 크기가 너무 큽니다");
@@ -132,7 +131,7 @@ export default function Upload() {
     reader.readAsDataURL(file);
     if (file.length === 0) {
       alert("파일이 선택되지 않았습니다.");
-    } else if (file.type != "image/jpeg") {
+    } else if (file.type !== "image/jpeg") {
       alert("jpg 타입의 파일을 선택해주세요!");
     } else if (file.size > 1048576) {
       alert("파일의 크기가 너무 큽니다");
@@ -152,7 +151,7 @@ export default function Upload() {
   };
 
   const hadleSubmit = () => {
-    if (title === "" || comment === "" || script.length == 0) {
+    if (title === "" || comment === "" || script.length === 0) {
       alert("필요한 모든 정보를 입력해주세요");
     } else {
       var myHeaders = new Headers();
@@ -177,13 +176,13 @@ export default function Upload() {
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
-          if (result.error_code != null) {
-            if (result.error_code == 44) {
+          if (result.error_code !== null) {
+            if (result.error_code === 44) {
               ReToken.ReToken();
               return;
             }
 
-            if (result.error_code == 42) {
+            if (result.error_code === 42) {
               // 로그인 필요한 경우
               if (!localStorage.getItem("authorization")) {
                 alert(

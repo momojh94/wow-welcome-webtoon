@@ -1,11 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
 import Header from "../Components/Header";
 // 버튼 관련
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 //오늘의 인기도전
 import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
 import Webtoon from "../Components/Webtoon";
 //탭
 import Typography from "@material-ui/core/Typography";
@@ -64,52 +63,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// //오늘 인기 웹툰 정보
-// const webtoons = [
-//     {
-//         title: "유미의 세포들",
-//         thumbnail: "http://placeimg.com/128/128/any",
-//         artist: "이동건",
-//         ep_rating_avg: 4
-//     },
-//     {
-//         title: "복학왕",
-//         thumbnail: "http://placeimg.com/128/128/any",
-//         artist: "기안84",
-//         ep_rating_avg: 3
-//     },
-//     {
-//         title: "신의탑",
-//         thumbnail: "http://placeimg.com/128/128/any",
-//         artist: "siu",
-//         ep_rating_avg: 5
-//     },
-//     {
-//         title: "여신강림",
-//         thumbnail: "http://placeimg.com/128/128/any",
-//         artist: "냥",
-//         ep_rating_avg: 4
-//     }
-// ]
-
-//오늘 날짜 불러오는 함수
-class Clock extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { date: new Date() };
-  }
-  render() {
-    return (
-      <div>
-        <h5>
-          {this.state.date.getFullYear()}.{this.state.date.getMonth() + 1}.
-          {this.state.date.getDate()}
-        </h5>
-      </div>
-    );
-  }
-}
-
 //탭 관련
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -158,7 +111,7 @@ export default function Home() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        if (result.error_code != null) {
+        if (result.error_code !== null) {
           return;
         }
 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Header from "../Components/Header";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 //주소 파싱하여 idx 알아오기
 function getParameterByName(name) {
-  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  name = name.replace(/[[]/, "\\[").replace(/[\]]/, "\\]");
   var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
     results = regex.exec(window.location.search);
   return results === null
@@ -55,7 +55,6 @@ export default function EditEpisode() {
   const [title, setTitle] = React.useState("");
   const [author, setAuthor] = React.useState("");
   const [plot, setPlot] = React.useState("");
-  const [rating_avg, setRatingAvg] = React.useState("");
 
   React.useEffect(() => {
     var myHeaders = new Headers();
@@ -96,13 +95,13 @@ export default function EditEpisode() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        if (result.error_code != null) {
-          if (result.error_code == 44) {
+        if (result.error_code !== null) {
+          if (result.error_code === 44) {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code == 42) {
+          if (result.error_code === 42) {
             // 로그인 필요한 경우
             if (!localStorage.getItem("authorization")) {
               alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
@@ -186,7 +185,7 @@ export default function EditEpisode() {
               {episodes.map((episode) => (
                 <TableRow key={episode.title}>
                   <TableCell align="center">
-                    <img src={episode.thumnail} width="64" height="64" />
+                    <img src={episode.thumnail} width="64" height="64" alt=""/>
                   </TableCell>
                   <TableCell align="left">
                     <a

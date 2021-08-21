@@ -14,7 +14,6 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 //paging
 import Pagination from "@material-ui/lab/Pagination";
 // 토큰 재발급
@@ -73,11 +72,6 @@ export default function Comment() {
   }, []);
 
   const classes = useStyles();
-  const [checked, setChecked] = React.useState(true);
-
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
 
   const [pageNum, setPageNum] = React.useState("");
 
@@ -97,14 +91,14 @@ export default function Comment() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        if (result.error_code != null) {
+        if (result.error_code !== null) {
           // TODO: 23 invalid page
-          if (result.error_code == 44) {
+          if (result.error_code === 44) {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code == 42) {
+          if (result.error_code === 42) {
             // 로그인 필요한 경우
             if (!localStorage.getItem("authorization")) {
               alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
@@ -149,13 +143,13 @@ export default function Comment() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        if (result.error_code != null) {
-          if (result.error_code == 44) {
+        if (result.error_code !== null) {
+          if (result.error_code === 44) {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code == 42) {
+          if (result.error_code === 42) {
             // 로그인 필요한 경우
             if (!localStorage.getItem("authorization")) {
               alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
@@ -243,7 +237,7 @@ export default function Comment() {
               {myComments.map((myComment) => (
                 <TableRow key={myComment.idx}>
                   <TableCell align="center">
-                    <img src={myComment.webtoon_thumbnail} />
+                    <img src={myComment.webtoon_thumbnail} alt=""/>
                   </TableCell>
                   <TableCell align="center">
                     <div className={classes.titleField}>
