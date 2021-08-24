@@ -18,6 +18,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # react 빌드 산출물을 nginx의 샘플 앱이 사용하던 폴더로 이동
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 
-# 3000포트 오픈하고 nginx 실행
-EXPOSE 3000
+# nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
