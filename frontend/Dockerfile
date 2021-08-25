@@ -19,4 +19,5 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 
 # nginx 실행
+EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]

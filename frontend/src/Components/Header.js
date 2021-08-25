@@ -103,7 +103,7 @@ export default function Header() {
             <Button
               variant="contained"
               color="primary"
-              href="http://localhost:3000/login"
+              href="/login"
             >
               <span style={{ color: "#fafafa", fontWeight: 550 }}>
                 만화 업로드
@@ -116,7 +116,7 @@ export default function Header() {
             <Button
               variant="contained"
               color="primary"
-              href="http://localhost:3000/login"
+              href="/login"
             >
               <span style={{ color: "#fafafa", fontWeight: 550 }}>로그인</span>
             </Button>
