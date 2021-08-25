@@ -1,5 +1,6 @@
-package com.webtoon.core.webtoon.domain;
+package com.webtoon.core.webtoon.repository;
 
+import com.webtoon.core.webtoon.domain.Webtoon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

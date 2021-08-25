@@ -1,5 +1,7 @@
-package com.webtoon.core.comment.domain;
+package com.webtoon.core.comment.repository;
 
+
+import com.webtoon.core.comment.domain.StarRating;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

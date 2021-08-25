@@ -1,5 +1,7 @@
-package com.webtoon.core.comment.domain;
+package com.webtoon.core.comment.repository;
 
+
+import com.webtoon.core.comment.domain.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

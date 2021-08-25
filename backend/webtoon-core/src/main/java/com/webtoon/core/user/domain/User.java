@@ -1,19 +1,22 @@
 package com.webtoon.core.user.domain;
 
-import com.webtoon.core.user.domain.enums.Gender;
+
 import com.webtoon.core.common.BaseTimeEntity;
+import com.webtoon.core.user.domain.enums.Gender;
+import com.webtoon.core.webtoon.domain.Webtoon;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.sql.Date;
-
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Entity
@@ -44,6 +47,10 @@ public class User extends BaseTimeEntity {
 	@Column(length = 45, nullable = false)
 	private String email;
 
+	@CreatedDate
+	@Column
+	private LocalDateTime loginDate;
+
 	@Builder
 	public User(Long idx, String account, String pw, String name, Date birth, Gender gender, String email) {
 		this.idx = idx;
@@ -55,6 +62,18 @@ public class User extends BaseTimeEntity {
 		this.email = email;
 	}
 
+	public void updateLoginDate() {
+		loginDate = LocalDateTime.now();
+	}
+
+	public User update(User requestUser) {
+		this.pw = requestUser.pw;
+		this.name = requestUser.name;
+		this.birth = requestUser.birth;
+		this.gender = requestUser.gender;
+
+		return this;
+	}
 }
 
 

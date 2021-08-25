@@ -7,7 +7,8 @@ import com.webtoon.core.episode.dto.EpisodeResponse;
 import com.webtoon.core.episode.dto.EpisodeUpdateRequest;
 import com.webtoon.core.episode.dto.EpisodesViewPageResponse;
 import com.webtoon.core.episode.service.EpisodeService;
-import com.webtoon.core.user.service.TokenChecker;
+
+import com.webtoon.core.user.service.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,11 +27,11 @@ import java.io.IOException;
 @RestController
 public class EpisodeController {
 	private final EpisodeService episodeService;
-	private final TokenChecker tokenChecker;
+	private final JwtService jwtService;
 
-	public EpisodeController(EpisodeService episodeService, TokenChecker tokenChecker) {
+	public EpisodeController(EpisodeService episodeService, JwtService jwtService) {
 		this.episodeService = episodeService;
-		this.tokenChecker = tokenChecker;
+		this.jwtService = jwtService;
 	}
 
 	// 해당 에피소드를 실제로 보는 페이지 정보 출력
@@ -45,7 +46,7 @@ public class EpisodeController {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/webtoons/{webtoonIdx}/episodes/{epNo}")
 	public ApiResponse<EpisodeResponse> findEpisode(@PathVariable("webtoonIdx") Long webtoonIdx,
-													@PathVariable("epNo") int epNo) throws IOException {
+													@PathVariable("epNo") int epNo) {
 		return ApiResponse.succeed(episodeService.findEpisode(webtoonIdx, epNo));
 	}
 
@@ -57,7 +58,7 @@ public class EpisodeController {
 		return ApiResponse.succeed(episodeService.findAllEpisodeByPage(webtoonIdx, page));
 	}
 
-	// 에피소드 등록
+	// 에피소드 등록r
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("/webtoons/{webtoonIdx}/episodes")
 	public ApiResponse<Void> create(@RequestHeader("Authorization") String accessToken,
@@ -66,9 +67,9 @@ public class EpisodeController {
 									@RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
 		EpisodeCreateRequest request = new EpisodeCreateRequest(title, authorComment);
 
-		switch (tokenChecker.validateToken(accessToken)) {
+		switch (jwtService.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
-				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				Long userIdx = jwtService.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}
@@ -91,9 +92,9 @@ public class EpisodeController {
 									@RequestParam("title") String title, @RequestParam("author_comment") String authorComment) throws IOException {
 		EpisodeUpdateRequest request = new EpisodeUpdateRequest(title, authorComment);
 
-		switch (tokenChecker.validateToken(accessToken)) {
+		switch (jwtService.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
-				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				Long userIdx = jwtService.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}
@@ -113,9 +114,9 @@ public class EpisodeController {
 	public ApiResponse<Void> delete(@RequestHeader("Authorization") String accessToken,
 									@PathVariable("webtoonIdx") Long webtoonIdx,
 									@PathVariable("epNo") int epNo){
-		switch (tokenChecker.validateToken(accessToken)) {
+		switch (jwtService.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
-				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				Long userIdx = jwtService.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}

@@ -1,4 +1,4 @@
-package com.webtoon.core.episode.config;
+package com.webtoon.core.common.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer{
+public class WebConfig implements WebMvcConfigurer {
 	private final String uploadImagesPath;
 	
 	public WebConfig(@Value("${custom.path.upload-images}") String uploadImagesPath) {

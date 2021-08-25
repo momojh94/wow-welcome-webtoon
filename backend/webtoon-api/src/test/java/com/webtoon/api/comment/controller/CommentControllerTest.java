@@ -5,8 +5,9 @@ import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.api.common.ApiResponse;
-import com.webtoon.core.user.service.TokenChecker;
 import com.webtoon.core.episode.domain.Episode;
+
+import com.webtoon.core.user.service.JwtService;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
@@ -70,7 +71,7 @@ public class CommentControllerTest {
     private CommentService commentService;
 
     @MockBean
-    private TokenChecker tokenChecker;
+    private JwtService jwtService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -275,8 +276,8 @@ public class CommentControllerTest {
                                         .totalPages(1)
                                         .build();
 
-        given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
-        given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
+        given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
+        given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
         given(commentService.findAllMyPageComment(user.getIdx(), pageNumber)).willReturn(responseData);
 
         //when
@@ -324,8 +325,8 @@ public class CommentControllerTest {
         String requestBody = objectMapper.writeValueAsString(
                 new CommentCreateRequest(comment.getContent()));
 
-        given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
-        given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
+        given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
+        given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
 
         //when
         ResultActions result = mockMvc.perform(post("/episodes/{ep_idx}/comments", episode.getIdx())
@@ -359,8 +360,8 @@ public class CommentControllerTest {
     @Test
     void deleteComment() throws Exception {
         //given
-        given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
-        given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
+        given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
+        given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
 
         //when
         ResultActions result = mockMvc.perform(delete("/comments/{cmt_idx}", comment.getIdx())

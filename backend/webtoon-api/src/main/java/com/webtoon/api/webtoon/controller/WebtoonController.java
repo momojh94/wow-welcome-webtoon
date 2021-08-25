@@ -1,16 +1,16 @@
 package com.webtoon.api.webtoon.controller;
 
 import com.webtoon.api.common.ApiResponse;
-import com.webtoon.core.webtoon.dto.WebtoonEditRequest;
-import com.webtoon.core.webtoon.dto.WebtoonsMainPageResponse;
-import com.webtoon.core.webtoon.dto.WebtoonCreateRequest;
-import com.webtoon.core.webtoon.dto.MyWebtoonsResponse;
-import com.webtoon.core.webtoon.dto.WebtoonResponse;
-import com.webtoon.core.webtoon.service.WebtoonService;
-import com.webtoon.core.user.service.TokenChecker;
+import com.webtoon.core.user.service.JwtService;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
+import com.webtoon.core.webtoon.dto.MyWebtoonsResponse;
+import com.webtoon.core.webtoon.dto.WebtoonCreateRequest;
+import com.webtoon.core.webtoon.dto.WebtoonEditRequest;
+import com.webtoon.core.webtoon.dto.WebtoonResponse;
+import com.webtoon.core.webtoon.dto.WebtoonsMainPageResponse;
+import com.webtoon.core.webtoon.service.WebtoonService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,17 +30,17 @@ import java.io.IOException;
 @RestController
 public class WebtoonController {
 	private final WebtoonService webtoonService;
-	private final TokenChecker tokenChecker;
+	private final JwtService jwtService;
 
-	public WebtoonController(WebtoonService webtoonService, TokenChecker tokenChecker) {
+	public WebtoonController(WebtoonService webtoonService, JwtService jwtService) {
 		this.webtoonService = webtoonService;
-		this.tokenChecker = tokenChecker;
+		this.jwtService = jwtService;
 	}
 
 
 	// 해당 웹툰 정보 출력
 	@GetMapping("/webtoons/{webtoonIdx}")
-	public ApiResponse<WebtoonResponse> findWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx) throws IOException {
+	public ApiResponse<WebtoonResponse> findWebtoon(@PathVariable("webtoonIdx") Long webtoonIdx) {
 		return ApiResponse.succeed(webtoonService.findWebtoon(webtoonIdx));
 	}
 
@@ -57,9 +57,9 @@ public class WebtoonController {
 	@GetMapping("/users/webtoons")
 	public ApiResponse<MyWebtoonsResponse> findAllMyWebtoon(@RequestHeader("Authorization") String accessToken,
 															@RequestParam(value="page", defaultValue = "1") Integer page){
-		switch (tokenChecker.validateToken(accessToken)) {
+		switch (jwtService.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
-				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				Long userIdx = jwtService.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}
@@ -81,9 +81,9 @@ public class WebtoonController {
 		WebtoonCreateRequest request = new WebtoonCreateRequest(title, storyType, storyGenre1,
 				storyGenre2, summary, plot, endFlag);
 
-		switch (tokenChecker.validateToken(accessToken)) {
+		switch (jwtService.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
-				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				Long userIdx = jwtService.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}
@@ -107,9 +107,9 @@ public class WebtoonController {
 		WebtoonEditRequest request = new WebtoonEditRequest(title, storyType, storyGenre1,
 				storyGenre2, summary, plot, endFlag);
 
-		switch (tokenChecker.validateToken(accessToken)) {
+		switch (jwtService.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
-				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				Long userIdx = jwtService.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}
@@ -128,9 +128,9 @@ public class WebtoonController {
 	@DeleteMapping("/webtoons/{webtoonIdx}")
 	public ApiResponse<Void> delete(@RequestHeader("Authorization") String accessToken,
 									@PathVariable("webtoonIdx") Long webtoonIdx){
-		switch (tokenChecker.validateToken(accessToken)) {
+		switch (jwtService.validateToken(accessToken)) {
 			case 0: // 유효한 토큰
-				Long userIdx = tokenChecker.getUserIdx(accessToken);
+				Long userIdx = jwtService.getUserIdx(accessToken);
 				if (userIdx == -1) {
 					break;
 				}

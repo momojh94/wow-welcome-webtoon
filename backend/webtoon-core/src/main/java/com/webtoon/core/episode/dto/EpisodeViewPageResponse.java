@@ -18,7 +18,7 @@ public class EpisodeViewPageResponse {
 	private LocalDateTime createdDate;
 	private float ratingAvg;
 	
-	@Builder 
+	@Builder
 	private EpisodeViewPageResponse(Long idx, int epNo, String title, String thumbnail,
 									float ratingAvg, LocalDateTime createdDate) {
 		this.idx = idx;

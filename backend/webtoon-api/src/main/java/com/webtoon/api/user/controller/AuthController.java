@@ -1,264 +1,140 @@
 package com.webtoon.api.user.controller;
 
-import com.webtoon.core.user.dto.Response;
-import com.webtoon.core.user.dto.Tokens;
-import com.webtoon.core.user.dto.UserInfoDto;
-import com.webtoon.core.user.dto.UserInfoModifiedDto;
-import com.webtoon.core.user.dto.UserLoginDto;
-import com.webtoon.core.user.dto.UserRegisterDto;
-import com.webtoon.core.user.service.JwtTokenProvider;
+import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.user.dto.TokensResponse;
+import com.webtoon.core.user.dto.UserSignupRequest;
+import com.webtoon.core.user.dto.UserUpdateRequest;
+import com.webtoon.core.user.dto.UserLoginRequest;
+import com.webtoon.core.user.dto.UserLoginResponse;
+import com.webtoon.core.user.dto.UserResponse;
+
+import com.webtoon.core.user.service.JwtService;
 import com.webtoon.core.user.service.UserService;
-import lombok.AllArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-
-/**
- * User Register, Login API
- * 
- * @author ji-water
- */
 @RestController
-@AllArgsConstructor
 @RequestMapping("/users")
 public class AuthController {
+	private final UserService userService;
+	private final JwtService jwtService;
 
-	private UserService userService;
-	private JwtTokenProvider jwtTokenProvider;
-
-	@GetMapping
-	public String test() {
-		return "GET MAPPING USERS !!!!!!!!!!! ~~~";
+	public AuthController(UserService userService, JwtService jwtService) {
+		this.userService = userService;
+		this.jwtService = jwtService;
 	}
 
-	/**
-	 * POST(/users) 회원가입
-	 * 
-	 * @param user
-	 * @return
-	 */
+	@ResponseStatus(HttpStatus.OK)
 	@PostMapping
-	public Response<UserRegisterDto> SignUP(@RequestBody UserRegisterDto user) {
-		System.out.println("======================");
-		Response<UserRegisterDto> result = new Response<UserRegisterDto>();
-		result.setCode(userService.register(user));
-		switch (result.getCode()) {
-		case 0: // 회원가입 성공
-			result.setMsg("insert complete");
-			result.setData(user);
-			break;
-		case 1: // 회원가입 실패
-			result.setMsg("insert fail : already used id");
-			break;
-		case 3: // 회원가입 실패
-			result.setMsg("insert fail : already used email");
-			break;
-		}
-		return result;
+	public ApiResponse<Void> signup(@RequestBody UserSignupRequest request) {
+		userService.signup(request);
+		return ApiResponse.succeed();
 	}
 
-	/**
-	 * POST(/users/token) LOGIN
-	 * 
-	 * @param userlogindto (id/pw)
-	 * @return auth header: access token, body : refresh token & user info
-	 */
 	@PostMapping("/token")
-	public Response<UserInfoDto> Login(HttpServletResponse response, @RequestBody UserLoginDto userlogin) {
-		Response<UserInfoDto> result = new Response<UserInfoDto>();
-		Tokens tokens = userService.login(userlogin);
-		if (tokens.getAccessToken() != null) { // 로그인 성공
-			result.setCode(0);
-			result.setMsg("login complete");
-			// json return
-			UserInfoDto info = new UserInfoDto(userService.getUserDto(userlogin.getAccount()), tokens.getRefreshToken());
-			result.setData(info);
-			response.addHeader(HttpHeaders.AUTHORIZATION, "bearer " + tokens.getAccessToken());
-		} else { // 로그인 실패
-			result.setCode(2);
-			result.setMsg("auth fail: 'not exist id' or 'wrong pw'");
-		}
-		return result;
+	public ResponseEntity<ApiResponse<UserLoginResponse>> login(@RequestBody UserLoginRequest request) {
+		UserResponse userResponse = userService.findByAccount(request.getAccount());
+		TokensResponse tokensResponse = userService.login(request.getAccount(), request.getPassword());
+
+		return ResponseEntity.ok()
+							 .header(HttpHeaders.AUTHORIZATION, tokensResponse.getAccessToken())
+							 .body(ApiResponse.succeed(UserLoginResponse.of(userResponse, tokensResponse)));
 	}
 
-	/**
-	 * DELETE(/users/token) 로그아웃
-	 * 
-	 * @param AccessToken  (auth header)
-	 * @param RefreshToken (request body)
-	 * @return expire tokens
-	 */
+	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/{idx}/token")
-	public Response<String> Logout(@RequestHeader("Authorization") String AccessToken, @RequestBody String data,
-			@PathVariable("idx") Long useridx) {
-
-		Response<String> result = new Response<String>();
-		// access token bearer split
-		AccessToken = AccessToken.substring(7);
+	public ApiResponse<String> logout(@RequestHeader("Authorization") String accessToken,
+									  @PathVariable("idx") Long useridx, @RequestBody String data) {
 		JSONObject body = new JSONObject(data);
-		String RefreshToken = body.getString("RefreshToken");
-		System.out.println("====Idx:" + useridx + "=====");
-		System.out.println("AccessToken:" + AccessToken);
-		System.out.println("RefreshToken:" + RefreshToken);
+		String refreshToken = body.getString("refresh_token");
 
-		int r = jwtTokenProvider.checkRefreshToken(AccessToken, RefreshToken, useridx);
+		int r = jwtService.checkRefreshToken(accessToken, refreshToken, useridx);
 		switch (r) {
-		case 41: // 이미 로그아웃된 상태
-			result.setCode(41);
-			result.setMsg("access denied: already logout");
-			break;
-		case 40: // refresh token 파기
-		case 43:
-			jwtTokenProvider.expireToken(useridx);
-			result.setCode(0);
-			result.setMsg("request complete:logout");
-			break;
-		case 42: // 에러 존재
-			result.setCode(42);
-			result.setMsg("access denied : maybe captured or faked token");
-			break;
+			case 41: // 이미 로그아웃된 상태
+				return ApiResponse.fail("41", "access denied: already logout");
+			case 40: // refresh token 파기
+			case 43:
+				jwtService.expireToken(useridx);
+				return ApiResponse.succeed();
+			default:
 		}
 
-		return result;
+		return ApiResponse.fail("42", "access denied: maybe captured or faked token");
 	}
 
-	/**
-	 * POST (/users/{user_idx}/token) access token 재발급
-	 * 
-	 * @param AccessToken
-	 * @param data
-	 * @param useridx
-	 * @param response
-	 * @return response header濡� access token �쟾�넚
-	 */
 	@PostMapping("/{idx}/token")
-	public Response<String> ReissueToken(@RequestHeader("Authorization") String AccessToken, @RequestBody String data,
-										 @PathVariable("idx") Long useridx, HttpServletResponse response) {
-		Response<String> result = new Response<String>();
+	public ApiResponse<Void> reissueToken(@RequestHeader("Authorization") String accessToken,
+										  @PathVariable("idx") Long userIdx, @RequestBody String data) {
 		// access token bearer split
-		AccessToken = AccessToken.substring(7);
 		JSONObject body = new JSONObject(data);
-		String RefreshToken = body.getString("RefreshToken");
-		System.out.println("====Idx:" + useridx + "=====");
-		System.out.println("AccessToken:" + AccessToken);
-		System.out.println("RefreshToken:" + RefreshToken);
+		String refreshToken = body.getString("refresh_token");
 
-		int r = jwtTokenProvider.checkRefreshToken(AccessToken, RefreshToken, useridx);
-		switch (r) {
-		case 40: // 재발급 (code 0)
-			String newAT = jwtTokenProvider.createAccessToken(useridx, jwtTokenProvider.getUserName(AccessToken));
-			response.addHeader(HttpHeaders.AUTHORIZATION, "bearer " + newAT);
-			result.setCode(0);
-			result.setMsg("request complete : reissue tokens");
-			break;
-		case 41: // 로그아웃된 상태(토큰 만료)
-			result.setCode(41);
-			result.setMsg("access denied: logout, you need to re-login");
-			break;
-		case 42: // 에러
-		case 43:
-			result.setCode(42);
-			result.setMsg("access denied: incorrect access");
-			break;
-		// case 43:
-		// result.setCode(43);
-		// result.setMsg("access denied: access token is not invalid or you need to send
-		// type 'delete'");
+		switch (jwtService.checkRefreshToken(accessToken, refreshToken, userIdx)) {
+			case 40: // 재발급 (code 0)
+				String newAccessToken = jwtService.createAccessToken(userIdx, jwtService.getUserName(accessToken));
+				ResponseEntity.ok()
+							  .header(HttpHeaders.AUTHORIZATION, newAccessToken);
+			case 41:
+				return ApiResponse.fail("41", "access denied: already logout");
+			default:
 		}
-		return result;
 
+		return ApiResponse.fail("42", "access denied: maybe captured or faked token");
 	}
 
-	/**
-	 * 회원정보수정 (/users/{user_idx})
-	 * 
-	 * @param AccessToken
-	 * @param userIdx
-	 * @param userinfo
-	 * @return
-	 */
-	@PutMapping("/{idx}")
-	public Response<String> modifyUserInfo(@RequestHeader("Authorization") String AccessToken,
-			@PathVariable("idx") Long userIdx, @RequestBody UserInfoModifiedDto userinfo) {
-		Response<String> result = new Response<String>();
-		// access token bearer split
-		AccessToken = AccessToken.substring(7);
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping
+	public ApiResponse<String> update(@RequestHeader("Authorization") String accessToken,
+									  @RequestBody UserUpdateRequest request) {
+		switch (jwtService.validateToken(accessToken)) {
+			case 0: // 유효한 토큰
+				Long userIdx = jwtService.getUserIdx(accessToken);
+				if (userIdx == -1) {
+					break;
+				}
+				userService.update(userIdx, request);
+				return ApiResponse.succeed();
+			case 1: // 만료된 토큰
+				return ApiResponse.fail("44", "access denied : invalid access token");
+			default:
+		}
 
-		// access token 유효한가
-		switch (jwtTokenProvider.validateToken(AccessToken)) {
-		case 1:
-			result.setCode(44);
-			result.setMsg("access denied : expired access token");
-			return result;
-		case 2:
-			result.setCode(42);
-			result.setMsg("access denied : maybe captured or faked token");
-			return result;
-		case 0:
-			if (userIdx != jwtTokenProvider.getUserIdx(AccessToken)) {
-				result.setCode(42);
-				result.setMsg("access denied : maybe captured or faked token");
-				return result;
-			}
-			break;
-		}
-		// user info update
-		int update_result = userService.modifyInfo(userIdx, userinfo);
-		if (update_result == 1) {
-			result.setCode(0);
-			result.setMsg("request complete : modify the user info");
-		} else {
-			System.out.println("UPDATE RESULT : " + update_result);
-			result.setCode(1);
-			result.setMsg("post request fail : sql update error");
-		}
-		return result;
+		return ApiResponse.fail("42", "access denied : maybe captured or faked token");
 	}
 
-	/**
-	 * 회원 탈퇴 (/users/{user_idx})
-	 * @param AccessToken
-	 * @param useridx
-	 * @return
-	 */
 	@DeleteMapping("/{idx}")
-	public Response<String> Withdraw(@RequestHeader("Authorization") String AccessToken,
-			@PathVariable("idx") Long useridx) {
-		Response<String> result = new Response<String>();
-		// access token bearer split
-		AccessToken = AccessToken.substring(7);
-
+	public ApiResponse<Void> delete(@RequestHeader("Authorization") String accessToken,
+									@PathVariable("idx") Long userIdx) {
 		// access token 유효한가
-		switch (jwtTokenProvider.validateToken(AccessToken)) {
-		case 1:
-			result.setCode(44);
-			result.setMsg("access denied : expired access token");
-			return result;
-		case 2:
-			result.setCode(42);
-			result.setMsg("access denied : maybe captured or faked token");
-			return result;
-		case 0:
-			if (useridx != jwtTokenProvider.getUserIdx(AccessToken)) {
-				result.setCode(42);
-				result.setMsg("access denied : maybe captured or faked token");
-				return result;
-			}
-			break;
+		switch (jwtService.validateToken(accessToken)) {
+			case 1:
+				return ApiResponse.fail("44", "access denied : expired access token");
+			case 0:
+				if (userIdx == jwtService.getUserIdx(accessToken)) {
+					break;
+				}
+			case 2:
+				return ApiResponse.fail("42", "access denied : maybe captured or faked token");
 		}
+
 		//회원정보 삭제
 		try {
-		userService.deleteInfo(useridx);
-		}catch(Exception e) {
-			result.setCode(4);
-			result.setMsg("delete fail: sql error");
-			return result;
+			userService.delete(userIdx);
+		} catch (Exception e) {
+			return ApiResponse.fail("4", "delete fail: sql error");
 		}
-		result.setCode(0);
-		result.setMsg("request complete: withdraw user");
-		return result;
-	}
 
+		return ApiResponse.succeed();
+	}
 }

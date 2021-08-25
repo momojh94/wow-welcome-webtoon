@@ -1,14 +1,12 @@
 package com.webtoon.core.comment.domain;
 
-import com.webtoon.core.user.domain.User;
 import com.webtoon.core.common.BaseCreatedTimeEntity;
 import com.webtoon.core.episode.domain.Episode;
-
+import com.webtoon.core.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,7 +54,6 @@ public class Comment extends BaseCreatedTimeEntity {
         this.content = content;
         this.createdDate = createdDate;
     }
-
 
     public boolean wasWrittenBy(User user) {
         return this.user.getIdx() == user.getIdx();

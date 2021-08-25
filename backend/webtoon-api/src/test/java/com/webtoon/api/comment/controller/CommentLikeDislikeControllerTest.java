@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.api.common.ApiResponse;
-import com.webtoon.core.user.service.TokenChecker;
 import com.webtoon.core.episode.domain.Episode;
+
+import com.webtoon.core.user.service.JwtService;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
@@ -26,6 +27,8 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.request.RequestDocumentation;
+
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -60,7 +63,7 @@ class CommentLikeDislikeControllerTest {
     private CommentLikeDislikeService commentLikeDislikeService;
 
     @MockBean
-    private TokenChecker tokenChecker;
+    private JwtService jwtService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -139,8 +142,8 @@ class CommentLikeDislikeControllerTest {
         CommentLikeDislikeCountResponse responseData =
                 new CommentLikeDislikeCountResponse(comment.getLikeCount() + 1);
 
-        given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
-        given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
+        given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
+        given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
         given(commentLikeDislikeService.requestLike(user.getIdx(), comment.getIdx()))
                 .willReturn(responseData);
 
@@ -176,8 +179,8 @@ class CommentLikeDislikeControllerTest {
         CommentLikeDislikeCountResponse responseData =
                 new CommentLikeDislikeCountResponse(comment.getDislikeCount() + 1);
 
-        given(tokenChecker.validateToken(ACCESS_TOKEN)).willReturn(0);
-        given(tokenChecker.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
+        given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
+        given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
         given(commentLikeDislikeService.requestDislike(user.getIdx(), comment.getIdx()))
                 .willReturn(responseData);
 

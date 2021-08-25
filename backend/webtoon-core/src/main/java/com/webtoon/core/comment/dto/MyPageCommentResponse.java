@@ -33,7 +33,7 @@ public class MyPageCommentResponse {
     private String toStringDateTime(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return Optional.ofNullable(localDateTime)
-                .map(formatter::format)
-                .orElse("");
+                       .map(formatter::format)
+                       .orElse("");
     }
 }

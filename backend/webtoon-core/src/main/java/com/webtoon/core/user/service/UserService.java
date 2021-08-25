@@ -1,109 +1,73 @@
 package com.webtoon.core.user.service;
 
-import com.webtoon.core.user.dto.Tokens;
-import com.webtoon.core.user.dto.UserDto;
-import com.webtoon.core.user.dto.UserInfoModifiedDto;
-import com.webtoon.core.user.dto.UserLoginDto;
-import com.webtoon.core.user.dto.UserRegisterDto;
+import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.domain.UserRepository;
-import lombok.AllArgsConstructor;
+import com.webtoon.core.user.repository.UserRepository;
+import com.webtoon.core.user.dto.TokensResponse;
+import com.webtoon.core.user.dto.UserSignupRequest;
+import com.webtoon.core.user.dto.UserUpdateRequest;
+import com.webtoon.core.user.dto.UserResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import static com.webtoon.core.common.exception.ErrorType.ALREADY_JOINED_ACCOUNT;
+import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
+import static com.webtoon.core.common.exception.ErrorType.WRONG_PASSWORD;
 
 @Service
-@AllArgsConstructor
 public class UserService {
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final JwtService jwtService;
 
-	UserRepository userRepository;
-	PasswordEncoder passwordEncoder;
-	JwtTokenProvider jwtTokenProvider;
+	public UserService(UserRepository userRepository,
+					   PasswordEncoder passwordEncoder,
+					   JwtService jwtService) {
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
+		this.jwtService = jwtService;
+	}
 
-	/**
-	 * REGISTER 회원가입
-	 * @param userRegisterDto
-	 * @return result error code 
-	 */
-	public int register(UserRegisterDto user) {
-		// id 중복체크
-		if (userRepository.existsByAccount(user.getAccount())) {
-			return 1; //insert fail
+	public UserResponse findByAccount(String account) {
+		User user = userRepository.findByAccount(account)
+								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+
+		return UserResponse.of(user);
+	}
+
+	public TokensResponse login(String account, String password) {
+		User user = userRepository.findByAccount(account)
+								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+
+		if (!passwordEncoder.matches(password, user.getPw())) {
+			throw new ApplicationException(WRONG_PASSWORD);
 		}
-		// email 중복체크
-		if (userRepository.existsByEmail(user.getEmail())) {
-			return 3;
-		}
-		// pw encoding
-		String encodedpw = passwordEncoder.encode(user.getPw());
 
-		userRepository.save(user.toEntity(encodedpw));
-		// insert complete
-		return 0; 
+		user.updateLoginDate();
+
+		return TokensResponse.of(jwtService.createAccessToken(user.getIdx(), user.getName()),
+				jwtService.createRefreshToken(user.getAccount()));
 	}
 
-	/**
-	 * LOGIN 로그인
-	 * @param userlogindto (id/pw)
-	 * @return tokens (access/refresh)
-	 */
-	public Tokens login(UserLoginDto user) {
-		Tokens tokens = new Tokens();
-		// user login
-		// id not exist
-		if (!userRepository.existsByAccount(user.getAccount())) {
-			return tokens; 
+	public void signup(UserSignupRequest request) {
+		if (userRepository.existsByAccount(request.getAccount())) {
+			throw new ApplicationException(ALREADY_JOINED_ACCOUNT);
 		}
-		// pw matching
-		User info = userRepository.findByAccount(user.getAccount());
-		if (passwordEncoder.matches(user.getPw(), info.getPw())) {
-			System.out.println("============"+info.getName());
-			tokens.setAccessToken(jwtTokenProvider.createAccessToken(info.getIdx(),info.getName()));
-			System.out.println("access token:"+tokens.getAccessToken());
-			tokens.setRefreshToken(jwtTokenProvider.createRefreshToken(info.getAccount()));
-            System.out.println("refresh token:"+tokens.getRefreshToken());
-			//login date time
-            LocalDateTime now = LocalDateTime.now();
-            userRepository.updateLoginDate(now, info.getIdx());
-		} 
-		return tokens;
+
+		String encodedPassword = passwordEncoder.encode(request.getPassword());
+
+		userRepository.save(request.toUser(encodedPassword));
 	}
-	
-	/**
-	 * 회원정보 수정
-	 * @param info
-	 * @return
-	 */
-	public int modifyInfo(Long userIdx, UserInfoModifiedDto info) {
-		//pw encoding
-		String encoded_pw = passwordEncoder.encode(info.getPw());
-		//update
-		int update_result = userRepository.updateUserInfo(encoded_pw, info.getGender(),
-				info.getName(), info.getBirth(), userIdx);
-		LocalDateTime now = LocalDateTime.now();
-		if(update_result==1)
-			userRepository.updateUpdatedDate(now, userIdx);
-		return update_result;
+
+	public void update(Long userIdx, UserUpdateRequest request) {
+		User user = userRepository.findById(userIdx)
+								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+
+		String encodedPassword = passwordEncoder.encode(request.getPassword());
+		user.update(request.toUser(encodedPassword));
 	}
-	
-	/**
-	 * 회원정보 삭제
-	 * @param user_idx
-	 * @return
-	 */
-	public void deleteInfo(Long user_idx) {
-		userRepository.deleteById(user_idx);
-	}
-	
-	public UserDto getUserDto(String user_id) {
-		UserDto userDto = new UserDto();
-		User info = userRepository.findByAccount(user_id);
-		userDto.setBirth(info.getBirth());
-		userDto.setGender(info.getGender());
-		userDto.setName(info.getName());
-		userDto.setAccount(user_id);
-		userDto.setEmail(info.getEmail());
-		return userDto;
+
+	public void delete(Long userIdx) {
+		userRepository.deleteById(userIdx);
 	}
 }

@@ -1,27 +1,25 @@
-
 package com.webtoon.core.episode.service;
 
 import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.common.util.FileUploader;
+import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.episode.dto.EpisodeCreateRequest;
 import com.webtoon.core.episode.dto.EpisodeDetailResponse;
 import com.webtoon.core.episode.dto.EpisodeResponse;
-import com.webtoon.core.episode.dto.EpisodeViewPageResponse;
 import com.webtoon.core.episode.dto.EpisodeUpdateRequest;
+import com.webtoon.core.episode.dto.EpisodeViewPageResponse;
 import com.webtoon.core.episode.dto.EpisodesViewPageResponse;
-import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.webtoon.domain.Webtoon;
-import com.webtoon.core.episode.domain.EpisodeRepository;
-import com.webtoon.core.webtoon.domain.WebtoonRepository;
-import org.springframework.beans.factory.annotation.Value;
+import com.webtoon.core.webtoon.repository.WebtoonRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -29,24 +27,23 @@ import static com.webtoon.core.common.exception.ErrorType.EPISODE_NOT_FOUND;
 import static com.webtoon.core.common.exception.ErrorType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
 import static com.webtoon.core.common.exception.ErrorType.WEBTOON_NOT_FOUND;
 
-
 @Service
 public class EpisodeService {
 	private final WebtoonRepository webtoonRepository;
 	private final EpisodeRepository episodeRepository;
+	private final FileUploader fileUploader;
 
 	//한 블럭 내 최대 페이지 번호 수
 	private static final int BLOCK_PAGE_NUM_COUNT = 5;
 	//한 페이지 내 최대 회차 출력 갯수
 	private static final int PAGE_EPISODE_COUNT = 7;
 
-	@Value("${custom.path.upload-images}")
-	private String filePath;
-
 	public EpisodeService(WebtoonRepository webtoonRepository,
-						  EpisodeRepository episodeRepository) {
+						  EpisodeRepository episodeRepository,
+						  FileUploader fileUploader) {
 		this.webtoonRepository = webtoonRepository;
 		this.episodeRepository = episodeRepository;
+		this.fileUploader = fileUploader;
 	}
 
 	@Transactional
@@ -72,7 +69,7 @@ public class EpisodeService {
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 
 		pageNum = pageNum == 0 ? 1 : pageNum;
-		Pageable pageable = PageRequest.of(pageNum - 1, PAGE_EPISODE_COUNT, Sort.Direction.DESC, "ep_no");
+		Pageable pageable = PageRequest.of(pageNum - 1, PAGE_EPISODE_COUNT, Sort.Direction.DESC, "epNo");
 		Page<Episode> page = episodeRepository.findAllByWebtoonIdx(pageable, webtoonIdx);
 
 		int totalPages = page.getTotalPages() == 0 ? 1 : page.getTotalPages();
@@ -93,8 +90,8 @@ public class EpisodeService {
 		}
         
         int newEpNo = webtoon.getNewEpNo();
-		String thumbnail = FileUploader.uploadEpisodeThumbnail(thumbnailFile);
-		String contents = FileUploader.uploadContentImages(contentImages);
+		String thumbnail = fileUploader.uploadEpisodeThumbnail(thumbnailFile);
+		String contents = fileUploader.uploadContentImages(contentImages);
 
 		episodeRepository.save(request.toEpisode(newEpNo, thumbnail, contents, webtoon));
 	}
@@ -110,8 +107,8 @@ public class EpisodeService {
 			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
 		}
 
-		String thumbnail = FileUploader.uploadEpisodeThumbnail(thumbnailFile);
-		String contents = FileUploader.uploadContentImages(contentImages);
+		String thumbnail = fileUploader.uploadEpisodeThumbnail(thumbnailFile);
+		String contents = fileUploader.uploadContentImages(contentImages);
 
 		episode.update(request.toEpisode(thumbnail, contents, webtoon));
 	}

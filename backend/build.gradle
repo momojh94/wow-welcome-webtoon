@@ -6,9 +6,14 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "io.spring.gradle:dependency-management-plugin:1.0.9.RELEASE"
     }
+}
+
+allprojects {
+    group 'com.webtoon'
+    version '0.0.1-SNAPSHOT'
 }
 
 subprojects {
@@ -17,8 +22,6 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'jacoco'
 
-    group 'com.www'
-    version '1.0-SNAPSHOT'
     sourceCompatibility = 1.8
 
     repositories {
@@ -70,11 +73,11 @@ subprojects {
 
 
     dependencies {
-        implementation ('org.springframework.boot:spring-boot-starter-actuator')
-        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        testImplementation ('org.springframework.boot:spring-boot-starter-test') {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }
-        compileOnly ('org.projectlombok:lombok')
-        annotationProcessor ('org.projectlombok:lombok')
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
     }
 }
