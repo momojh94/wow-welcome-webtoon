@@ -147,7 +147,7 @@ export default function Register() {
       var j = 0;
       for (var k = 0; k < genreArray.length; k++) {
         if (genreArray[k] === true) {
-          genreTrue[j] = genreStr[i];
+          genreTrue[j] = genreStr[k];
           j++;
         }
       }
@@ -165,8 +165,6 @@ export default function Register() {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", localStorage.getItem("authorization"));
 
-      console.log("upload1");
-
       var formdata = new FormData();
       formdata.append("thumbnail", thumbnail);
       formdata.append("title", title);
@@ -176,6 +174,8 @@ export default function Register() {
       formdata.append("summary", summary);
       formdata.append("plot", plot);
       formdata.append("end_flag", "ONGOING");
+
+      console.log(thumbnail, title, type, genre1, genre2, summary, plot);
 
       var requestOptions = {
         method: "POST",
