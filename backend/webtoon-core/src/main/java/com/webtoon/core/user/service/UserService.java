@@ -28,6 +28,11 @@ public class UserService {
 		this.jwtService = jwtService;
 	}
 
+	public User findById(Long userIdx) {
+		return userRepository.findById(userIdx)
+								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+	}
+
 	public UserResponse findByAccount(String account) {
 		User user = userRepository.findByAccount(account)
 								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
