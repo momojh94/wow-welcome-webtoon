@@ -173,11 +173,11 @@ public class JwtTokenProvider {
                           .getBody()
                           .get(USER_IDX, Long.class);
         } catch (JwtException e) {
-            throw new ApplicationException(ErrorType.INVALID_TOKEN);
+            throw new ApplicationException(INVALID_TOKEN);
         }
 
         if (userIdx < 0) {
-            throw new ApplicationException(ErrorType.INVALID_TOKEN);
+            throw new ApplicationException(INVALID_TOKEN);
         }
 
         return userIdx;

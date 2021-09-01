@@ -19,12 +19,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final String[] PERMIT_GET_URI = {
+	public static final String[] PERMIT_GET_URI = {
 			"/episode/**",
 			"/webtoons/**",
 	};
 
-	private final String[] PERMIT_POST_URI = {
+	public static final String[] PERMIT_POST_URI = {
 			"/auth/**",
 			"/users"
 	};
