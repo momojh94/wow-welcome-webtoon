@@ -30,8 +30,7 @@ public abstract class ControllerTest {
     protected static final String TEST_REFRESH_TOKEN_SECRET_KEY = "refreshtokensecretkeyforlcoaltestauth";
 
     protected static final String TEST_AUTHORIZATION_HEADER =
-            "Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWR4IjoxLCJpYXQiOjE2MTk0Mzk0MDcsImV4cCI6MTYyMTIzOTQwN30.Kdqwi7_pw_0VB-nwT4IZNKEYTg2_4Bh3JwFldhd7GLY";
-
+            "Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MzA0OTQ1MDUsImV4cCI6MTYzMTcwNDEwNX0.8Abd3rFNwoNpCyWiWXVLOETQf_5SzmQSS9gGhTg3wog";
     @MockBean
     protected JwtTokenProvider jwtTokenProvider;
 

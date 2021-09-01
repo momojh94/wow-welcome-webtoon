@@ -2,6 +2,7 @@ package com.webtoon.core.security.filter;
 
 import com.webtoon.core.security.provider.JwtTokenProvider;
 import com.webtoon.core.security.util.AuthorizationExtractor;
+import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -27,9 +27,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         String jwt = resolveToken(request);
 
-        if (jwtTokenProvider.validateAccessToken(jwt)) {
+        if (!StringUtils.isEmpty(jwt) && jwtTokenProvider.validateAccessToken(jwt)) {
             Authentication authentication = jwtTokenProvider.getAuthenticationFrom(jwt);
             SecurityContextHolder.getContext()
                                  .setAuthentication(authentication);
