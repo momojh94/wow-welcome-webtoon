@@ -33,22 +33,22 @@ public class CommentController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/episodes/{epIdx}/comments")
-    public ApiResponse<CommentsResponse> findAllComment(@PathVariable("epIdx") Long epIdx,
-                                                        @RequestParam("page") int page) {
-        return ApiResponse.succeed(commentService.findAllComment(epIdx, page));
+    public ApiResponse<CommentsResponse> findComments(@PathVariable("epIdx") Long epIdx,
+                                                      @RequestParam("page") int page) {
+        return ApiResponse.succeed(commentService.findComments(epIdx, page));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/episodes/{epIdx}/comments/best")
-    public ApiResponse<List<CommentResponse>> findAllBestComment(@PathVariable("epIdx") Long epIdx) {
-        return ApiResponse.succeed(commentService.findAllBestComment(epIdx));
+    public ApiResponse<List<CommentResponse>> findBestComments(@PathVariable("epIdx") Long epIdx) {
+        return ApiResponse.succeed(commentService.findBestComments(epIdx));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/users/comments")
-    public ApiResponse<MyPageCommentsResponse> findAllMyPageComment(@AuthenticationPrincipal User user,
-                                                                    @RequestParam("page") int page) {
-        return ApiResponse.succeed(commentService.findAllMyPageComment(user, page));
+    public ApiResponse<MyPageCommentsResponse> findMyPageComments(@AuthenticationPrincipal User user,
+                                                                  @RequestParam("page") int page) {
+        return ApiResponse.succeed(commentService.findMyPageComments(user, page));
     }
 
     @ResponseStatus(HttpStatus.OK)

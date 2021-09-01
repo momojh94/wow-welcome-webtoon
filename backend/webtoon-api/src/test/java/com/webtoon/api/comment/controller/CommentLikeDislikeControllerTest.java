@@ -1,12 +1,12 @@
+/*
 package com.webtoon.api.comment.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.webtoon.api.ControllerTest;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.api.common.ApiResponse;
 import com.webtoon.core.episode.domain.Episode;
 
-import com.webtoon.core.user.service.JwtService;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
@@ -18,84 +18,45 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.request.RequestDocumentation;
 
 
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(RestDocumentationExtension.class)
+
 @WebMvcTest(controllers = CommentLikeDislikeController.class)
-class CommentLikeDislikeControllerTest {
+class CommentLikeDislikeControllerTest extends ControllerTest {
 
     @MockBean
     private CommentLikeDislikeService commentLikeDislikeService;
 
-    @MockBean
-    private JwtService jwtService;
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    private ObjectMapper objectMapper;
-    private RestDocumentationResultHandler documentationHandler;
     private User user;
     private Webtoon webtoon;
     private Episode episode;
     private Comment comment;
 
-    private static final String ERROR_CODE = "error_code";
-    private static final String MESSAGE = "message";
-    private static final String DATA = "data";
-    private static final String AUTH_HEADER = "AUTHORIZATION";
-    private static final String ACCESS_TOKEN = "bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkeCI6MiwidXNlcl9uYW1lIjoi6rmA7Ju57YiwIiwiaWF0IjoxNjE5NDM5NDA3LCJleHAiOjE2MTk0NDMwMDd9.uCpvXtkLvhcDZMhfy5mMpo9J9V96SdN_LtDU5Z3as_s";
-
     @BeforeEach
-    void setUp(WebApplicationContext context,
-               RestDocumentationContextProvider restDocumentation) {
-        documentationHandler = document("{class-name}/{method-name}",
-                preprocessRequest(prettyPrint(), modifyUris().removePort()),
-                preprocessResponse(prettyPrint()));
-
-        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                                 .apply(documentationConfiguration(restDocumentation))
-                                 .alwaysDo(documentationHandler)
-                                 .alwaysDo(print())
-                                 .build();
-
-        objectMapper = new ObjectMapper();
-
+    void setUp() {
         user = User.builder()
                    .idx(1L)
                    .account("id123")
@@ -142,13 +103,11 @@ class CommentLikeDislikeControllerTest {
         CommentLikeDislikeCountResponse responseData =
                 new CommentLikeDislikeCountResponse(comment.getLikeCount() + 1);
 
-        given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
-        given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
         given(commentLikeDislikeService.requestLike(user, comment.getIdx())).willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(post("/comments/{cmt_idx}/like", comment.getIdx())
-                .header(AUTH_HEADER, ACCESS_TOKEN)
+                .header(AUTHORIZATION, TEST_AUTHORIZATION_HEADER)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -158,7 +117,7 @@ class CommentLikeDislikeControllerTest {
               .andExpect(jsonPath("data.count").value(comment.getLikeCount() + 1))
               .andDo(this.documentationHandler.document(
                       requestHeaders(
-                              headerWithName(AUTH_HEADER).description("유저의 AccessToken")
+                              headerWithName(AUTHORIZATION).description("유저의 AccessToken")
                       ),
                       RequestDocumentation.pathParameters(
                               RequestDocumentation.parameterWithName("cmt_idx").description("댓글의 idx")
@@ -178,13 +137,11 @@ class CommentLikeDislikeControllerTest {
         CommentLikeDislikeCountResponse responseData =
                 new CommentLikeDislikeCountResponse(comment.getDislikeCount() + 1);
 
-        given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
-        given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
         given(commentLikeDislikeService.requestDislike(user, comment.getIdx())).willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(post("/comments/{cmt_idx}/dislike", comment.getIdx())
-                .header(AUTH_HEADER, ACCESS_TOKEN)
+                .header(AUTHORIZATION, TEST_AUTHORIZATION_HEADER)
                 .contentType(MediaType.APPLICATION_JSON));
 
         //then
@@ -194,7 +151,7 @@ class CommentLikeDislikeControllerTest {
               .andExpect(jsonPath("data.count").value(comment.getDislikeCount() + 1))
               .andDo(this.documentationHandler.document(
                       requestHeaders(
-                              headerWithName(AUTH_HEADER).description("유저의 AccessToken")
+                              headerWithName(AUTHORIZATION).description("유저의 AccessToken")
                       ),
                       pathParameters(
                               parameterWithName("cmt_idx").description("댓글의 idx")
@@ -206,4 +163,4 @@ class CommentLikeDislikeControllerTest {
                               fieldWithPath("data.count").description("싫어요 수").type(JsonFieldType.NUMBER)
                       )));
     }
-}
+}*/

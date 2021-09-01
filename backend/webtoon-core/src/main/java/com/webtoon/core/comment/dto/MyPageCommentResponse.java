@@ -21,7 +21,7 @@ public class MyPageCommentResponse {
 
     public MyPageCommentResponse(Comment entity) {
         idx = entity.getIdx();
-        webtoonThumbnail = "http://localhost:8081/static/web_thumbnail/" + entity.getEp().getWebtoon().getThumbnail();
+        webtoonThumbnail = "http://localhost:8080/static/web_thumbnail/" + entity.getEp().getWebtoon().getThumbnail();
         webtoonTitle = entity.getEp().getWebtoon().getTitle();
         epNo = entity.getEp().getEpNo();
         likeCount = entity.getLikeCount();

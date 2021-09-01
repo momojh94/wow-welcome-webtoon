@@ -89,7 +89,6 @@ public class StarRatingServiceTest {
         float rating = 5f;
         given(starRatingRepository.existsByEpIdxAndUser(episode.getIdx(), user))
                 .willReturn(false);
-        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(episodeRepository.findById(episode.getIdx())).willReturn(Optional.of(episode));
 
         //when

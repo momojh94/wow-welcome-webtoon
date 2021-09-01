@@ -89,7 +89,6 @@ public class CommentLikeDislikeServiceTest {
     @Test
     void requestLike_success() {
         //given
-        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(commentRepository.findById(commentByOtherUser.getIdx()))
                 .willReturn(Optional.of(commentByOtherUser));
         given(commentLikeRepository.existsByCommentIdxAndUser(commentByOtherUser.getIdx(), user))
@@ -116,7 +115,7 @@ public class CommentLikeDislikeServiceTest {
                 .user(user)
                 .comment(commentByOtherUser)
                 .build();
-        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
+
         given(commentRepository.findById(commentByOtherUser.getIdx()))
                 .willReturn(Optional.of(commentByOtherUser));
         given(commentLikeRepository.existsByCommentIdxAndUser(commentByOtherUser.getIdx(), user))
@@ -140,7 +139,6 @@ public class CommentLikeDislikeServiceTest {
     @Test
     void requestDislike_success() {
         //given
-        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(commentRepository.findById(commentByOtherUser.getIdx()))
                 .willReturn(Optional.of(commentByOtherUser));
         given(commentDislikeRepository.existsByCommentIdxAndUser(commentByOtherUser.getIdx(), user))
@@ -167,7 +165,7 @@ public class CommentLikeDislikeServiceTest {
                 .user(user)
                 .comment(commentByOtherUser)
                 .build();
-        given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
+
         given(commentRepository.findById(commentByOtherUser.getIdx()))
                 .willReturn(Optional.of(commentByOtherUser));
         given(commentDislikeRepository.existsByCommentIdxAndUser(commentByOtherUser.getIdx(), user))

@@ -48,7 +48,7 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public CommentsResponse findAllComment(Long epIdx, int page) {
+    public CommentsResponse findComments(Long epIdx, int page) {
         page = page == 0 ? 1 : page;
         Pageable pageable = PageRequest.of(page - 1, COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = commentRepository.findAllByEpIdx(pageable, epIdx);
@@ -66,16 +66,15 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponse> findAllBestComment(Long epIdx) {
+    public List<CommentResponse> findBestComments(Long epIdx) {
         return commentRepository.findBestCommentsByEpIdx(epIdx)
                                 .map(CommentResponse::new)
                                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public MyPageCommentsResponse findAllMyPageComment(User user, int page){
+    public MyPageCommentsResponse findMyPageComments(User user, int page){
         page = page == 0 ? 1 : page;
-        Long userIdx = user.getIdx();
         Pageable pageable = PageRequest.of(page - 1, MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = commentRepository.findAllByUser(pageable, user);
 

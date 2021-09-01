@@ -119,9 +119,8 @@ public class CommentServiceTest {
     @Test
     void createComment() {
         //given
-        Long userIdx = user.getIdx();
         Long epIdx = episode.getIdx();
-        given(userRepository.findById(userIdx)).willReturn(Optional.of(user));
+
         given(episodeRepository.findById(epIdx)).willReturn(Optional.of(episode));
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
@@ -131,7 +130,6 @@ public class CommentServiceTest {
         //then
         assertAll(
                 () -> verify(commentRepository).save(any(Comment.class)),
-                () -> verify(userRepository).findById(userIdx),
                 () -> verify(episodeRepository).findById(epIdx)
         );
     }
@@ -141,9 +139,8 @@ public class CommentServiceTest {
     @Test
     void deleteComment() {
         //given
-        Long userIdx = user.getIdx();
         Long commentIdx = comment.getIdx();
-        given(userRepository.findById(userIdx)).willReturn(Optional.of(user));
+
         given(commentRepository.findById(commentIdx)).willReturn(Optional.of(comment));
 
         //when
@@ -183,7 +180,7 @@ public class CommentServiceTest {
         given(commentRepository.findAllByEpIdx(pageable, episode.getIdx())).willReturn(commentsPage);
 
         //when
-        CommentsResponse result = commentService.findAllComment(episode.getIdx(), page);
+        CommentsResponse result = commentService.findComments(episode.getIdx(), page);
 
         //then
         assertAll(
@@ -214,7 +211,7 @@ public class CommentServiceTest {
                 .willReturn(bestCommentList.stream());
 
         //when
-        List<CommentResponse> result = commentService.findAllBestComment(epIdx);
+        List<CommentResponse> result = commentService.findBestComments(epIdx);
 
         //then
         assertAll(
@@ -252,7 +249,7 @@ public class CommentServiceTest {
         given(commentRepository.findAllByUser(pageable, user)).willReturn(commentsPage);
 
         //when
-        MyPageCommentsResponse result = commentService.findAllMyPageComment(user, page);
+        MyPageCommentsResponse result = commentService.findMyPageComments(user, page);
 
         //then
         assertAll(
