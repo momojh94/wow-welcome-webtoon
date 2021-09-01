@@ -55,22 +55,12 @@ public class CommentControllerTest extends ControllerTest {
     @MockBean
     private CommentService commentService;
 
-    private User user;
     private Webtoon webtoon;
     private Episode episode;
     private Comment comment;
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                   .idx(1L)
-                   .account("id123")
-                   .name("철수")
-                   .pw("1q2w3e4r")
-                   .gender(Gender.MALE)
-                   .email("test@email.com")
-                   .build();
-
         webtoon = Webtoon.builder()
                          .idx(1L)
                          .title("웹툰 제목")
@@ -210,7 +200,7 @@ public class CommentControllerTest extends ControllerTest {
                       )));
     }
 
-    /*@DisplayName("마이페이지 내가쓴 댓글 조회")
+    @DisplayName("마이페이지 내가쓴 댓글 조회")
     @Test
     void findMyPageComments() throws Exception {
         //given
@@ -272,7 +262,7 @@ public class CommentControllerTest extends ControllerTest {
                               fieldWithPath("data.comments.[].created_date").description("댓글 생성일").type(JsonFieldType.STRING),
                               fieldWithPath("data.total_pages").description("총 페이지 수").type(JsonFieldType.NUMBER)
                       )));
-    }*/
+    }
 
     @DisplayName("댓글 등록")
     @Test

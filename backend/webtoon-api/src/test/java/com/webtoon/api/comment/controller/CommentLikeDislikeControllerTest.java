@@ -1,4 +1,3 @@
-/*
 package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.ControllerTest;
@@ -50,22 +49,12 @@ class CommentLikeDislikeControllerTest extends ControllerTest {
     @MockBean
     private CommentLikeDislikeService commentLikeDislikeService;
 
-    private User user;
     private Webtoon webtoon;
     private Episode episode;
     private Comment comment;
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                   .idx(1L)
-                   .account("id123")
-                   .name("철수")
-                   .pw("1q2w3e4r")
-                   .gender(Gender.MALE)
-                   .email("test@email.com")
-                   .build();
-
         webtoon = Webtoon.builder()
                          .idx(1L)
                          .title("웹툰 제목")
@@ -163,4 +152,4 @@ class CommentLikeDislikeControllerTest extends ControllerTest {
                               fieldWithPath("data.count").description("싫어요 수").type(JsonFieldType.NUMBER)
                       )));
     }
-}*/
+}

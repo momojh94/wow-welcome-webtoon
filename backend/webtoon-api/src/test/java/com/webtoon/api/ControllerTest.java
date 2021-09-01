@@ -1,19 +1,33 @@
 package com.webtoon.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.webtoon.core.comment.domain.Comment;
+import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.security.filter.JwtAuthenticationFilter;
 import com.webtoon.core.security.provider.JwtTokenProvider;
+import com.webtoon.core.security.util.AuthorizationExtractor;
+import com.webtoon.core.user.domain.User;
+import com.webtoon.core.user.domain.enums.Gender;
+import com.webtoon.core.webtoon.domain.Webtoon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
@@ -26,11 +40,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class ControllerTest {
 
-    protected static final String TEST_ACCESS_TOKEN_SECRET_KEY = "accesstokensecretkeyforlcoaltestauth";
-    protected static final String TEST_REFRESH_TOKEN_SECRET_KEY = "refreshtokensecretkeyforlcoaltestauth";
+    protected static final String ERROR_CODE = "error_code";
+    protected static final String MESSAGE = "message";
+    protected static final String DATA = "data";
 
     protected static final String TEST_AUTHORIZATION_HEADER =
-            "Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MzA0OTQ1MDUsImV4cCI6MTYzMTcwNDEwNX0.8Abd3rFNwoNpCyWiWXVLOETQf_5SzmQSS9gGhTg3wog";
+            "Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWR4IjoxLCJpYXQiOjE2MzA1MDM2MzUsImV4cCI6MTYzMDUwNTQzNX0.jG7FBq9CBJIVtm_xtV_8FFzm49GzAAd-wU_bxx2RotQ";
+
     @MockBean
     protected JwtTokenProvider jwtTokenProvider;
 
@@ -38,13 +54,11 @@ public abstract class ControllerTest {
     protected MockMvc mockMvc;
     protected ObjectMapper objectMapper;
 
-    protected static final String ERROR_CODE = "error_code";
-    protected static final String MESSAGE = "message";
-    protected static final String DATA = "data";
+    protected User user;
 
     @BeforeEach
     protected void setUp(WebApplicationContext webApplicationContext,
-                         RestDocumentationContextProvider restDocumentation) {
+                         RestDocumentationContextProvider restDocumentation) throws ParseException {
         JwtAuthenticationFilter jwtAuthenticationFilter = (JwtAuthenticationFilter)webApplicationContext
                 .getBean("jwtAuthenticationFilter");
 
@@ -60,5 +74,26 @@ public abstract class ControllerTest {
                                  .build();
 
         objectMapper = new ObjectMapper();
+
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date birth = simpleDateFormat.parse("1998-03-03");
+
+        user = User.builder()
+                   .idx(1L)
+                   .account("id123")
+                   .name("철수")
+                   .pw("1q2w3e4r")
+                   .birth(birth)
+                   .gender(Gender.MALE)
+                   .email("test@email.com")
+                   .build();
+
+        String accessToken = AuthorizationExtractor.extract(TEST_AUTHORIZATION_HEADER);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user,
+                null, Collections.emptyList());
+
+        given(jwtTokenProvider.validateAccessToken(accessToken)).willReturn(true);
+        given(jwtTokenProvider.getAuthenticationFrom(accessToken)).willReturn(authentication);
     }
 }

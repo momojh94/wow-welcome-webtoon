@@ -1,4 +1,3 @@
-/*
 package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.ControllerTest;
@@ -47,22 +46,12 @@ public class StarRatingControllerTest extends ControllerTest {
     @MockBean
     private StarRatingService starRatingService;
 
-    private User user;
     private Webtoon webtoon;
     private Episode episode;
     private Comment comment;
 
     @BeforeEach
     void setUp() {
-        user = User.builder()
-                .idx(1L)
-                .account("id123")
-                .name("철수")
-                .pw("1q2w3e4r")
-                .gender(Gender.MALE)
-                .email("test@email.com")
-                .build();
-
         webtoon = Webtoon.builder()
                 .idx(1L)
                 .title("웹툰 제목")
@@ -139,4 +128,3 @@ public class StarRatingControllerTest extends ControllerTest {
                       )));
     }
 }
-*/
