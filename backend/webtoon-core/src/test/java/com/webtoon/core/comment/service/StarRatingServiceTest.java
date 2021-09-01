@@ -87,14 +87,13 @@ public class StarRatingServiceTest {
     void insertStarRating () {
         //given
         float rating = 5f;
-        given(starRatingRepository.existsByEpIdxAndUserIdx(episode.getIdx(), user.getIdx()))
+        given(starRatingRepository.existsByEpIdxAndUser(episode.getIdx(), user))
                 .willReturn(false);
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(episodeRepository.findById(episode.getIdx())).willReturn(Optional.of(episode));
 
         //when
-        EpisodeStarRatingResponse result =
-                starRatingService.create(episode.getIdx(), user.getIdx(), rating);
+        EpisodeStarRatingResponse result = starRatingService.create(episode.getIdx(), user, rating);
 
         //then
         assertAll(

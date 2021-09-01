@@ -92,12 +92,12 @@ public class CommentLikeDislikeServiceTest {
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(commentRepository.findById(commentByOtherUser.getIdx()))
                 .willReturn(Optional.of(commentByOtherUser));
-        given(commentLikeRepository.existsByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
+        given(commentLikeRepository.existsByCommentIdxAndUser(commentByOtherUser.getIdx(), user))
                 .willReturn(false);
 
         //when
         CommentLikeDislikeCountResponse result
-                = commentLikeDislikeService.requestLike(user.getIdx(), commentByOtherUser.getIdx());
+                = commentLikeDislikeService.requestLike(user, commentByOtherUser.getIdx());
 
         //then
         assertAll(
@@ -119,14 +119,14 @@ public class CommentLikeDislikeServiceTest {
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(commentRepository.findById(commentByOtherUser.getIdx()))
                 .willReturn(Optional.of(commentByOtherUser));
-        given(commentLikeRepository.existsByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
+        given(commentLikeRepository.existsByCommentIdxAndUser(commentByOtherUser.getIdx(), user))
                 .willReturn(true);
-        given(commentLikeRepository.findByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
+        given(commentLikeRepository.findByCommentIdxAndUser(commentByOtherUser.getIdx(), user))
                 .willReturn(commentLike);
 
         //when
         CommentLikeDislikeCountResponse result =
-                commentLikeDislikeService.requestLike(user.getIdx(), commentByOtherUser.getIdx());
+                commentLikeDislikeService.requestLike(user, commentByOtherUser.getIdx());
 
         //then
         assertAll(
@@ -143,12 +143,12 @@ public class CommentLikeDislikeServiceTest {
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(commentRepository.findById(commentByOtherUser.getIdx()))
                 .willReturn(Optional.of(commentByOtherUser));
-        given(commentDislikeRepository.existsByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
+        given(commentDislikeRepository.existsByCommentIdxAndUser(commentByOtherUser.getIdx(), user))
                 .willReturn(false);
 
         //when
         CommentLikeDislikeCountResponse result =
-                commentLikeDislikeService.requestDislike(user.getIdx(), commentByOtherUser.getIdx());
+                commentLikeDislikeService.requestDislike(user, commentByOtherUser.getIdx());
 
         //then
         assertAll(
@@ -170,14 +170,14 @@ public class CommentLikeDislikeServiceTest {
         given(userRepository.findById(user.getIdx())).willReturn(Optional.of(user));
         given(commentRepository.findById(commentByOtherUser.getIdx()))
                 .willReturn(Optional.of(commentByOtherUser));
-        given(commentDislikeRepository.existsByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
+        given(commentDislikeRepository.existsByCommentIdxAndUser(commentByOtherUser.getIdx(), user))
                 .willReturn(true);
-        given(commentDislikeRepository.findByCommentIdxAndUserIdx(commentByOtherUser.getIdx(), user.getIdx()))
+        given(commentDislikeRepository.findByCommentIdxAndUser(commentByOtherUser.getIdx(), user))
                 .willReturn(commentDislike);
 
         //when
         CommentLikeDislikeCountResponse result =
-                commentLikeDislikeService.requestDislike(user.getIdx(), commentByOtherUser.getIdx());
+                commentLikeDislikeService.requestDislike(user, commentByOtherUser.getIdx());
 
         //then
         assertAll(

@@ -43,8 +43,8 @@ custom:
 # 로컬 테스트용
 jwt:
   access-token:
-    secret-key: 'accesstokensecretkeyforlcoaltest'
-    expire-length: 3600000 # 60 * 60 * 1000
+    secret-key: 'accesstokensecretkeyforlcoaltestauth'
+    expire-length: 1800000 # 30분, 30 * 60 * 1000
   refresh-token:
-    secret-key: 'refreshtokensecretkeyforlcoaltest'
-    expire-length: 86400000 # 60 * 60 * 1000 * 24
+    secret-key: 'refreshtokensecretkeyforlcoaltestauth'
+    expire-length: 1209600000 # 2주, 14 * 60 * 60 * 1000 * 24

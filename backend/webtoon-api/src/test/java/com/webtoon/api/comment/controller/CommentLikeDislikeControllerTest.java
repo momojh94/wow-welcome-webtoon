@@ -144,8 +144,7 @@ class CommentLikeDislikeControllerTest {
 
         given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(commentLikeDislikeService.requestLike(user.getIdx(), comment.getIdx()))
-                .willReturn(responseData);
+        given(commentLikeDislikeService.requestLike(user, comment.getIdx())).willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(post("/comments/{cmt_idx}/like", comment.getIdx())
@@ -181,8 +180,7 @@ class CommentLikeDislikeControllerTest {
 
         given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(commentLikeDislikeService.requestDislike(user.getIdx(), comment.getIdx()))
-                .willReturn(responseData);
+        given(commentLikeDislikeService.requestDislike(user, comment.getIdx())).willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(post("/comments/{cmt_idx}/dislike", comment.getIdx())

@@ -15,33 +15,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.webtoon.core.common.exception.ErrorType.EPISODE_NOT_FOUND;
 import static com.webtoon.core.common.exception.ErrorType.USER_HAVE_ALREADY_RATED_EPISODE;
-import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
 
 @Service
 public class StarRatingService {
-    private UserRepository userRepository;
     private EpisodeRepository episodeRepository;
     private WebtoonRepository webtoonRepository;
     private StarRatingRepository starRatingRepository;
 
-    public StarRatingService(UserRepository userRepository,
-                             EpisodeRepository episodeRepository,
+    public StarRatingService(EpisodeRepository episodeRepository,
                              WebtoonRepository webtoonRepository,
                              StarRatingRepository starRatingRepository) {
-        this.userRepository = userRepository;
         this.episodeRepository = episodeRepository;
         this.webtoonRepository = webtoonRepository;
         this.starRatingRepository = starRatingRepository;
     }
 
     @Transactional
-    public EpisodeStarRatingResponse create(Long epIdx, Long userIdx, float rating) {
-        if (starRatingRepository.existsByEpIdxAndUserIdx(epIdx, userIdx)) {
+    public EpisodeStarRatingResponse create(Long epIdx, User user, float rating) {
+        if (starRatingRepository.existsByEpIdxAndUser(epIdx, user)) {
             throw new ApplicationException(USER_HAVE_ALREADY_RATED_EPISODE);
         }
 
-        User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
         Episode episode = episodeRepository.findById(epIdx)
                                            .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
 

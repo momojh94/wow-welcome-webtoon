@@ -1,6 +1,7 @@
 package com.webtoon.core.episode.domain;
 
-import com.webtoon.core.common.BaseTimeEntity;
+import com.webtoon.core.common.entity.BaseTimeEntity;
+import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import lombok.Builder;
 import lombok.Getter;
@@ -78,7 +79,6 @@ public class Episode extends BaseTimeEntity {
 
 	public Episode update(Episode requestEpisode) {
 		this.title = requestEpisode.title;
-		this.title = requestEpisode.title;
 		this.epNo = requestEpisode.epNo;
 		this.authorComment = requestEpisode.authorComment;
 		this.thumbnail = requestEpisode.thumbnail;
@@ -86,5 +86,9 @@ public class Episode extends BaseTimeEntity {
 		this.webtoon = requestEpisode.webtoon;
 
 		return this;
+	}
+
+	public boolean wasDrawnBy(User user) {
+		return this.webtoon.wasDrawnBy(user);
 	}
 }

@@ -8,14 +8,14 @@ import com.webtoon.core.episode.dto.EpisodeUpdateRequest;
 import com.webtoon.core.episode.dto.EpisodesViewPageResponse;
 import com.webtoon.core.episode.service.EpisodeService;
 
-import com.webtoon.core.user.service.JwtService;
+import com.webtoon.core.user.domain.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,12 +26,11 @@ import java.io.IOException;
 
 @RestController
 public class EpisodeController {
-	private final EpisodeService episodeService;
-	private final JwtService jwtService;
 
-	public EpisodeController(EpisodeService episodeService, JwtService jwtService) {
+	private final EpisodeService episodeService;
+
+	public EpisodeController(EpisodeService episodeService) {
 		this.episodeService = episodeService;
-		this.jwtService = jwtService;
 	}
 
 	// 해당 에피소드를 실제로 보는 페이지 정보 출력
@@ -58,75 +57,35 @@ public class EpisodeController {
 		return ApiResponse.succeed(episodeService.findAllEpisodeByPage(webtoonIdx, page));
 	}
 
-	// 에피소드 등록r
+	// 에피소드 등록
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping("/webtoons/{webtoonIdx}/episodes")
-	public ApiResponse<Void> create(@RequestHeader("Authorization") String accessToken,
-									@PathVariable("webtoonIdx") Long webtoonIdx, @RequestPart("thumbnail") MultipartFile thumbnailFile,
-									@RequestPart("manuscript") MultipartFile[] contentImages, @RequestParam("title") String title,
-									@RequestParam("author_comment") String authorComment) throws IllegalStateException, IOException {
+	public ApiResponse<Void> create(@AuthenticationPrincipal User user, @PathVariable("webtoonIdx") Long webtoonIdx,
+									@RequestPart("thumbnail") MultipartFile thumbnailFile, @RequestPart("manuscript") MultipartFile[] contentImages,
+									@RequestParam("title") String title, @RequestParam("author_comment") String authorComment)
+			throws IllegalStateException, IOException {
 		EpisodeCreateRequest request = new EpisodeCreateRequest(title, authorComment);
-
-		switch (jwtService.validateToken(accessToken)) {
-			case 0: // 유효한 토큰
-				Long userIdx = jwtService.getUserIdx(accessToken);
-				if (userIdx == -1) {
-					break;
-				}
-				episodeService.create(webtoonIdx, userIdx, request, thumbnailFile, contentImages);
-				return ApiResponse.succeed();
-			case 1: // 만료된 토큰
-				return ApiResponse.fail("44", "access denied : invalid access token");
-			default:
-		}
-
-		return ApiResponse.fail("42", "access denied : maybe captured or faked token");
+		episodeService.create(webtoonIdx, user, request, thumbnailFile, contentImages);
+		return ApiResponse.succeed();
 	}
 
 	// 에피소드 정보 수정
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/webtoons/{webtoonIdx}/episodes/{epNo}")
-	public ApiResponse<Void> update(@RequestHeader("Authorization") String accessToken,
-									@PathVariable("webtoonIdx") Long webtoonIdx, @PathVariable("epNo") int epNo,
+	public ApiResponse<Void> update(@AuthenticationPrincipal User user, @PathVariable("webtoonIdx") Long webtoonIdx, @PathVariable("epNo") int epNo,
 									@RequestPart("thumbnail") MultipartFile thumbnailFile, @RequestPart("manuscript") MultipartFile[] contentImages,
 									@RequestParam("title") String title, @RequestParam("author_comment") String authorComment) throws IOException {
 		EpisodeUpdateRequest request = new EpisodeUpdateRequest(title, authorComment);
-
-		switch (jwtService.validateToken(accessToken)) {
-			case 0: // 유효한 토큰
-				Long userIdx = jwtService.getUserIdx(accessToken);
-				if (userIdx == -1) {
-					break;
-				}
-				episodeService.update(userIdx, webtoonIdx, epNo, request, thumbnailFile, contentImages);
-				return ApiResponse.succeed();
-			case 1: // 만료된 토큰
-				return ApiResponse.fail("44", "access denied : invalid access token");
-			default:
-		}
-
-		return ApiResponse.fail("42", "access denied : maybe captured or faked token");
+		episodeService.update(user, webtoonIdx, epNo, request, thumbnailFile, contentImages);
+		return ApiResponse.succeed();
 	}
 
 	// 에피소드 삭제
 	@ResponseStatus(HttpStatus.OK)
 	@DeleteMapping("/webtoons/{webtoonIdx}/episodes/{epNo}")
-	public ApiResponse<Void> delete(@RequestHeader("Authorization") String accessToken,
-									@PathVariable("webtoonIdx") Long webtoonIdx,
+	public ApiResponse<Void> delete(@AuthenticationPrincipal User user, @PathVariable("webtoonIdx") Long webtoonIdx,
 									@PathVariable("epNo") int epNo){
-		switch (jwtService.validateToken(accessToken)) {
-			case 0: // 유효한 토큰
-				Long userIdx = jwtService.getUserIdx(accessToken);
-				if (userIdx == -1) {
-					break;
-				}
-				episodeService.delete(webtoonIdx, epNo, userIdx);
-				return ApiResponse.succeed();
-			case 1: // 만료된 토큰
-				return ApiResponse.fail("44", "access denied : invalid access token");
-			default:
-		}
-
-		return ApiResponse.fail("42", "access denied : maybe captured or faked token");
+		episodeService.delete(webtoonIdx, epNo, user);
+		return ApiResponse.succeed();
 	}
 }

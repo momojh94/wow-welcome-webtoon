@@ -7,7 +7,6 @@ import com.webtoon.core.user.domain.enums.Gender;
 import com.webtoon.api.common.ApiResponse;
 import com.webtoon.core.episode.domain.Episode;
 
-import com.webtoon.core.user.service.JwtService;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
@@ -278,7 +277,7 @@ public class CommentControllerTest {
 
         given(jwtService.validateToken(ACCESS_TOKEN)).willReturn(0);
         given(jwtService.getUserIdx(ACCESS_TOKEN)).willReturn(user.getIdx());
-        given(commentService.findAllMyPageComment(user.getIdx(), pageNumber)).willReturn(responseData);
+        given(commentService.findAllMyPageComment(user, pageNumber)).willReturn(responseData);
 
         //when
         ResultActions result = mockMvc.perform(get("/users/comments", episode.getIdx())

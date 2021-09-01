@@ -1,19 +1,46 @@
 package com.webtoon.core.security.filter;
 
-import org.springframework.web.filter.GenericFilterBean;
+import com.webtoon.core.security.provider.JwtTokenProvider;
+import com.webtoon.core.security.util.AuthorizationExtractor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class JwtAuthenticationFilter extends GenericFilterBean {
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
+        String jwt = resolveToken(request);
 
+        if (jwtTokenProvider.validateAccessToken(jwt)) {
+            Authentication authentication = jwtTokenProvider.getAuthenticationFrom(jwt);
+            SecurityContextHolder.getContext()
+                                 .setAuthentication(authentication);
+        }
+
+        filterChain.doFilter(request, response);
     }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION);
+        return AuthorizationExtractor.extract(bearerToken);
+    }
+
 }

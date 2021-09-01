@@ -126,7 +126,7 @@ public class CommentServiceTest {
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
         //when
-        commentService.create(userIdx, epIdx, contentWithinSpecifiedLength);
+        commentService.create(user, epIdx, contentWithinSpecifiedLength);
 
         //then
         assertAll(
@@ -147,7 +147,7 @@ public class CommentServiceTest {
         given(commentRepository.findById(commentIdx)).willReturn(Optional.of(comment));
 
         //when
-        commentService.delete(user.getIdx(), comment.getIdx());
+        commentService.delete(user, comment.getIdx());
 
         //then
         assertAll(
@@ -249,10 +249,10 @@ public class CommentServiceTest {
                 CommentService.MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = new PageImpl<Comment>(subList, pageable, commentList.size());
 
-        given(commentRepository.findAllByUserIdx(pageable, user.getIdx())).willReturn(commentsPage);
+        given(commentRepository.findAllByUser(pageable, user)).willReturn(commentsPage);
 
         //when
-        MyPageCommentsResponse result = commentService.findAllMyPageComment(user.getIdx(), page);
+        MyPageCommentsResponse result = commentService.findAllMyPageComment(user, page);
 
         //then
         assertAll(
