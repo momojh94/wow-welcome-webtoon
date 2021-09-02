@@ -1,6 +1,6 @@
 package com.webtoon.api.common.aop;
 
-import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.common.exception.ApplicationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;

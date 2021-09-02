@@ -1,6 +1,6 @@
 package com.webtoon.api.episode.controller;
 
-import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.episode.dto.EpisodeCreateRequest;
 import com.webtoon.core.episode.dto.EpisodeDetailResponse;
 import com.webtoon.core.episode.dto.EpisodeResponse;

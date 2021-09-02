@@ -1,4 +1,4 @@
-package com.webtoon.api.common;
+package com.webtoon.core.common;
 
 import com.webtoon.core.common.exception.ErrorType;
 import lombok.AccessLevel;

@@ -1,9 +1,7 @@
 package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.ControllerTest;
-import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.domain.enums.Gender;
-import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.episode.domain.Episode;
 
 import com.webtoon.core.webtoon.domain.Webtoon;
@@ -16,11 +14,9 @@ import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.request.RequestDocumentation;
 

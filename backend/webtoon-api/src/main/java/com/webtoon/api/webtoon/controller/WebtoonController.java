@@ -1,6 +1,6 @@
 package com.webtoon.api.webtoon.controller;
 
-import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;

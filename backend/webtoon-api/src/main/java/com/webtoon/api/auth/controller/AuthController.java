@@ -1,7 +1,7 @@
 package com.webtoon.api.auth.controller;
 
 
-import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.security.dto.RefreshTokenRequest;
 import com.webtoon.core.security.provider.JwtTokenProvider;
 import com.webtoon.core.security.service.AuthService;

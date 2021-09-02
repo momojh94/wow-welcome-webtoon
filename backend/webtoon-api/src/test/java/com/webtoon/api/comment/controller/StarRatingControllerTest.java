@@ -1,9 +1,7 @@
 package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.ControllerTest;
-import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.domain.enums.Gender;
-import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.episode.domain.Episode;
 
 import com.webtoon.core.webtoon.domain.Webtoon;

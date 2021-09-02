@@ -1,6 +1,6 @@
 package com.webtoon.api.user.controller;
 
-import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.dto.UserSignupRequest;
 import com.webtoon.core.user.dto.UserUpdateRequest;

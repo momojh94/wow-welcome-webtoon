@@ -1,6 +1,6 @@
 package com.webtoon.api.comment.controller;
 
-import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.comment.dto.CommentCreateRequest;
 import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.comment.dto.CommentsResponse;

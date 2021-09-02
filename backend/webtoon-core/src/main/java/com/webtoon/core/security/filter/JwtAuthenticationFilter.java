@@ -1,9 +1,8 @@
 package com.webtoon.core.security.filter;
 
-import com.webtoon.core.security.config.SecurityConfig;
+import com.webtoon.core.common.exception.ApplicationException;
+import com.webtoon.core.security.AuthorizationExtractor;
 import com.webtoon.core.security.provider.JwtTokenProvider;
-import com.webtoon.core.security.util.AuthorizationExtractor;
-import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,11 +15,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Security;
 import java.util.Arrays;
 
-import static com.webtoon.core.security.config.SecurityConfig.PERMIT_GET_URI;
-import static com.webtoon.core.security.config.SecurityConfig.PERMIT_POST_URI;
+import static com.webtoon.core.security.fixture.SecurityFixture.AUTH_EXCEPTION;
+import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_GET_URI;
+import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_POST_URI;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
@@ -53,10 +52,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String jwt = resolveToken(request);
 
-        if (jwtTokenProvider.validateAccessToken(jwt)) {
-            Authentication authentication = jwtTokenProvider.getAuthenticationFrom(jwt);
-            SecurityContextHolder.getContext()
-                                 .setAuthentication(authentication);
+        try{
+            if (jwtTokenProvider.validateAccessToken(jwt)) {
+                Authentication authentication = jwtTokenProvider.getAuthenticationFrom(jwt);
+                SecurityContextHolder.getContext()
+                                     .setAuthentication(authentication);
+            }
+        } catch (ApplicationException ex) {
+            request.setAttribute(AUTH_EXCEPTION, ex.getErrorType());
         }
 
         filterChain.doFilter(request, response);

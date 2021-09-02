@@ -1,14 +1,11 @@
 package com.webtoon.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webtoon.core.comment.domain.Comment;
-import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.security.filter.JwtAuthenticationFilter;
 import com.webtoon.core.security.provider.JwtTokenProvider;
-import com.webtoon.core.security.util.AuthorizationExtractor;
+import com.webtoon.core.security.AuthorizationExtractor;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
-import com.webtoon.core.webtoon.domain.Webtoon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;

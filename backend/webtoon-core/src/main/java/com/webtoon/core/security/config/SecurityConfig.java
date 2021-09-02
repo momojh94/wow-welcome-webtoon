@@ -1,13 +1,11 @@
 package com.webtoon.core.security.config;
 
+import com.webtoon.core.security.CustomAuthenticationEntryPoint;
 import com.webtoon.core.security.filter.JwtAuthenticationFilter;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -15,24 +13,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_GET_URI;
+import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_POST_URI;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	public static final String[] PERMIT_GET_URI = {
-			"/episode/**",
-			"/webtoons/**",
-	};
-
-	public static final String[] PERMIT_POST_URI = {
-			"/auth/**",
-			"/users"
-	};
-
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
-	public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+	public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+						  CustomAuthenticationEntryPoint authenticationEntryPoint) {
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+		this.authenticationEntryPoint = authenticationEntryPoint;
 	}
 
 	@Override
@@ -48,7 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.OPTIONS).permitAll()
 				.anyRequest().authenticated()
 			.and()
-			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+			.exceptionHandling()
+			.authenticationEntryPoint(authenticationEntryPoint);
 	}
 
 	@Bean

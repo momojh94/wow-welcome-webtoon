@@ -1,6 +1,6 @@
 package com.webtoon.api.comment.controller;
 
-import com.webtoon.api.common.ApiResponse;
+import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
 import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import com.webtoon.core.user.domain.User;

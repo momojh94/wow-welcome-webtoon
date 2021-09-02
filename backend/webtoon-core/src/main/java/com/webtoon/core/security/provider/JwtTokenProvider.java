@@ -1,7 +1,6 @@
 package com.webtoon.core.security.provider;
 
 import com.webtoon.core.common.exception.ApplicationException;
-import com.webtoon.core.common.exception.ErrorType;
 import com.webtoon.core.security.enums.TokenStatus;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.repository.UserRepository;
@@ -29,6 +28,9 @@ import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
 import static com.webtoon.core.security.enums.TokenStatus.EXPIRED;
 import static com.webtoon.core.security.enums.TokenStatus.INVALID;
 import static com.webtoon.core.security.enums.TokenStatus.VALID;
+import static com.webtoon.core.security.fixture.SecurityFixture.JWT;
+import static com.webtoon.core.security.fixture.SecurityFixture.TYP;
+import static com.webtoon.core.security.fixture.SecurityFixture.USER_IDX;
 
 @Component
 public class JwtTokenProvider {
@@ -44,10 +46,6 @@ public class JwtTokenProvider {
 
     @Value("${jwt.refresh-token.expire-length}")
     private long REFRESH_TOKEN_EXPIRE_LENGTH;
-
-    private static final String USER_IDX = "userIdx";
-    private static final String TYP = "typ";
-    private static final String JWT = "jwt";
 
     private final RedisTemplate<Long, String> redisTemplate;
     private final UserRepository userRepository;
