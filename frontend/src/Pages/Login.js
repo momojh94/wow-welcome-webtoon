@@ -51,7 +51,7 @@ export default function Login() {
         redirect: "follow",
       };
 
-      fetch("/api/users/token", requestOptions)
+      fetch("/api/auth", requestOptions)
         .then((response) => {
           console.log(response);
           response.json().then((result) => {
@@ -75,9 +75,8 @@ export default function Login() {
             }
 
             localStorage.setItem("authorization", response.headers.get("Authorization"));
-            var temp = localStorage.getItem("authorization");
             var jwt_decode = require("jwt-decode");
-            var decodeToken = jwt_decode(temp.replace("bearer ", ""));
+            var decodeToken = jwt_decode(localStorage.getItem("authorization"));
             console.log("decodeToken : " + decodeToken);
             localStorage.setItem("user_idx", decodeToken.userIdx);
             localStorage.setItem("account", result.data.account);
