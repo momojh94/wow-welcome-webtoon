@@ -44,7 +44,7 @@ custom:
 jwt:
   access-token:
     secret-key: 'accesstokensecretkeyforlcoaltestauth'
-    expire-length: 1800000 # 30분, 30 * 60 * 1000
+    expire-length: 30000 # 30초(30 * 1000), 로컬 테스트용으로 짧게
   refresh-token:
     secret-key: 'refreshtokensecretkeyforlcoaltestauth'
-    expire-length: 1209600000 # 2주, 14 * 60 * 60 * 1000 * 24
+    expire-length: 900000 # 1분 30초(90 * 1000), 로컬 테스트용으로 짧게
