@@ -57,7 +57,7 @@ const webtoonIdx = getParameterByName("webtoon_idx");
 export default function EditRegister() {
   React.useEffect(() => {
     // var myHeaders = new Headers();
-    // myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    // myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var requestOptions = {
       method: "GET",
@@ -224,7 +224,7 @@ export default function EditRegister() {
       }
 
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", localStorage.getItem("authorization"));
+      myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
       var formdata = new FormData();
       formdata.append("thumbnail", thumbnail);
@@ -281,7 +281,7 @@ export default function EditRegister() {
 
   const handleDelete = () => {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var requestOptions = {
       headers: myHeaders,

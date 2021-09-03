@@ -70,7 +70,7 @@ export default function MyPage() {
 
   const mypageLoading = (page) => {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
     myHeaders.append("Accept", "application/json");
 
     var requestOptions = {

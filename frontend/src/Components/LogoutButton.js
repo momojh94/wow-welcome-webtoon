@@ -7,7 +7,7 @@ function LogoutButton() {
   const handleClick = () => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var raw = JSON.stringify({
       refresh_token: localStorage.getItem("refresh_token"),

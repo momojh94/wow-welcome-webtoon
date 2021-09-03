@@ -58,7 +58,7 @@ export default function EditEpisode() {
 
   React.useEffect(() => {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var requestOptions = {
       headers: myHeaders,
@@ -83,7 +83,7 @@ export default function EditEpisode() {
 
   function episodeDelete(ep_no) {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var requestOptions = {
       headers: myHeaders,

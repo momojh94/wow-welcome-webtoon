@@ -9,7 +9,7 @@ class Comment extends Component {
   handleGood = ({ target: { goodNum } }) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var raw = "";
 
@@ -52,7 +52,7 @@ class Comment extends Component {
   handleBad = ({ target: { badNum } }) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var raw = "";
 

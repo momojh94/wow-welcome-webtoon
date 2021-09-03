@@ -88,7 +88,8 @@ export default function EditInfo() {
     } else {
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", localStorage.getItem("authorization"));
+      myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
+      
 
       var raw = JSON.stringify({
         password: password,
@@ -128,7 +129,7 @@ export default function EditInfo() {
   const handleOut = () => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var raw = "";
 

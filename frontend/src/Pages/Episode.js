@@ -213,7 +213,7 @@ export default function Episode() {
   const submitComment = () => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     if (comment.length !== 0) {
       var raw = JSON.stringify({ content: comment });
@@ -269,7 +269,7 @@ export default function Episode() {
   const handleRating = () => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var raw = JSON.stringify({ rating: score });
     console.log(score);

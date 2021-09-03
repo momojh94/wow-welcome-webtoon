@@ -79,7 +79,7 @@ export default function Comment() {
   const loadMyComments = (page) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var requestOptions = {
       method: "GET",
@@ -127,7 +127,7 @@ export default function Comment() {
   const deleteComment = (idx) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var raw = "";
 

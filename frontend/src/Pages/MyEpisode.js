@@ -184,7 +184,7 @@ export default function MyEpisode() {
   React.useEffect(() => {
     // 회차 정보
     // var myHeaders = new Headers();
-    // myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    // myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var requestOptions = {
       method: "GET",

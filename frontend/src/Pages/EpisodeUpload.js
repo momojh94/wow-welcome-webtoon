@@ -155,7 +155,7 @@ export default function Upload() {
       alert("필요한 모든 정보를 입력해주세요");
     } else {
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", localStorage.getItem("authorization"));
+      myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
       var formdata = new FormData();
       formdata.append("thumbnail", thumbnail);

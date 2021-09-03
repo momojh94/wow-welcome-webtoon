@@ -163,7 +163,7 @@ export default function Register() {
       }
 
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", localStorage.getItem("authorization"));
+      myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
       var formdata = new FormData();
       formdata.append("thumbnail", thumbnail);
