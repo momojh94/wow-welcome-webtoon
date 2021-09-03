@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static com.webtoon.core.security.fixture.SecurityFixture.AUTH_EXCEPTION;
 
@@ -32,7 +33,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         ErrorType errorType = (ErrorType) request.getAttribute(AUTH_EXCEPTION);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setStatus(errorType.getStatus());
 
         String responseBody = objectMapper.writeValueAsString(ApiResponse.fail(errorType));

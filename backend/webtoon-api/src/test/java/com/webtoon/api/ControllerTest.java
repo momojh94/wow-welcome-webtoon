@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -64,7 +65,7 @@ public abstract class ControllerTest {
                 preprocessResponse(prettyPrint()));
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
+                                 .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
                                  .addFilter(jwtAuthenticationFilter)
                                  .apply(documentationConfiguration(restDocumentation))
                                  .alwaysDo(print())
