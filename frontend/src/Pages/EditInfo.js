@@ -111,15 +111,21 @@ export default function EditInfo() {
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
-          if (result.error_code === 0) {
-            alert("재로그인 해주세요");
-            window.location.href = "/login";
-          } else if (result.error_code === 44) {
-            ReToken.ReToken();
-          } else if (result.error_code === 42) {
-            alert("[ERROR 42] 잘못된 접근입니다, 관리자에게 문의하세요.");
-          } else {
-            alert("잘못된 접근입니다, 관리자에게 문의하세요.");
+
+          if (result.error_code !== null) {
+            if (result.error_code === "A005") {
+              ReToken.ReToken();
+              return;
+            }
+  
+            if (!(localStorage.getItem("AUTHORIZATION"))) {
+              alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.")
+              window.location.href = "/login";
+              return;
+            }
+  
+            alert("잘못된 접근입니다");
+            return;
           }
         })
         .catch((error) => console.log("error", error));
@@ -146,17 +152,26 @@ export default function EditInfo() {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        if (result.error_code === 0) {
-          alert("회원 탈퇴가 성공적으로 마무리되었습니다.");
-          localStorage.clear();
-          window.location.href = "/";
-        } else if (result.error_code === 44) {
-          ReToken.ReToken();
-        } else if (result.error_code === 42) {
-          alert("[ERROR 42] 잘못된 접근입니다, 관리자에게 문의하세요.");
-        } else {
-          alert("잘못된 접근입니다, 관리자에게 문의하세요.");
+
+        if (result.error_code !== null) {
+          if (result.error_code === "A005") {
+            ReToken.ReToken();
+            return;
+          }
+
+          if (!(localStorage.getItem("AUTHORIZATION"))) {
+            alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.")
+            window.location.href = "/login";
+            return;
+          }
+
+          alert("잘못된 접근입니다");
+          return;
         }
+
+        alert("회원 탈퇴가 성공적으로 마무리되었습니다.");
+        localStorage.clear();
+        window.location.href = "/";
       })
       .catch((error) => console.log("error", error));
   };

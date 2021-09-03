@@ -60,6 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                      .setAuthentication(authentication);
             }
         } catch (ApplicationException ex) {
+            ex.printStackTrace();
             request.setAttribute(AUTH_EXCEPTION, ex.getErrorType());
         }
 

@@ -23,9 +23,13 @@ function LogoutButton() {
     var userIdx = localStorage.getItem("user_idx");
     console.log(userIdx);
     fetch("/api/auth", requestOptions)
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+        if (result.error_code !== null && result.error_code === "A004") {
+          alert(result.message)
+          return;
+        }
+        
         localStorage.clear();
         window.location.reload();
       })

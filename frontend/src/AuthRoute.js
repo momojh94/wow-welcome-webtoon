@@ -19,9 +19,7 @@ export function ReToken() {
     redirect: "follow",
   };
 
-  var userIdx = localStorage.getItem("user_idx");
-
-  fetch("/api/users/" + userIdx + "/token", requestOptions)
+  fetch("/api/auth/token", requestOptions)
     .then((response) => {
       localStorage.setItem("authorization", response.headers.get("Authorization"));
       response.json().then((result) => {
@@ -29,6 +27,7 @@ export function ReToken() {
         if (result.error_code !== null) {
           alert("재로그인이 필요합니다.");
           window.location.href = "/login";
+          return;
         }
       });
     })
@@ -44,6 +43,7 @@ function AuthRoute({ component: Component, render, ...rest }) {
       decodeToken = jwt_decode(temp.replace("bearer ", ""));
       // token 유효시간 체크
       if (decodeToken.exp * 1000 - Date.now() < 1000 * 30) {
+        console.log("re");
         ReToken();
       }
     }

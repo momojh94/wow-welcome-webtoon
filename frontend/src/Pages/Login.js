@@ -53,23 +53,8 @@ export default function Login() {
 
       fetch("/api/auth", requestOptions)
         .then((response) => {
-          console.log(response);
           response.json().then((result) => {
-            console.log(result);
             if (result.error_code !== null) {
-              if (result.error_code === 42) {
-                // 로그인 필요한 경우
-                if (!localStorage.getItem("authorization")) {
-                  alert(
-                    "로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다."
-                  );
-                  window.location.href = "/login";
-                } else {
-                  alert("잘못된 접근입니다.");
-                }
-                return;
-              }
-
               alert(result.message);
               return;
             }
