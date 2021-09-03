@@ -47,4 +47,4 @@ jwt:
     expire-length: 60000 # 1분(60 * 1000), 로컬 테스트용으로 짧게
   refresh-token:
     secret-key: 'refreshtokensecretkeyforlcoaltestauth'
-    expire-length: 120000 # 2분(2 * 60 * 1000), 로컬 테스트용으로 짧게
+    expire-length: 180000 # 3분(2 * 60 * 1000), 로컬 테스트용으로 짧게

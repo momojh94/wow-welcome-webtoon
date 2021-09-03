@@ -12,6 +12,7 @@ export function ReToken() {
     refresh_token: localStorage.getItem("refresh_token"),
   });
 
+
   var requestOptions = {
     method: "POST",
     headers: myHeaders,
@@ -22,26 +23,30 @@ export function ReToken() {
   fetch("/api/auth/token", requestOptions)
     .then((response) => {
       localStorage.setItem("authorization", response.headers.get("Authorization"));
-      response.json().then((result) => {
-        console.log(result);
+      return response.json();
+    })
+    .then((result) => {
         if (result.error_code !== null) {
-          alert("재로그인이 필요합니다.");
+          alert(result.error_code, result.data.message);
+          alert("로그인이 필요합니다.");
           window.location.href = "/login";
           return;
         }
-      });
-    })
+      })
     .catch((error) => console.log("error", error));
 }
 
 function AuthRoute({ component: Component, render, ...rest }) {
+  console.log("진입");
   if (localStorage.getItem("authorization")) {
     var temp = localStorage.getItem("authorization");
     var jwt_decode = require("jwt-decode");
     var decodeToken;
-    if (temp === null) {
-      decodeToken = jwt_decode(temp.replace("bearer ", ""));
+    console.log(temp)
+    if (temp !== null) {
+      decodeToken = jwt_decode(temp);
       // token 유효시간 체크
+      console.log(decodeToken.exp * 1000, Date.now(), decodeToken.exp * 1000 - Date.now());
       if (decodeToken.exp * 1000 - Date.now() < 1000 * 30) {
         console.log("re");
         ReToken();

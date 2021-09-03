@@ -26,8 +26,7 @@ function LogoutButton() {
       .then((response) => response.json())
       .then((result) => {
         if (result.error_code !== null && result.error_code === "A004") {
-          alert(result.message)
-          return;
+          console.log(result.message);
         }
         
         localStorage.clear();

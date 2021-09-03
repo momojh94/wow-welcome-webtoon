@@ -102,6 +102,10 @@ public class JwtTokenProvider {
         TokenStatus accessTokenStatus = validateAccessTokenStatus(accessToken);
         TokenStatus refreshTokenStatus = validateRefreshTokenStatus(refreshToken);
 
+        if (refreshTokenStatus == EXPIRED) {
+            throw new ApplicationException(LOGIN_REQUIRED);
+        }
+
         if (accessTokenStatus == INVALID || refreshTokenStatus == INVALID) {
             throw new ApplicationException(INVALID_TOKEN);
         }
@@ -111,8 +115,12 @@ public class JwtTokenProvider {
         ValueOperations<Long, String> vop = redisTemplate.opsForValue();
         String refreshTokenInRedis = vop.get(userIdx);
 
-        if (refreshTokenStatus == EXPIRED || StringUtils.isEmpty(refreshTokenInRedis)) {
+        if (StringUtils.isEmpty(refreshTokenInRedis)) {
             throw new ApplicationException(LOGIN_REQUIRED);
+        }
+
+        if (!refreshToken.equals(refreshTokenInRedis)) {
+            throw new ApplicationException(INVALID_TOKEN);
         }
 
         String reissuedAccessToken = createAccessToken(userIdx);

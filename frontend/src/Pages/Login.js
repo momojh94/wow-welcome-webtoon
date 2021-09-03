@@ -63,13 +63,8 @@ export default function Login() {
             var jwt_decode = require("jwt-decode");
             var decodeToken = jwt_decode(localStorage.getItem("authorization"));
             console.log("decodeToken : " + decodeToken);
-            localStorage.setItem("user_idx", decodeToken.userIdx);
-            localStorage.setItem("account", result.data.account);
-            localStorage.setItem("name", result.data.name);
-            localStorage.setItem("birth", result.data.birth);
-            localStorage.setItem("gender", result.data.gender);
-            localStorage.setItem("email", result.data.email);
-            localStorage.setItem("refresh_token", result.data.token);
+
+            localStorage.setItem("refresh_token", result.data);
 
             window.history.back();
           });
