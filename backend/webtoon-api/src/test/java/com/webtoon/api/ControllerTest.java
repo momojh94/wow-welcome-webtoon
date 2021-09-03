@@ -1,6 +1,7 @@
 package com.webtoon.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.webtoon.core.security.CustomAuthenticationEntryPoint;
 import com.webtoon.core.security.filter.JwtAuthenticationFilter;
 import com.webtoon.core.security.provider.JwtTokenProvider;
 import com.webtoon.core.security.AuthorizationExtractor;
@@ -8,6 +9,7 @@ import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -46,7 +48,10 @@ public abstract class ControllerTest {
             "Bearer eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWR4IjoxLCJpYXQiOjE2MzA1MDM2MzUsImV4cCI6MTYzMDUwNTQzNX0.jG7FBq9CBJIVtm_xtV_8FFzm49GzAAd-wU_bxx2RotQ";
 
     @MockBean
-    protected JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     protected RestDocumentationResultHandler documentationHandler;
     protected MockMvc mockMvc;

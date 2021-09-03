@@ -26,10 +26,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+    private final AntPathMatcher pathMatcher;
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
+        pathMatcher= new AntPathMatcher();
     }
 
     @Override
