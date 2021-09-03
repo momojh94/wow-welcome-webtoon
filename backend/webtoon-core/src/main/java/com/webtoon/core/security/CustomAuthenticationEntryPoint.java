@@ -38,7 +38,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         String responseBody = objectMapper.writeValueAsString(ApiResponse.fail(errorType));
 
-        response.getWriter().println(responseBody);
+        response.getWriter().print(responseBody);
     }
 
 }
