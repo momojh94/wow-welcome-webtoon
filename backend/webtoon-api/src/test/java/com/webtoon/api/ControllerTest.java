@@ -70,10 +70,11 @@ public abstract class ControllerTest {
                 preprocessResponse(prettyPrint()));
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                                 .apply(documentationConfiguration(restDocumentation))
+                                 .alwaysDo(documentationHandler)
+                                 .alwaysDo(print())
                                  .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
                                  .addFilter(jwtAuthenticationFilter)
-                                 .apply(documentationConfiguration(restDocumentation))
-                                 .alwaysDo(print())
                                  .build();
 
         objectMapper = new ObjectMapper();
