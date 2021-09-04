@@ -62,7 +62,7 @@ export default function Login() {
             localStorage.setItem("authorization", response.headers.get("Authorization"));
             var jwt_decode = require("jwt-decode");
             var decodeToken = jwt_decode(localStorage.getItem("authorization"));
-            console.log("decodeToken : " + decodeToken);
+            localStorage.setItem("exp", decodeToken.exp);
 
             localStorage.setItem("refresh_token", result.data);
 

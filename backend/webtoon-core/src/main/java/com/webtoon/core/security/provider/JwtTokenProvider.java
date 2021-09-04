@@ -98,36 +98,6 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }
 
-    public String reissueAccessToken(String accessToken, String refreshToken) {
-        TokenStatus accessTokenStatus = validateAccessTokenStatus(accessToken);
-        TokenStatus refreshTokenStatus = validateRefreshTokenStatus(refreshToken);
-
-        if (refreshTokenStatus == EXPIRED) {
-            throw new ApplicationException(LOGIN_REQUIRED);
-        }
-
-        if (accessTokenStatus == INVALID || refreshTokenStatus == INVALID) {
-            throw new ApplicationException(INVALID_TOKEN);
-        }
-
-        Long userIdx = getUserIdxOf(accessToken);
-
-        ValueOperations<Long, String> vop = redisTemplate.opsForValue();
-        String refreshTokenInRedis = vop.get(userIdx);
-
-        if (StringUtils.isEmpty(refreshTokenInRedis)) {
-            throw new ApplicationException(LOGIN_REQUIRED);
-        }
-
-        if (!refreshToken.equals(refreshTokenInRedis)) {
-            throw new ApplicationException(INVALID_TOKEN);
-        }
-
-        String reissuedAccessToken = createAccessToken(userIdx);
-
-        return reissuedAccessToken;
-    }
-
     public void expireToken(User user) {
         redisTemplate.delete(user.getIdx());
     }
@@ -170,7 +140,7 @@ public class JwtTokenProvider {
         }
     }
 
-    private Long getUserIdxOf(String accessToken) {
+    public Long getUserIdxOf(String accessToken) {
         Long userIdx;
         try {
             userIdx = Jwts.parser()
@@ -178,7 +148,13 @@ public class JwtTokenProvider {
                           .parseClaimsJws(accessToken)
                           .getBody()
                           .get(USER_IDX, Long.class);
-        } catch (JwtException e) {
+        } catch (ExpiredJwtException ex) { // 만료된 AccessToken 재발급에 필요한 로직이라 만료예외에서도 userIdx parsing 필요
+            try {
+                userIdx = Long.valueOf(String.valueOf(ex.getClaims().get(USER_IDX)));
+            } catch (Exception e) { // Claims안의 값이 null이거나 이상한 값일 수도 있어서 한 번 더 체크
+                throw new ApplicationException(INVALID_TOKEN);
+            }
+        } catch (JwtException ex) {
             throw new ApplicationException(INVALID_TOKEN);
         }
 

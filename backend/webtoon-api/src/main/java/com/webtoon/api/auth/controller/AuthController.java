@@ -27,11 +27,9 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class AuthController {
 
     private final AuthService authService;
-    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthController(AuthService authService, JwtTokenProvider jwtTokenProvider) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping()
@@ -54,7 +52,7 @@ public class AuthController {
     @PostMapping("/token")
     public ResponseEntity<ApiResponse<Void>> reissueAccessToken(@RequestHeader(AUTHORIZATION) String accessToken,
                                                                 @RequestBody RefreshTokenRequest request) {
-        String reissuedAccessToken = jwtTokenProvider.reissueAccessToken(accessToken, request.getRefreshToken());
+        String reissuedAccessToken = authService.reissueAccessToken(accessToken, request.getRefreshToken());
         return ResponseEntity.ok()
                              .header(AUTHORIZATION, reissuedAccessToken)
                              .body(ApiResponse.succeed());

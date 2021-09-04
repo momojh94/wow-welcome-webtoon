@@ -80,11 +80,11 @@ export default function MyPage() {
       redirect: "follow",
     };
 
+    console.log("my");
+
     fetch("/api/users/webtoons?page=" + page, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        alert(result.error_code);
-        console.log(result);
         if (result.error_code !== null) {
           if (result.error_code === "A005") {
             ReToken.ReToken();

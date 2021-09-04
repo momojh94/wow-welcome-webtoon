@@ -2,6 +2,7 @@
 package com.webtoon.core.security.service;
 
 import com.webtoon.core.common.exception.ApplicationException;
+import com.webtoon.core.security.AuthorizationExtractor;
 import com.webtoon.core.security.enums.TokenStatus;
 import com.webtoon.core.security.provider.JwtTokenProvider;
 import com.webtoon.core.user.domain.User;
@@ -15,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import static com.webtoon.core.common.exception.ErrorType.ALREADY_LOGOUT;
 import static com.webtoon.core.common.exception.ErrorType.INVALID_TOKEN;
+import static com.webtoon.core.common.exception.ErrorType.LOGIN_REQUIRED;
 import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
 import static com.webtoon.core.common.exception.ErrorType.WRONG_PASSWORD;
 import static com.webtoon.core.security.enums.TokenStatus.EXPIRED;
@@ -67,5 +69,32 @@ public class AuthService {
         jwtTokenProvider.expireToken(user);
     }
 
+    public String reissueAccessToken(String accessToken, String refreshToken) {
+        Long userIdx = jwtTokenProvider.getUserIdxOf(AuthorizationExtractor.extract(accessToken));
+        TokenStatus refreshTokenStatus = jwtTokenProvider.validateRefreshTokenStatus(refreshToken);
+
+        if (refreshTokenStatus == EXPIRED) {
+            throw new ApplicationException(LOGIN_REQUIRED);
+        }
+
+        if (refreshTokenStatus == INVALID) {
+            throw new ApplicationException(INVALID_TOKEN);
+        }
+
+        ValueOperations<Long, String> vop = redisTemplate.opsForValue();
+        String refreshTokenInRedis = vop.get(userIdx);
+
+        if (StringUtils.isEmpty(refreshTokenInRedis)) {
+            throw new ApplicationException(LOGIN_REQUIRED);
+        }
+
+        if (!refreshToken.equals(refreshTokenInRedis)) {
+            throw new ApplicationException(INVALID_TOKEN);
+        }
+
+        String reissuedAccessToken = jwtTokenProvider.createAccessToken(userIdx);
+
+        return reissuedAccessToken;
+    }
 }
 
