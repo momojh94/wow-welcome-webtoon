@@ -40,4 +40,11 @@ custom:
   path:
     upload-images: 'D:/upload/'
 
-
+# 로컬 테스트용
+jwt:
+  access-token:
+    secret-key: 'accesstokensecretkeyforlcoaltestauth'
+    expire-length: 60000 # 1분(60 * 1000), 로컬 테스트용으로 짧게
+  refresh-token:
+    secret-key: 'refreshtokensecretkeyforlcoaltestauth'
+    expire-length: 180000 # 3분(2 * 60 * 1000), 로컬 테스트용으로 짧게

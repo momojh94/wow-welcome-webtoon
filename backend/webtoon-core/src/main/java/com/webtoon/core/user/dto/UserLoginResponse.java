@@ -1,6 +1,5 @@
 package com.webtoon.core.user.dto;
 
-import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,14 +30,14 @@ public class UserLoginResponse {
     }
 
     public static UserLoginResponse of(UserResponse userResponse,
-                                       TokensResponse tokensResponse) {
-        return UserLoginResponse.builder()
-                                .account(userResponse.getAccount())
-                                .name(userResponse.getName())
-                                .birth(userResponse.getBirth())
-                                .gender(userResponse.getGender())
-                                .email(userResponse.getEmail())
-                                .token(tokensResponse.getRefreshToken())
-                                .build();
+                                       com.webtoon.core.security.dto.UserLoginResponse userLoginResponse) {
+        return com.webtoon.core.user.dto.UserLoginResponse.builder()
+                                                          .account(userResponse.getAccount())
+                                                          .name(userResponse.getName())
+                                                          .birth(userResponse.getBirth())
+                                                          .gender(userResponse.getGender())
+                                                          .email(userResponse.getEmail())
+                                                          .token(userLoginResponse.getRefreshToken())
+                                                          .build();
     }
 }

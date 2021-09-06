@@ -9,7 +9,7 @@ class Comment extends Component {
   handleGood = ({ target: { goodNum } }) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var raw = "";
 
@@ -25,23 +25,19 @@ class Comment extends Component {
       .then((result) => {
         console.log(result);
         if (result.error_code !== null) {
-          if (result.error_code === 44) {
+          if (result.error_code === "A005") {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code === 42) {
-            // 로그인 필요한 경우
-            if (!localStorage.getItem("authorization")) {
-              alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
-              window.location.href = "/login";
-            } else {
-              alert("잘못된 접근입니다.");
-            }
+          if (!(localStorage.getItem("AUTHORIZATION"))) {
+            alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.")
+            window.location.href = "/login";
             return;
           }
 
-          alert(result.message);
+          alert("잘못된 접근입니다");
+          return;
         }
 
         this.setState({ goodNum: result.data.count });
@@ -52,7 +48,7 @@ class Comment extends Component {
   handleBad = ({ target: { badNum } }) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var raw = "";
 
@@ -68,23 +64,18 @@ class Comment extends Component {
       .then((result) => {
         console.log(result);
         if (result.error_code !== null) {
-          if (result.error_code === 44) {
+          if (result.error_code === "A005") {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code === 42) {
-            // 로그인 필요한 경우
-            if (!localStorage.getItem("authorization")) {
-              alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
-              window.location.href = "/login";
-            } else {
-              alert("잘못된 접근입니다.");
-            }
+          if (!(localStorage.getItem("AUTHORIZATION"))) {
+            alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.")
+            window.location.href = "/login";
             return;
           }
 
-          alert(result.message);
+          alert("잘못된 접근입니다");
           return;
         }
 

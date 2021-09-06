@@ -1,7 +1,7 @@
 package com.webtoon.core.webtoon.domain;
 
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.common.BaseTimeEntity;
+import com.webtoon.core.common.entity.BaseTimeEntity;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
@@ -10,7 +10,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 
@@ -95,8 +94,8 @@ public class Webtoon extends BaseTimeEntity {
 		this.hits = 0L;
 	}
 
-	public boolean wasDrawnBy(Long userIdx) {
-		return this.user.getIdx() == userIdx;
+	public boolean wasDrawnBy(User user) {
+		return this.user.getIdx() == user.getIdx();
 	}
 
 	public LocalDateTime getLastUpdatedDate() {

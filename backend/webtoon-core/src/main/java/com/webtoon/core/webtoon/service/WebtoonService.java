@@ -93,9 +93,9 @@ public class WebtoonService {
 													.collect(Collectors.toList()), totalPages);
 	}
 
-	public MyWebtoonsResponse findAllMyWebtoon(Integer pageNum, Long userIdx) {
+	public MyWebtoonsResponse findAllMyWebtoon(Integer pageNum, User user) {
 		Pageable pageable = PageRequest.of(pageNum - 1, PAGE_WEBTOON_COUNT);
-		Page<Webtoon> page = webtoonRepository.findAllByUserIdx(pageable, userIdx);
+		Page<Webtoon> page = webtoonRepository.findAllByUser(pageable, user);
 
 		List<Webtoon> webtoons = page.getContent();
 		int totalPages = page.getTotalPages();
@@ -111,10 +111,9 @@ public class WebtoonService {
 	}
 
 	@Transactional
-	public void create(Long userIdx, MultipartFile thumbnailFile,
+	public void create(User user, MultipartFile thumbnailFile,
 					   WebtoonCreateRequest request) throws IOException {
-		User user = userRepository.findById(userIdx)
-								  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+
 		// TODO : file is empty
 		String thumbnail = fileUploader.uploadWebtoonThumbnail(thumbnailFile);
 
@@ -123,12 +122,12 @@ public class WebtoonService {
 	}
 
 	@Transactional
-	public void update(Long webtoonIdx, Long userIdx, MultipartFile thumbnailFile,
+	public void update(User user, Long webtoonIdx, MultipartFile thumbnailFile,
 					   WebtoonEditRequest request) throws IOException {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 
-		if (!webtoon.wasDrawnBy(userIdx)) {
+		if (!webtoon.wasDrawnBy(user)) {
 			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
 		}
 
@@ -139,11 +138,11 @@ public class WebtoonService {
 	}
 
 	@Transactional
-	public void delete(Long webtoonIdx, Long userIdx) {
+	public void delete(Long webtoonIdx, User user) {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
 										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
 
-		if (!webtoon.wasDrawnBy(userIdx)) {
+		if (!webtoon.wasDrawnBy(user)) {
 			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
 		}
 

@@ -23,13 +23,12 @@ public class EpisodeUpdateRequest {
         this.authorComment = authorComment;
     }
 
-    public Episode toEpisode(String thumbnail, String contents, Webtoon webtoon) {
+    public Episode toEpisode(String thumbnail, String contents) {
         return Episode.builder()
                       .title(title)
                       .authorComment(authorComment)
                       .thumbnail(thumbnail)
                       .contents(contents)
-                      .webtoon(webtoon)
                       .build();
     }
 }

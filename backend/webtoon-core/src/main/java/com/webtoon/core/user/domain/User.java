@@ -1,9 +1,8 @@
 package com.webtoon.core.user.domain;
 
 
-import com.webtoon.core.common.BaseTimeEntity;
+import com.webtoon.core.common.entity.BaseTimeEntity;
 import com.webtoon.core.user.domain.enums.Gender;
-import com.webtoon.core.webtoon.domain.Webtoon;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

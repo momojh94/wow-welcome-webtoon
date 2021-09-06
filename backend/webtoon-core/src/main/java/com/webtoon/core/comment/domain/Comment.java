@@ -1,6 +1,6 @@
 package com.webtoon.core.comment.domain;
 
-import com.webtoon.core.common.BaseCreatedTimeEntity;
+import com.webtoon.core.common.entity.BaseCreatedTimeEntity;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.user.domain.User;
 import lombok.AccessLevel;

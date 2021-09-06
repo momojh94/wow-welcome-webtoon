@@ -57,7 +57,7 @@ const webtoonIdx = getParameterByName("webtoon_idx");
 export default function EditRegister() {
   React.useEffect(() => {
     // var myHeaders = new Headers();
-    // myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    // myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var requestOptions = {
       method: "GET",
@@ -68,27 +68,22 @@ export default function EditRegister() {
     fetch("/api/webtoons/" + webtoonIdx, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
         if (result.error_code !== null) {
-          if (result.error_code === 44) {
+          if (result.error_code === "A005") {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code === 42) {
-            // 로그인 필요한 경우
-            if (!localStorage.getItem("authorization")) {
-              alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
-              window.location.href = "/login";
-            } else {
-              alert("잘못된 접근입니다.");
-            }
+          if (!(localStorage.getItem("AUTHORIZATION"))) {
+            alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.")
+            window.location.href = "/login";
             return;
           }
 
-          alert(result.message);
+          alert("잘못된 접근입니다");
           return;
         }
+
         setTitle(result.data.title);
         setType(result.data.story_type);
         setSummary(result.data.summary);
@@ -224,7 +219,7 @@ export default function EditRegister() {
       }
 
       var myHeaders = new Headers();
-      myHeaders.append("Authorization", localStorage.getItem("authorization"));
+      myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
       var formdata = new FormData();
       formdata.append("thumbnail", thumbnail);
@@ -248,27 +243,19 @@ export default function EditRegister() {
       fetch("/api/webtoons/" + webtoonIdx, requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          console.log(result);
           if (result.error_code !== null) {
-            if (result.error_code === 44) {
+            if (result.error_code === "A005") {
               ReToken.ReToken();
               return;
             }
 
-            if (result.error_code === 42) {
-              // 로그인 필요한 경우
-              if (!localStorage.getItem("authorization")) {
-                alert(
-                  "로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다."
-                );
-                window.location.href = "/login";
-              } else {
-                alert("잘못된 접근입니다.");
-              }
+            if (!(localStorage.getItem("AUTHORIZATION"))) {
+              alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.")
+              window.location.href = "/login";
               return;
             }
-
-            alert(result.message);
+  
+            alert("잘못된 접근입니다");
             return;
           }
 
@@ -281,7 +268,7 @@ export default function EditRegister() {
 
   const handleDelete = () => {
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var requestOptions = {
       headers: myHeaders,
@@ -292,25 +279,19 @@ export default function EditRegister() {
     fetch("/api/webtoons/" + webtoonIdx, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
         if (result.error_code !== null) {
-          if (result.error_code === 44) {
+          if (result.error_code === "A005") {
             ReToken.ReToken();
             return;
           }
 
-          if (result.error_code === 42) {
-            // 로그인 필요한 경우
-            if (!localStorage.getItem("authorization")) {
-              alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.");
-              window.location.href = "/login";
-            } else {
-              alert("잘못된 접근입니다.");
-            }
+          if (!(localStorage.getItem("AUTHORIZATION"))) {
+            alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.")
+            window.location.href = "/login";
             return;
           }
 
-          alert(result.message);
+          alert("잘못된 접근입니다");
           return;
         }
 

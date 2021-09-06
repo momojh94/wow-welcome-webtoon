@@ -51,41 +51,20 @@ export default function Login() {
         redirect: "follow",
       };
 
-      fetch("/api/users/token", requestOptions)
+      fetch("/api/auth", requestOptions)
         .then((response) => {
-          console.log(response);
           response.json().then((result) => {
-            console.log(result);
             if (result.error_code !== null) {
-              if (result.error_code === 42) {
-                // 로그인 필요한 경우
-                if (!localStorage.getItem("authorization")) {
-                  alert(
-                    "로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다."
-                  );
-                  window.location.href = "/login";
-                } else {
-                  alert("잘못된 접근입니다.");
-                }
-                return;
-              }
-
               alert(result.message);
               return;
             }
 
             localStorage.setItem("authorization", response.headers.get("Authorization"));
-            var temp = localStorage.getItem("authorization");
             var jwt_decode = require("jwt-decode");
-            var decodeToken = jwt_decode(temp.replace("bearer ", ""));
-            console.log("decodeToken : " + decodeToken);
-            localStorage.setItem("user_idx", decodeToken.userIdx);
-            localStorage.setItem("account", result.data.account);
-            localStorage.setItem("name", result.data.name);
-            localStorage.setItem("birth", result.data.birth);
-            localStorage.setItem("gender", result.data.gender);
-            localStorage.setItem("email", result.data.email);
-            localStorage.setItem("refresh_token", result.data.token);
+            var decodeToken = jwt_decode(localStorage.getItem("authorization"));
+            localStorage.setItem("exp", decodeToken.exp);
+
+            localStorage.setItem("refresh_token", result.data);
 
             window.history.back();
           });

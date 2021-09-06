@@ -9,36 +9,30 @@ import com.webtoon.core.comment.repository.CommentRepository;
 import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
 import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.webtoon.core.common.exception.ErrorType.BAD_COMMENT_DISLIKE_REQUEST;
 import static com.webtoon.core.common.exception.ErrorType.BAD_COMMENT_LIKE_REQUEST;
 import static com.webtoon.core.common.exception.ErrorType.COMMENT_NOT_FOUND;
-import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
 
 @Service
 public class CommentLikeDislikeService {
-    private UserRepository userRepository;
+
     private CommentRepository commentRepository;
     private CommentLikeRepository commentLikeRepository;
     private CommentDislikeRepository commentDislikeRepository;
 
-    public CommentLikeDislikeService(UserRepository userRepository,
-                                     CommentRepository commentRepository,
+    public CommentLikeDislikeService(CommentRepository commentRepository,
                                      CommentLikeRepository commentLikeRepository,
                                      CommentDislikeRepository commentDislikeRepository) {
-        this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.commentLikeRepository = commentLikeRepository;
         this.commentDislikeRepository = commentDislikeRepository;
     }
 
     @Transactional
-    public CommentLikeDislikeCountResponse requestLike(Long userIdx, Long commentIdx) {
-        User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+    public CommentLikeDislikeCountResponse requestLike(User user, Long commentIdx) {
         Comment comment = commentRepository.findById(commentIdx)
                                            .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
 
@@ -47,9 +41,8 @@ public class CommentLikeDislikeService {
         }
 
         // 이미 눌렀던 좋아요 취소
-        if (commentLikeRepository.existsByCommentIdxAndUserIdx(commentIdx, userIdx)) {
-            CommentLike commentLike = commentLikeRepository
-                    .findByCommentIdxAndUserIdx(commentIdx, userIdx);
+        if (commentLikeRepository.existsByCommentIdxAndUser(commentIdx, user)) {
+            CommentLike commentLike = commentLikeRepository.findByCommentIdxAndUser(commentIdx, user);
 
             commentLikeRepository.deleteByIdx(commentLike.getIdx());
             commentRepository.updateLikeCount(comment.getIdx(), -1);
@@ -61,9 +54,9 @@ public class CommentLikeDislikeService {
 
         // 좋아요 +1
         CommentLike commentLike = CommentLike.builder()
-                                 .user(user)
-                                 .comment(comment)
-                                 .build();
+                                             .user(user)
+                                             .comment(comment)
+                                             .build();
         commentLikeRepository.save(commentLike);
         commentRepository.updateLikeCount(comment.getIdx(), 1);
 
@@ -75,9 +68,7 @@ public class CommentLikeDislikeService {
 
 
     @Transactional
-    public CommentLikeDislikeCountResponse requestDislike(Long userIdx, Long commentIdx) {
-        User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+    public CommentLikeDislikeCountResponse requestDislike(User user, Long commentIdx) {
         Comment comment = commentRepository.findById(commentIdx)
                                            .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
 
@@ -86,9 +77,8 @@ public class CommentLikeDislikeService {
         }
 
         // 이미 눌렀던 싫어요 취소
-        if (commentDislikeRepository.existsByCommentIdxAndUserIdx(commentIdx, userIdx)) {
-            CommentDislike commentDislike = commentDislikeRepository
-                    .findByCommentIdxAndUserIdx(commentIdx, userIdx);
+        if (commentDislikeRepository.existsByCommentIdxAndUser(commentIdx, user)) {
+            CommentDislike commentDislike = commentDislikeRepository.findByCommentIdxAndUser(commentIdx, user);
 
             commentDislikeRepository.deleteByIdx(commentDislike.getIdx());
             commentRepository.updateDislikeCount(comment.getIdx(), -1);

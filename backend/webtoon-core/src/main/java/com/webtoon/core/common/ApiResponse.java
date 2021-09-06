@@ -1,12 +1,16 @@
-package com.webtoon.api.common;
+package com.webtoon.core.common;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.webtoon.core.common.exception.ErrorType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ApiResponse<T> {
 
     public static final String SUCCESS = "success";

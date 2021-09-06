@@ -12,7 +12,6 @@ import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,14 +25,12 @@ import java.util.stream.Collectors;
 import static com.webtoon.core.common.exception.ErrorType.COMMENT_NOT_FOUND;
 import static com.webtoon.core.common.exception.ErrorType.EPISODE_NOT_FOUND;
 import static com.webtoon.core.common.exception.ErrorType.USER_IS_NOT_COMMENTER;
-import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
 
 @Service
 public class CommentService {
     private CommentRepository commentRepository;
     private CommentLikeRepository commentLikeRepository;
     private CommentDislikeRepository commentDislikeRepository;
-    private UserRepository userRepository;
     private EpisodeRepository episodeRepository;
 
     //한 페이지 내의 최대 댓글 갯수
@@ -43,17 +40,15 @@ public class CommentService {
     public CommentService(CommentRepository commentRepository,
                           CommentLikeRepository commentLikeRepository,
                           CommentDislikeRepository commentDislikeRepository,
-                          UserRepository userRepository,
                           EpisodeRepository episodeRepository) {
         this.commentRepository = commentRepository;
         this.commentLikeRepository = commentLikeRepository;
         this.commentDislikeRepository = commentDislikeRepository;
-        this.userRepository = userRepository;
         this.episodeRepository = episodeRepository;
     }
 
     @Transactional(readOnly = true)
-    public CommentsResponse findAllComment(Long epIdx, int page) {
+    public CommentsResponse findComments(Long epIdx, int page) {
         page = page == 0 ? 1 : page;
         Pageable pageable = PageRequest.of(page - 1, COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = commentRepository.findAllByEpIdx(pageable, epIdx);
@@ -71,17 +66,17 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponse> findAllBestComment(Long epIdx) {
+    public List<CommentResponse> findBestComments(Long epIdx) {
         return commentRepository.findBestCommentsByEpIdx(epIdx)
                                 .map(CommentResponse::new)
                                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public MyPageCommentsResponse findAllMyPageComment(Long userIdx, int page){
+    public MyPageCommentsResponse findMyPageComments(User user, int page){
         page = page == 0 ? 1 : page;
         Pageable pageable = PageRequest.of(page - 1, MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
-        Page<Comment> commentsPage = commentRepository.findAllByUserIdx(pageable, userIdx);
+        Page<Comment> commentsPage = commentRepository.findAllByUser(pageable, user);
 
         /*if (page > commentsPage.getTotalPages()) {
             //
@@ -96,9 +91,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void create(Long userIdx, Long epIdx, String content) {
-        User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+    public void create(User user, Long epIdx, String content) {
         Episode episode = episodeRepository.findById(epIdx)
                                            .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
 
@@ -112,9 +105,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void delete(Long userIdx, Long commentIdx) {
-        User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+    public void delete(User user, Long commentIdx) {
         Comment comment = commentRepository.findById(commentIdx)
                                            .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
 

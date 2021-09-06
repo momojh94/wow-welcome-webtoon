@@ -119,19 +119,17 @@ public class CommentServiceTest {
     @Test
     void createComment() {
         //given
-        Long userIdx = user.getIdx();
         Long epIdx = episode.getIdx();
-        given(userRepository.findById(userIdx)).willReturn(Optional.of(user));
+
         given(episodeRepository.findById(epIdx)).willReturn(Optional.of(episode));
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
         //when
-        commentService.create(userIdx, epIdx, contentWithinSpecifiedLength);
+        commentService.create(user, epIdx, contentWithinSpecifiedLength);
 
         //then
         assertAll(
                 () -> verify(commentRepository).save(any(Comment.class)),
-                () -> verify(userRepository).findById(userIdx),
                 () -> verify(episodeRepository).findById(epIdx)
         );
     }
@@ -141,13 +139,12 @@ public class CommentServiceTest {
     @Test
     void deleteComment() {
         //given
-        Long userIdx = user.getIdx();
         Long commentIdx = comment.getIdx();
-        given(userRepository.findById(userIdx)).willReturn(Optional.of(user));
+
         given(commentRepository.findById(commentIdx)).willReturn(Optional.of(comment));
 
         //when
-        commentService.delete(user.getIdx(), comment.getIdx());
+        commentService.delete(user, comment.getIdx());
 
         //then
         assertAll(
@@ -183,7 +180,7 @@ public class CommentServiceTest {
         given(commentRepository.findAllByEpIdx(pageable, episode.getIdx())).willReturn(commentsPage);
 
         //when
-        CommentsResponse result = commentService.findAllComment(episode.getIdx(), page);
+        CommentsResponse result = commentService.findComments(episode.getIdx(), page);
 
         //then
         assertAll(
@@ -214,7 +211,7 @@ public class CommentServiceTest {
                 .willReturn(bestCommentList.stream());
 
         //when
-        List<CommentResponse> result = commentService.findAllBestComment(epIdx);
+        List<CommentResponse> result = commentService.findBestComments(epIdx);
 
         //then
         assertAll(
@@ -249,10 +246,10 @@ public class CommentServiceTest {
                 CommentService.MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = new PageImpl<Comment>(subList, pageable, commentList.size());
 
-        given(commentRepository.findAllByUserIdx(pageable, user.getIdx())).willReturn(commentsPage);
+        given(commentRepository.findAllByUser(pageable, user)).willReturn(commentsPage);
 
         //when
-        MyPageCommentsResponse result = commentService.findAllMyPageComment(user.getIdx(), page);
+        MyPageCommentsResponse result = commentService.findMyPageComments(user, page);
 
         //then
         assertAll(

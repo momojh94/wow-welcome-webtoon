@@ -7,7 +7,7 @@ function LogoutButton() {
   const handleClick = () => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Authorization", localStorage.getItem("authorization"));
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
     var raw = JSON.stringify({
       refresh_token: localStorage.getItem("refresh_token"),
@@ -22,10 +22,13 @@ function LogoutButton() {
 
     var userIdx = localStorage.getItem("user_idx");
     console.log(userIdx);
-    fetch("/api/users/" + userIdx + "/token", requestOptions)
-      .then((response) => response.text())
+    fetch("/api/auth", requestOptions)
+      .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+        if (result.error_code !== null && result.error_code === "A004") {
+          console.log(result.message);
+        }
+        
         localStorage.clear();
         window.location.reload();
       })

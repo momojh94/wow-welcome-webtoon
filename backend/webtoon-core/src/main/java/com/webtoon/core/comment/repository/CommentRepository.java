@@ -2,6 +2,7 @@ package com.webtoon.core.comment.repository;
 
 
 import com.webtoon.core.comment.domain.Comment;
+import com.webtoon.core.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +17,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Page<Comment> findAllByEpIdx(Pageable pageable, @Param("epIdx") Long epIdx);
 
-    Page<Comment> findAllByUserIdx(Pageable pageable, @Param("userIdx") Long userIdx);
+    Page<Comment> findAllByUser(Pageable pageable, @Param("user") User user);
 
     @Query(nativeQuery = true,
             value = "SELECT * " +
