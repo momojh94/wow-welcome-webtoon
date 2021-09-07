@@ -20,7 +20,6 @@ public enum ErrorType {
     // 유저
     USER_NOT_FOUND(404, "U000", "유저가 존재하지 않습니다."),
     ALREADY_JOINED_ACCOUNT(409, "U001", "이미 가입된 계정입니다."),
-
     
     // 인증
     LOGIN_REQUIRED(401, "A000", "로그인이 필요합니다."),
