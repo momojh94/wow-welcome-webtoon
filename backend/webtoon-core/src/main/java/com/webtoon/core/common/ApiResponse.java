@@ -2,6 +2,7 @@ package com.webtoon.core.common;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.webtoon.core.common.exception.CustomException;
 import com.webtoon.core.common.exception.ExceptionType;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,8 +34,8 @@ public class ApiResponse<T> {
         return new ApiResponse<>(null, SUCCESS, data);
     }
 
-    public static <Void> ApiResponse<Void> fail(ExceptionType exceptionType) {
-        return new ApiResponse<Void>(exceptionType.getErrorCode(), exceptionType.getMessage(), null);
+    public static <Void> ApiResponse<Void> fail(CustomException exception) {
+        return new ApiResponse<Void>(exception.getErrorCode(), exception.getMessage(), null);
     }
 
     public static <Void> ApiResponse<Void> fail(String errorCode, String message) {

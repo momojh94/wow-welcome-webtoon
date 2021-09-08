@@ -2,6 +2,7 @@ package com.webtoon.core.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webtoon.core.common.ApiResponse;
+import com.webtoon.core.common.exception.CustomException;
 import com.webtoon.core.common.exception.ExceptionType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,13 +30,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
-        ExceptionType exceptionType = (ExceptionType) request.getAttribute(AUTH_EXCEPTION);
+        CustomException exception = (CustomException) request.getAttribute(AUTH_EXCEPTION);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-        String responseBody = objectMapper.writeValueAsString(ApiResponse.fail(exceptionType));
+        String responseBody = objectMapper.writeValueAsString(ApiResponse.fail(exception));
 
         response.getWriter().print(responseBody);
     }

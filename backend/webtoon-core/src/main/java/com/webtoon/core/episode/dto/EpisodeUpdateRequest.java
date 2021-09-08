@@ -1,7 +1,6 @@
 package com.webtoon.core.episode.dto;
 
 import com.webtoon.core.episode.domain.Episode;
-import com.webtoon.core.webtoon.domain.Webtoon;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
