@@ -21,10 +21,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static com.webtoon.core.common.exception.ErrorType.EXPIRED_TOKEN;
-import static com.webtoon.core.common.exception.ErrorType.INVALID_TOKEN;
-import static com.webtoon.core.common.exception.ErrorType.LOGIN_REQUIRED;
-import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.EXPIRED_TOKEN;
+import static com.webtoon.core.common.exception.ExceptionType.INVALID_TOKEN;
+import static com.webtoon.core.common.exception.ExceptionType.USER_NOT_FOUND;
 import static com.webtoon.core.security.enums.TokenStatus.EXPIRED;
 import static com.webtoon.core.security.enums.TokenStatus.INVALID;
 import static com.webtoon.core.security.enums.TokenStatus.VALID;

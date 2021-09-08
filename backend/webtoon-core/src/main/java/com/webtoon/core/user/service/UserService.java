@@ -8,7 +8,7 @@ import com.webtoon.core.user.dto.UserUpdateRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.webtoon.core.common.exception.ErrorType.ALREADY_JOINED_ACCOUNT;
+import static com.webtoon.core.common.exception.ExceptionType.ALREADY_JOINED_ACCOUNT;
 
 @Service
 public class UserService {

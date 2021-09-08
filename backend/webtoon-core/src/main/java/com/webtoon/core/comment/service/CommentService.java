@@ -22,9 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.webtoon.core.common.exception.ErrorType.COMMENT_NOT_FOUND;
-import static com.webtoon.core.common.exception.ErrorType.EPISODE_NOT_FOUND;
-import static com.webtoon.core.common.exception.ErrorType.USER_IS_NOT_COMMENTER;
+import static com.webtoon.core.common.exception.ExceptionType.COMMENT_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.EPISODE_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.USER_IS_NOT_COMMENTER;
 
 @Service
 public class CommentService {

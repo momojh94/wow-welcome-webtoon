@@ -25,9 +25,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.webtoon.core.common.exception.ErrorType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
-import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
-import static com.webtoon.core.common.exception.ErrorType.WEBTOON_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
+import static com.webtoon.core.common.exception.ExceptionType.WEBTOON_NOT_FOUND;
 
 @Service
 public class WebtoonService {

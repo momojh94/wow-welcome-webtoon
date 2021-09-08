@@ -14,11 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import static com.webtoon.core.common.exception.ErrorType.ALREADY_LOGOUT;
-import static com.webtoon.core.common.exception.ErrorType.INVALID_TOKEN;
-import static com.webtoon.core.common.exception.ErrorType.LOGIN_REQUIRED;
-import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
-import static com.webtoon.core.common.exception.ErrorType.WRONG_PASSWORD;
+import static com.webtoon.core.common.exception.ExceptionType.ALREADY_LOGOUT;
+import static com.webtoon.core.common.exception.ExceptionType.INVALID_TOKEN;
+import static com.webtoon.core.common.exception.ExceptionType.LOGIN_REQUIRED;
+import static com.webtoon.core.common.exception.ExceptionType.USER_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.WRONG_PASSWORD;
 import static com.webtoon.core.security.enums.TokenStatus.EXPIRED;
 import static com.webtoon.core.security.enums.TokenStatus.INVALID;
 

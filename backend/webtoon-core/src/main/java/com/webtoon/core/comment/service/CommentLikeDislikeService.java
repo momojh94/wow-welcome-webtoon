@@ -12,9 +12,9 @@ import com.webtoon.core.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.webtoon.core.common.exception.ErrorType.BAD_COMMENT_DISLIKE_REQUEST;
-import static com.webtoon.core.common.exception.ErrorType.BAD_COMMENT_LIKE_REQUEST;
-import static com.webtoon.core.common.exception.ErrorType.COMMENT_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.BAD_COMMENT_DISLIKE_REQUEST;
+import static com.webtoon.core.common.exception.ExceptionType.BAD_COMMENT_LIKE_REQUEST;
+import static com.webtoon.core.common.exception.ExceptionType.COMMENT_NOT_FOUND;
 
 @Service
 public class CommentLikeDislikeService {

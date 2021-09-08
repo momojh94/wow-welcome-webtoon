@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
-import static com.webtoon.core.common.exception.ErrorType.INVALID_REQUEST_VALUE;
+import static com.webtoon.core.common.exception.ExceptionType.INVALID_REQUEST_VALUE;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

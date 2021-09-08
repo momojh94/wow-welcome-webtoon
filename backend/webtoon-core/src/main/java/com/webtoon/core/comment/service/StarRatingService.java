@@ -8,13 +8,12 @@ import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.repository.UserRepository;
 import com.webtoon.core.webtoon.repository.WebtoonRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.webtoon.core.common.exception.ErrorType.EPISODE_NOT_FOUND;
-import static com.webtoon.core.common.exception.ErrorType.USER_HAVE_ALREADY_RATED_EPISODE;
+import static com.webtoon.core.common.exception.ExceptionType.EPISODE_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.USER_HAVE_ALREADY_RATED_EPISODE;
 
 @Service
 public class StarRatingService {

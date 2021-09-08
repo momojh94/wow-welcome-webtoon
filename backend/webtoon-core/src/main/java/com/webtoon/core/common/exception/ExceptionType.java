@@ -6,7 +6,7 @@ package com.webtoon.core.common.exception;
  * 404 Not Found
  * 409 Conflict
  */
-public enum ErrorType {
+public enum ExceptionType {
 
     // 공통
     INVALID_REQUEST_VALUE(400, "C000", "적절하지 않은 요청 값 처리"),
@@ -40,7 +40,7 @@ public enum ErrorType {
     private final String code;
     private final String message;
 
-    ErrorType(final int status, final String code, final String message) {
+    ExceptionType(final int status, final String code, final String message) {
         this.status = status;
         this.code = code;
         this.message = message;

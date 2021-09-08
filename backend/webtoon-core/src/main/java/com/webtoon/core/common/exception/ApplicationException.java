@@ -1,14 +1,14 @@
 package com.webtoon.core.common.exception;
 
 public class ApplicationException extends RuntimeException{
-    private final ErrorType errorType;
+    private final ExceptionType exceptionType;
 
-    public ApplicationException(ErrorType errorType) {
-        super(errorType.getMessage());
-        this.errorType = errorType;
+    public ApplicationException(ExceptionType exceptionType) {
+        super(exceptionType.getMessage());
+        this.exceptionType = exceptionType;
     }
 
-    public ErrorType getErrorType() {
-        return errorType;
+    public ExceptionType getErrorType() {
+        return exceptionType;
     }
 }
