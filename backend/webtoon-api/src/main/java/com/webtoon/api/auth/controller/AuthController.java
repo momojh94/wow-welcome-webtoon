@@ -42,8 +42,8 @@ public class AuthController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping()
-    public ApiResponse<String> logout(@AuthenticationPrincipal User user,
-                                      @RequestBody RefreshTokenRequest request) {
+    public ApiResponse<Void> logout(@AuthenticationPrincipal User user,
+                                    @RequestBody RefreshTokenRequest request) {
         authService.logout(user, request.getRefreshToken());
         return ApiResponse.succeed();
     }

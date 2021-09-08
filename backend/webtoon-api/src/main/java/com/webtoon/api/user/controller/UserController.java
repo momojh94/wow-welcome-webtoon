@@ -35,8 +35,8 @@ public class UserController {
 
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping
-	public ApiResponse<String> update(@AuthenticationPrincipal User user,
-									  @RequestBody UserUpdateRequest request) {
+	public ApiResponse<Void> update(@AuthenticationPrincipal User user,
+									@RequestBody UserUpdateRequest request) {
 		userService.update(user, request);
 		return ApiResponse.succeed();
 	}

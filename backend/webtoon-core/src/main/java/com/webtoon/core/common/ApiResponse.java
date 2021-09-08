@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class ApiResponse<T> {
 
     public static final String SUCCESS = "success";
+    public static final ApiResponse<Void> SUCCESS_RESPONSE = new ApiResponse<Void>(null, SUCCESS, null);
 
     private String errorCode;
     private String message;
@@ -26,8 +27,8 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
-    public static <Void> ApiResponse<Void> succeed() {
-        return new ApiResponse<Void>(null, SUCCESS, null);
+    public static ApiResponse<Void> succeed() {
+        return SUCCESS_RESPONSE;
     }
 
     public static <T> ApiResponse<T> succeed(T data) {
