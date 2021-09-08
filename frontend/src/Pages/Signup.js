@@ -101,8 +101,8 @@ export default function Signup() {
       alert("아이디에 특수문자 또는 한글을 제외해주세요!");
     } else if (password !== passwordCheck) {
       alert("비밀번호가 일치하지 않습니다!!");
-    } else if (password.length < 8) {
-      alert("비밀번호는 8자리 이상으로 설정해주세요!");
+    } else if (password.length < 8 || password.length > 20) {
+      alert("비밀번호는 8자리 이상 20자 이하로 설정해주세요!");
     } else if (checkEmail(email)) {
       alert("이메일 형식이 올바르지 않습니다!");
     } else {

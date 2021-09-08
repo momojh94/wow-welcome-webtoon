@@ -15,20 +15,22 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WebtoonEditRequest {
 
-    @NotBlank(message = "title을 입력해주세요")
+    @NotBlank
     private String title;
 
-    @NotNull(message = "storyType을 입력해주세요")
+    @NotNull
     private StoryType storyType;
 
-    @NotNull(message = "storyGenre을 입력해주세요")
+    @NotNull
     private StoryGenre storyGenre;
 
-    @NotBlank(message = "summary을 입력해주세요")
+    @NotBlank
     private String summary;
 
-    @NotBlank(message = "plot을 입력해주세요")
+    @NotBlank
     private String plot;
+
+    @NotNull
     private EndFlag endFlag;
 
     public WebtoonEditRequest(String title, StoryType storyType, StoryGenre storyGenre,

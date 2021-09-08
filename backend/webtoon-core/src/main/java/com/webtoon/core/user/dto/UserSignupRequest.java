@@ -16,23 +16,23 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserSignupRequest {
 
-    @NotBlank(message = "account를 입력해주세요.")
+    @NotBlank
     private String account;
 
-    @NotBlank(message = "password를 입력해주세요.")
-    @Size(min = 8)
+    @NotBlank
+    @Size(min = 8, max = 20)
     private String password;
 
-    @NotBlank(message = "name을 입력해주세요.")
+    @NotBlank
     private String name;
 
-    @NotNull(message = "birth를 입력해주세요.")
+    @NotNull
     private Date birth;
 
-    @NotNull(message = "gender를 입력해주세요.")
+    @NotNull
     private Gender gender;
 
-    @Email(message = "올바른 email이 필요합니다.")
+    @Email
     private String email;
 
     public UserSignupRequest(String account, String password, String name,

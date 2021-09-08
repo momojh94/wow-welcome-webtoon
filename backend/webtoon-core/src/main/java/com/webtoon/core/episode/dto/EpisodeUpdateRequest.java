@@ -11,10 +11,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EpisodeUpdateRequest {
 
-    @NotBlank(message = "title을 입력해주세요")
+    @NotBlank
     private String title;
 
-    @NotBlank(message = "authorComment를 입력해주세요")
+    @NotBlank
     private String authorComment;
 
     public EpisodeUpdateRequest(String title, String authorComment) {

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 
@@ -32,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody UserLoginRequest request) {
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody @Valid UserLoginRequest request) {
         UserLoginResponse userLoginResponse = authService.login(request.getAccount(), request.getPassword());
 
         return ResponseEntity.ok()
@@ -43,14 +45,14 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping()
     public ApiResponse<Void> logout(@AuthenticationPrincipal User user,
-                                    @RequestBody RefreshTokenRequest request) {
+                                    @RequestBody @Valid RefreshTokenRequest request) {
         authService.logout(user, request.getRefreshToken());
         return ApiResponse.succeed();
     }
 
     @PostMapping("/token")
     public ResponseEntity<ApiResponse<Void>> reissueAccessToken(@RequestHeader(AUTHORIZATION) String accessToken,
-                                                                @RequestBody RefreshTokenRequest request) {
+                                                                @RequestBody @Valid RefreshTokenRequest request) {
         String reissuedAccessToken = authService.reissueAccessToken(accessToken, request.getRefreshToken());
         return ResponseEntity.ok()
                              .header(AUTHORIZATION, reissuedAccessToken)

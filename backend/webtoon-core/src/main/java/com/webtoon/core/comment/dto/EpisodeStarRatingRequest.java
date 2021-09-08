@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EpisodeStarRatingRequest {
 
-    @Max(value = 10, message = "별점은 10점을 넘을 수 없습니다")
+    @Min(value = 0)
+    @Max(value = 10)
     private float rating;
 
     public EpisodeStarRatingRequest(float rating) {
