@@ -86,7 +86,7 @@ class CommentLikeDislikeControllerTest extends ControllerTest {
     void requestCommentLike() throws Exception {
         //given
         CommentLikeDislikeCountResponse responseData =
-                new CommentLikeDislikeCountResponse(comment.getLikeCount() + 1);
+                CommentLikeDislikeCountResponse.of(comment.getLikeCount() + 1);
 
         given(commentLikeDislikeService.requestLike(user, comment.getIdx())).willReturn(responseData);
 
@@ -120,7 +120,7 @@ class CommentLikeDislikeControllerTest extends ControllerTest {
     void requestCommentDislike() throws Exception {
         //given
         CommentLikeDislikeCountResponse responseData =
-                new CommentLikeDislikeCountResponse(comment.getDislikeCount() + 1);
+                CommentLikeDislikeCountResponse.of(comment.getDislikeCount() + 1);
 
         given(commentLikeDislikeService.requestDislike(user, comment.getIdx())).willReturn(responseData);
 

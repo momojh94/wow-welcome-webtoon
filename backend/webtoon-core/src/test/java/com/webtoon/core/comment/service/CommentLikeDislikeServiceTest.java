@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,8 +29,6 @@ import static org.mockito.BDDMockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentLikeDislikeServiceTest {
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private CommentRepository commentRepository;
@@ -51,38 +50,40 @@ public class CommentLikeDislikeServiceTest {
     @BeforeEach
     void beforeEach() {
         user = User.builder()
-                .idx(1L)
-                .account("id1")
-                .name("철수")
-                .pw("1q2w3e4r")
-                .gender(Gender.MALE)
-                .email("test@email.com")
-                .build();
+                   .idx(1L)
+                   .account("id1")
+                   .name("철수")
+                   .pw("1q2w3e4r")
+                   .gender(Gender.MALE)
+                   .email("test@email.com")
+                   .build();
 
         otherUser = User.builder()
-                .idx(2L)
-                .account("id2")
-                .name("영희")
-                .pw("1q2w3e")
-                .gender(Gender.MALE)
-                .email("test2@email.com")
-                .build();
+                        .idx(2L)
+                        .account("id2")
+                        .name("영희")
+                        .pw("1q2w3e")
+                        .gender(Gender.MALE)
+                        .email("test2@email.com")
+                        .build();
 
         commentByUser = Comment.builder()
-                .idx(1L)
-                .user(user)
-                .likeCount(5)
-                .dislikeCount(3)
-                .content("댓글 내용")
-                .build();
+                               .idx(1L)
+                               .user(user)
+                               .likeCount(5)
+                               .dislikeCount(3)
+                               .content("댓글 내용")
+                               .createdDate(LocalDateTime.of(2021, 5, 5, 5, 5))
+                               .build();
 
         commentByOtherUser = Comment.builder()
-                .idx(2L)
-                .user(otherUser)
-                .likeCount(13)
-                .dislikeCount(7)
-                .content("댓글 내용2")
-                .build();
+                                    .idx(2L)
+                                    .user(otherUser)
+                                    .likeCount(13)
+                                    .dislikeCount(7)
+                                    .content("댓글 내용2")
+                                    .createdDate(LocalDateTime.of(2021, 5, 6, 5, 5))
+                                    .build();
     }
 
     @DisplayName("좋아요 요청 성공 - 좋아요 요청이 성공하여 좋아요 수 증가")

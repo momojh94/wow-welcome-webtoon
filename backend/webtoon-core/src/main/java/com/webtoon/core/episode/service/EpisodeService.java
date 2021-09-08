@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.webtoon.core.common.exception.ExceptionType.EPISODE_NOT_FOUND;
@@ -30,6 +31,7 @@ import static com.webtoon.core.common.exception.ExceptionType.WEBTOON_NOT_FOUND;
 
 @Service
 public class EpisodeService {
+
 	private final WebtoonRepository webtoonRepository;
 	private final EpisodeRepository episodeRepository;
 	private final FileUploader fileUploader;
@@ -75,9 +77,11 @@ public class EpisodeService {
 
 		int totalPages = page.getTotalPages() == 0 ? 1 : page.getTotalPages();
 
-		return EpisodesViewPageResponse.of(page.stream()
-											   .map(EpisodeViewPageResponse::of)
-											   .collect(Collectors.toList()), webtoon, totalPages);
+		List<EpisodeViewPageResponse> episodes = page.stream()
+													 .map(EpisodeViewPageResponse::of)
+													 .collect(Collectors.toList());
+
+		return EpisodesViewPageResponse.of(episodes, webtoon, totalPages);
 	}
 	
 	@Transactional

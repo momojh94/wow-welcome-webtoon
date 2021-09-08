@@ -28,6 +28,7 @@ import static com.webtoon.core.common.exception.ExceptionType.USER_IS_NOT_COMMEN
 
 @Service
 public class CommentService {
+
     private CommentRepository commentRepository;
     private CommentLikeRepository commentLikeRepository;
     private CommentDislikeRepository commentDislikeRepository;
@@ -53,22 +54,17 @@ public class CommentService {
         Pageable pageable = PageRequest.of(page - 1, COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = commentRepository.findAllByEpIdx(pageable, epIdx);
 
-        /*if (page > commentsPage.getTotalPages()) {
-            //
-        }*/
+        List<CommentResponse> comments = commentsPage.stream()
+                                                     .map(CommentResponse::of)
+                                                     .collect(Collectors.toList());
 
-        return CommentsResponse.builder()
-                               .comments(commentsPage.stream()
-                                                     .map(CommentResponse::new)
-                                                     .collect(Collectors.toList()))
-                               .totalPages(commentsPage.getTotalPages())
-                               .build();
+        return CommentsResponse.of(comments, commentsPage.getTotalPages());
     }
 
     @Transactional(readOnly = true)
     public List<CommentResponse> findBestComments(Long epIdx) {
         return commentRepository.findBestCommentsByEpIdx(epIdx)
-                                .map(CommentResponse::new)
+                                .map(CommentResponse::of)
                                 .collect(Collectors.toList());
     }
 
@@ -78,16 +74,11 @@ public class CommentService {
         Pageable pageable = PageRequest.of(page - 1, MYPAGE_COMMENTS_COUNT_PER_PAGE, Sort.Direction.DESC, "idx");
         Page<Comment> commentsPage = commentRepository.findAllByUser(pageable, user);
 
-        /*if (page > commentsPage.getTotalPages()) {
-            //
-        }*/
+        List<MyPageCommentResponse> comments = commentsPage.stream()
+                                                           .map(MyPageCommentResponse::of)
+                                                           .collect(Collectors.toList());
 
-        return MyPageCommentsResponse.builder()
-                                     .comments(commentsPage.stream()
-                                                           .map(MyPageCommentResponse::new)
-                                                           .collect(Collectors.toList()))
-                                     .totalPages(commentsPage.getTotalPages())
-                                     .build();
+        return MyPageCommentsResponse.of(comments, commentsPage.getTotalPages());
     }
 
     @Transactional

@@ -32,9 +32,6 @@ import static org.mockito.BDDMockito.verify;
 public class StarRatingServiceTest {
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private EpisodeRepository episodeRepository;
 
     @Mock
@@ -53,33 +50,33 @@ public class StarRatingServiceTest {
     @BeforeEach
     void beforeEach() {
         user = User.builder()
-                .idx(1L)
-                .account("id1")
-                .name("철수")
-                .pw("1q2w3e4r")
-                .gender(Gender.MALE)
-                .email("test@email.com")
-                .build();
+                   .idx(1L)
+                   .account("id1")
+                   .name("철수")
+                   .pw("1q2w3e4r")
+                   .gender(Gender.MALE)
+                   .email("test@email.com")
+                   .build();
 
         webtoon = Webtoon.builder()
-                .idx(1L)
-                .title("웹툰 제목")
-                .storyType(StoryType.EPISODE)
-                .storyGenre1(StoryGenre.DAILY)
-                .storyGenre2(StoryGenre.GAG)
-                .summary("웹툰 한줄 요약")
-                .plot("줄거리")
-                .thumbnail("thumbnail.jpg")
-                .endFlag(EndFlag.ONGOING)
-                .build();
+                         .idx(1L)
+                         .title("웹툰 제목")
+                         .storyType(StoryType.EPISODE)
+                         .storyGenre1(StoryGenre.DAILY)
+                         .storyGenre2(StoryGenre.GAG)
+                         .summary("웹툰 한줄 요약")
+                         .plot("줄거리")
+                         .thumbnail("thumbnail.jpg")
+                         .endFlag(EndFlag.ONGOING)
+                         .build();
 
         episode = Episode.builder()
-                .idx(1L)
-                .epNo(1)
-                .title("에피소드 제목")
-                .webtoon(webtoon)
-                .authorComment("작가의 말")
-                .build();
+                         .idx(1L)
+                         .epNo(1)
+                         .title("에피소드 제목")
+                         .webtoon(webtoon)
+                         .authorComment("작가의 말")
+                         .build();
     }
 
     @DisplayName("별점 등록 성공")

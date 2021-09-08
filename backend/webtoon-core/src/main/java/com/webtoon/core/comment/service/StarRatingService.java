@@ -17,6 +17,7 @@ import static com.webtoon.core.common.exception.ExceptionType.USER_HAVE_ALREADY_
 
 @Service
 public class StarRatingService {
+
     private EpisodeRepository episodeRepository;
     private WebtoonRepository webtoonRepository;
     private StarRatingRepository starRatingRepository;
@@ -49,12 +50,7 @@ public class StarRatingService {
         episodeRepository.updateRatingAvgAndPersonTotal(epIdx);
         webtoonRepository.updateRatingAvg(episode.getWebtoon().getIdx());
 
-        EpisodeStarRatingResponse result
-                = EpisodeStarRatingResponse.builder()
-                                           .ratingAvg(episode.getRatingAvg())
-                                           .personTotal(episode.getRatingPersonTotal())
-                                           .build();
 
-        return result;
+        return EpisodeStarRatingResponse.of(episode);
     }
 }

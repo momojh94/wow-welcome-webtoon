@@ -30,6 +30,7 @@ import static com.webtoon.core.common.exception.ExceptionType.WEBTOON_NOT_FOUND;
 
 @Service
 public class WebtoonService {
+
 	private final WebtoonRepository webtoonRepository;
 	private final UserRepository userRepository;
 	private final FileUploader fileUploader;
@@ -42,8 +43,6 @@ public class WebtoonService {
 		this.fileUploader = fileUploader;
 	}
 
-	//한 블럭 내 최대 페이지 번호 수
-	private static final int BLOCK_PAGE_NUM_COUNT = 5;
 	//한 페이지 내 최대 웹툰 출력 갯수
 	private static final int PAGE_WEBTOON_COUNT = 10;
 	//한 페이지 내 최대 회차 출력 갯수
@@ -77,7 +76,6 @@ public class WebtoonService {
 				break;
 		}
 
-		List<Webtoon> webtoons = page.getContent();
 		int totalPages = page.getTotalPages();
 
 		//등록된 웹툰이 없을 경우
@@ -85,28 +83,27 @@ public class WebtoonService {
 			totalPages = 1;
 		}
 
-		// TODO : 요청한 페이지 번호 > totalPages 일 때 처리
+		List<WebtoonMainPageResponse> webtoons = page.getContent().stream()
+													 .map(WebtoonMainPageResponse::of)
+													 .collect(Collectors.toList());
 
-		return new WebtoonsMainPageResponse(webtoons.stream()
-													.map(WebtoonMainPageResponse::new)
-													.collect(Collectors.toList()), totalPages);
+		return WebtoonsMainPageResponse.of(webtoons, totalPages);
 	}
 
 	public MyWebtoonsResponse findAllMyWebtoon(Integer pageNum, User user) {
 		Pageable pageable = PageRequest.of(pageNum - 1, PAGE_WEBTOON_COUNT);
 		Page<Webtoon> page = webtoonRepository.findAllByUser(pageable, user);
 
-		List<Webtoon> webtoons = page.getContent();
 		int totalPages = page.getTotalPages();
 		if (totalPages == 0) {
 			totalPages = 1;
 		}
 
-		// TODO : 요청한 페이지 번호 > totalPages 일 때 처리
+		List<MyWebtoonResponse> webtoons = page.getContent().stream()
+											   .map(MyWebtoonResponse::of)
+											   .collect(Collectors.toList());
 
-		return new MyWebtoonsResponse(webtoons.stream()
-											  .map(MyWebtoonResponse::new)
-											  .collect(Collectors.toList()), totalPages);
+		return MyWebtoonsResponse.of(webtoons, totalPages);
 	}
 
 	@Transactional

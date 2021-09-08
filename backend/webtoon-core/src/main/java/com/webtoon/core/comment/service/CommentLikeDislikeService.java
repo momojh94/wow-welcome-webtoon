@@ -48,7 +48,8 @@ public class CommentLikeDislikeService {
             commentRepository.updateLikeCount(comment.getIdx(), -1);
 
             CommentLikeDislikeCountResponse result =
-                    new CommentLikeDislikeCountResponse(comment.getLikeCount() - 1);
+                    CommentLikeDislikeCountResponse.of(comment.getLikeCount() - 1);
+
             return result;
         }
 
@@ -61,7 +62,7 @@ public class CommentLikeDislikeService {
         commentRepository.updateLikeCount(comment.getIdx(), 1);
 
         CommentLikeDislikeCountResponse result =
-                new CommentLikeDislikeCountResponse(comment.getLikeCount() + 1);
+                CommentLikeDislikeCountResponse.of(comment.getLikeCount() + 1);
 
         return result;
     }
@@ -84,7 +85,8 @@ public class CommentLikeDislikeService {
             commentRepository.updateDislikeCount(comment.getIdx(), -1);
 
             CommentLikeDislikeCountResponse result =
-                    new CommentLikeDislikeCountResponse(comment.getDislikeCount() - 1);
+                    CommentLikeDislikeCountResponse.of(comment.getDislikeCount() - 1);
+
             return result;
         }
 
@@ -97,7 +99,7 @@ public class CommentLikeDislikeService {
         commentRepository.updateDislikeCount(comment.getIdx(), 1);
 
         CommentLikeDislikeCountResponse result =
-                new CommentLikeDislikeCountResponse(comment.getDislikeCount() + 1);
+                CommentLikeDislikeCountResponse.of(comment.getDislikeCount() + 1);
 
         return result;
     }
