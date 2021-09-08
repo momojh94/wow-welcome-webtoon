@@ -11,7 +11,6 @@ import com.webtoon.core.webtoon.dto.WebtoonEditRequest;
 import com.webtoon.core.webtoon.dto.WebtoonResponse;
 import com.webtoon.core.webtoon.dto.WebtoonsMainPageResponse;
 import com.webtoon.core.webtoon.service.WebtoonService;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;

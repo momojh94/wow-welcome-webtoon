@@ -7,7 +7,6 @@ import com.webtoon.core.episode.dto.EpisodeResponse;
 import com.webtoon.core.episode.dto.EpisodeUpdateRequest;
 import com.webtoon.core.episode.dto.EpisodesViewPageResponse;
 import com.webtoon.core.episode.service.EpisodeService;
-
 import com.webtoon.core.user.domain.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

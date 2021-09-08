@@ -3,7 +3,6 @@ package com.webtoon.core.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.common.exception.CustomException;
-import com.webtoon.core.common.exception.ExceptionType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;

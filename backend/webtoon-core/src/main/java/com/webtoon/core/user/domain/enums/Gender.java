@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum Gender implements PersistableEnum<Integer> {
+
     MALE(1),
     FEMALE(2);
 

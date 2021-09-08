@@ -1,17 +1,16 @@
 package com.webtoon.core.comment.service;
 
 import com.webtoon.core.comment.domain.Comment;
-import com.webtoon.core.comment.repository.CommentDislikeRepository;
-import com.webtoon.core.comment.repository.CommentLikeRepository;
-import com.webtoon.core.comment.repository.CommentRepository;
 import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.comment.dto.CommentsResponse;
 import com.webtoon.core.comment.dto.MyPageCommentResponse;
 import com.webtoon.core.comment.dto.MyPageCommentsResponse;
+import com.webtoon.core.comment.repository.CommentDislikeRepository;
+import com.webtoon.core.comment.repository.CommentLikeRepository;
+import com.webtoon.core.comment.repository.CommentRepository;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

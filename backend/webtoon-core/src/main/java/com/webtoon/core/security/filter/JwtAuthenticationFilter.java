@@ -3,7 +3,6 @@ package com.webtoon.core.security.filter;
 import com.webtoon.core.common.exception.UnauthorizedException;
 import com.webtoon.core.security.AuthorizationExtractor;
 import com.webtoon.core.security.provider.JwtTokenProvider;
-
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -2,13 +2,12 @@ package com.webtoon.core.comment.service;
 
 import com.webtoon.core.comment.domain.Comment;
 import com.webtoon.core.comment.domain.CommentDislike;
-import com.webtoon.core.comment.repository.CommentDislikeRepository;
 import com.webtoon.core.comment.domain.CommentLike;
+import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
+import com.webtoon.core.comment.repository.CommentDislikeRepository;
 import com.webtoon.core.comment.repository.CommentLikeRepository;
 import com.webtoon.core.comment.repository.CommentRepository;
-import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
 import com.webtoon.core.user.domain.User;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

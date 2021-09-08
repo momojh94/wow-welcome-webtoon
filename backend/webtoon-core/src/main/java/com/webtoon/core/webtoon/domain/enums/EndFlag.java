@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum EndFlag implements PersistableEnum<Integer> {
+
     COMPLETED(0),
     ONGOING(1);
 

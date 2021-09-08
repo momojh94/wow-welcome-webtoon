@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EpisodeResponse {
+
 	private int epNo;
 	private String title;
 	private String authorComment;

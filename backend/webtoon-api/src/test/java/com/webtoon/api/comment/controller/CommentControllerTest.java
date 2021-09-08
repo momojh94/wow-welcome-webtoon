@@ -1,20 +1,19 @@
 package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.ControllerTest;
-import com.webtoon.core.comment.dto.CommentResponse;
-import com.webtoon.core.common.ApiResponse;
-import com.webtoon.core.episode.domain.Episode;
-
-import com.webtoon.core.webtoon.domain.Webtoon;
-import com.webtoon.core.webtoon.domain.enums.EndFlag;
-import com.webtoon.core.webtoon.domain.enums.StoryGenre;
-import com.webtoon.core.webtoon.domain.enums.StoryType;
 import com.webtoon.core.comment.domain.Comment;
 import com.webtoon.core.comment.dto.CommentCreateRequest;
+import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.comment.dto.CommentsResponse;
 import com.webtoon.core.comment.dto.MyPageCommentResponse;
 import com.webtoon.core.comment.dto.MyPageCommentsResponse;
 import com.webtoon.core.comment.service.CommentService;
+import com.webtoon.core.common.ApiResponse;
+import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.webtoon.domain.Webtoon;
+import com.webtoon.core.webtoon.domain.enums.EndFlag;
+import com.webtoon.core.webtoon.domain.enums.StoryGenre;
+import com.webtoon.core.webtoon.domain.enums.StoryType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

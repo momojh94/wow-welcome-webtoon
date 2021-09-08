@@ -4,7 +4,6 @@ import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.dto.UserSignupRequest;
 import com.webtoon.core.user.dto.UserUpdateRequest;
-
 import com.webtoon.core.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

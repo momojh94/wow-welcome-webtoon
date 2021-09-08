@@ -2,17 +2,16 @@ package com.webtoon.core.episode.service;
 
 import com.webtoon.core.common.util.FileUploader;
 import com.webtoon.core.episode.domain.Episode;
-import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.episode.dto.EpisodeCreateRequest;
 import com.webtoon.core.episode.dto.EpisodeDetailResponse;
 import com.webtoon.core.episode.dto.EpisodeResponse;
 import com.webtoon.core.episode.dto.EpisodeUpdateRequest;
 import com.webtoon.core.episode.dto.EpisodeViewPageResponse;
 import com.webtoon.core.episode.dto.EpisodesViewPageResponse;
+import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.repository.WebtoonRepository;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

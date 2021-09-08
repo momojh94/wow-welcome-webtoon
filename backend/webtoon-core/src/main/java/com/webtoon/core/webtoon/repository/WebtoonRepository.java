@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface WebtoonRepository extends JpaRepository<Webtoon, Long> {
+
     Page<Webtoon> findAllByUser(Pageable pageable, @Param("userIdx") User user);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)

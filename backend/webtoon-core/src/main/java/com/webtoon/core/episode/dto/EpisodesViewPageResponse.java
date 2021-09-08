@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EpisodesViewPageResponse {
+
 	private List<EpisodeViewPageResponse> episodes;
 	private String webtoonThumbnail;
 	private String webtoonTitle;

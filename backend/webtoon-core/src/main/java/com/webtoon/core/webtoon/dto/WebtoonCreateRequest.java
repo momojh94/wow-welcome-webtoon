@@ -1,10 +1,10 @@
 package com.webtoon.core.webtoon.dto;
 
 import com.webtoon.core.user.domain.User;
+import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
-import com.webtoon.core.webtoon.domain.Webtoon;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

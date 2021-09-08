@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum StoryType implements PersistableEnum<Integer> {
+
     EPISODE(1),
     OMNIBUS(2),
     STORY(3);
@@ -14,4 +15,5 @@ public enum StoryType implements PersistableEnum<Integer> {
     StoryType(Integer databaseValue) {
         this.databaseValue = databaseValue;
     };
+
 }

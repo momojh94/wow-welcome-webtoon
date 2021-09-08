@@ -1,18 +1,17 @@
 package com.webtoon.core.comment.service;
 
+import com.webtoon.core.comment.domain.StarRating;
+import com.webtoon.core.comment.dto.EpisodeStarRatingResponse;
+import com.webtoon.core.comment.repository.StarRatingRepository;
+import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
-import com.webtoon.core.user.repository.UserRepository;
-import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
-import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.webtoon.repository.WebtoonRepository;
-import com.webtoon.core.comment.domain.StarRating;
-import com.webtoon.core.comment.repository.StarRatingRepository;
-import com.webtoon.core.comment.dto.EpisodeStarRatingResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

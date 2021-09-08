@@ -1,8 +1,8 @@
 package com.webtoon.core.webtoon.domain;
 
-import com.webtoon.core.user.domain.User;
 import com.webtoon.core.common.entity.BaseTimeEntity;
 import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,9 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Webtoon extends BaseTimeEntity {
 
 	@Id

@@ -2,10 +2,10 @@
 package com.webtoon.core.security.service;
 
 import com.webtoon.core.security.AuthorizationExtractor;
+import com.webtoon.core.security.dto.UserLoginResponse;
 import com.webtoon.core.security.enums.TokenStatus;
 import com.webtoon.core.security.provider.JwtTokenProvider;
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.security.dto.UserLoginResponse;
 import com.webtoon.core.user.repository.UserRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

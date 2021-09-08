@@ -3,10 +3,10 @@ package com.webtoon.api.auth.controller;
 
 import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.security.dto.RefreshTokenRequest;
+import com.webtoon.core.security.dto.UserLoginRequest;
+import com.webtoon.core.security.dto.UserLoginResponse;
 import com.webtoon.core.security.service.AuthService;
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.security.dto.UserLoginResponse;
-import com.webtoon.core.security.dto.UserLoginRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

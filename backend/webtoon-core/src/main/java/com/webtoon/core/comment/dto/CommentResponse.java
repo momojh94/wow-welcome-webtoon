@@ -8,12 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
-
-import static com.webtoon.core.common.exception.ExceptionType.INTERNAL_SERVER;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentResponse {
