@@ -1,6 +1,5 @@
 package com.webtoon.core.security.provider;
 
-import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.security.enums.TokenStatus;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.repository.UserRepository;
@@ -21,10 +20,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static com.webtoon.core.common.exception.ErrorType.EXPIRED_TOKEN;
-import static com.webtoon.core.common.exception.ErrorType.INVALID_TOKEN;
-import static com.webtoon.core.common.exception.ErrorType.LOGIN_REQUIRED;
-import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.EXPIRED_TOKEN;
+import static com.webtoon.core.common.exception.ExceptionType.INVALID_TOKEN;
+import static com.webtoon.core.common.exception.ExceptionType.USER_NOT_FOUND;
 import static com.webtoon.core.security.enums.TokenStatus.EXPIRED;
 import static com.webtoon.core.security.enums.TokenStatus.INVALID;
 import static com.webtoon.core.security.enums.TokenStatus.VALID;
@@ -93,7 +91,7 @@ public class JwtTokenProvider {
     public Authentication getAuthenticationFrom(String token) {
         Long userIdx = getUserIdxOf(token);
         User user = userRepository.findById(userIdx)
-                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                                  .orElseThrow(USER_NOT_FOUND::getException);
 
         return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
     }
@@ -105,18 +103,14 @@ public class JwtTokenProvider {
     public boolean validateAccessToken(String accessToken) {
         TokenStatus tokenStatus = validateTokenStatus(accessToken, ACCESS_TOKEN_SECRET_KEY);
         if (tokenStatus == INVALID) {
-            throw new ApplicationException(INVALID_TOKEN);
+            throw INVALID_TOKEN.getException();
         }
 
         if (tokenStatus == EXPIRED) {
-            throw new ApplicationException(EXPIRED_TOKEN);
+            throw EXPIRED_TOKEN.getException();
         }
 
         return true;
-    }
-
-    public TokenStatus validateAccessTokenStatus(String accessToken) {
-        return validateTokenStatus(accessToken, ACCESS_TOKEN_SECRET_KEY);
     }
 
     public TokenStatus validateRefreshTokenStatus(String refreshToken) {
@@ -152,14 +146,14 @@ public class JwtTokenProvider {
             try {
                 userIdx = Long.valueOf(String.valueOf(ex.getClaims().get(USER_IDX)));
             } catch (Exception e) { // Claims안의 값이 null이거나 이상한 값일 수도 있어서 한 번 더 체크
-                throw new ApplicationException(INVALID_TOKEN);
+                throw INVALID_TOKEN.getException();
             }
         } catch (JwtException ex) {
-            throw new ApplicationException(INVALID_TOKEN);
+            throw INVALID_TOKEN.getException();
         }
 
         if (userIdx < 0) {
-            throw new ApplicationException(INVALID_TOKEN);
+            throw INVALID_TOKEN.getException();
         }
 
         return userIdx;

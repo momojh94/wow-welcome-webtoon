@@ -1,6 +1,5 @@
 package com.webtoon.core.webtoon.service;
 
-import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.common.util.FileUploader;
 import com.webtoon.core.webtoon.dto.MyWebtoonResponse;
 import com.webtoon.core.webtoon.dto.MyWebtoonsResponse;
@@ -13,6 +12,7 @@ import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.repository.WebtoonRepository;
 import com.webtoon.core.webtoon.dto.WebtoonResponse;
 import com.webtoon.core.webtoon.dto.WebtoonsMainPageResponse;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +25,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.webtoon.core.common.exception.ErrorType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
-import static com.webtoon.core.common.exception.ErrorType.USER_NOT_FOUND;
-import static com.webtoon.core.common.exception.ErrorType.WEBTOON_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
+import static com.webtoon.core.common.exception.ExceptionType.WEBTOON_NOT_FOUND;
 
 @Service
 public class WebtoonService {
@@ -52,7 +51,7 @@ public class WebtoonService {
 
 	public WebtoonResponse findWebtoon(Long webtoonIdx){
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
-										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
+										   .orElseThrow(WEBTOON_NOT_FOUND::getException);
 		return new WebtoonResponse(webtoon);
 	}
 
@@ -125,10 +124,10 @@ public class WebtoonService {
 	public void update(User user, Long webtoonIdx, MultipartFile thumbnailFile,
 					   WebtoonEditRequest request) throws IOException {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
-										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
+										   .orElseThrow(WEBTOON_NOT_FOUND::getException);
 
 		if (!webtoon.wasDrawnBy(user)) {
-			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
+			throw USER_IS_NOT_AUTHOR_OF_WEBTOON.getException();
 		}
 
 		// TODO : file is empty
@@ -140,10 +139,10 @@ public class WebtoonService {
 	@Transactional
 	public void delete(Long webtoonIdx, User user) {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
-										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
+										   .orElseThrow(WEBTOON_NOT_FOUND::getException);
 
 		if (!webtoon.wasDrawnBy(user)) {
-			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
+			throw USER_IS_NOT_AUTHOR_OF_WEBTOON.getException();
 		}
 
 		webtoonRepository.delete(webtoon);

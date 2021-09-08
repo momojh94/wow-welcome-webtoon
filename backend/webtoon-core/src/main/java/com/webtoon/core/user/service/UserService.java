@@ -1,6 +1,5 @@
 package com.webtoon.core.user.service;
 
-import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.repository.UserRepository;
 import com.webtoon.core.user.dto.UserSignupRequest;
@@ -8,7 +7,7 @@ import com.webtoon.core.user.dto.UserUpdateRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.webtoon.core.common.exception.ErrorType.ALREADY_JOINED_ACCOUNT;
+import static com.webtoon.core.common.exception.ExceptionType.ALREADY_JOINED_ACCOUNT;
 
 @Service
 public class UserService {
@@ -23,7 +22,7 @@ public class UserService {
 
 	public void signup(UserSignupRequest request) {
 		if (userRepository.existsByAccount(request.getAccount())) {
-			throw new ApplicationException(ALREADY_JOINED_ACCOUNT);
+			throw ALREADY_JOINED_ACCOUNT.getException();
 		}
 
 		String encodedPassword = passwordEncoder.encode(request.getPassword());

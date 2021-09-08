@@ -1,6 +1,5 @@
 package com.webtoon.core.episode.service;
 
-import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.common.util.FileUploader;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.episode.repository.EpisodeRepository;
@@ -13,6 +12,7 @@ import com.webtoon.core.episode.dto.EpisodesViewPageResponse;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.repository.WebtoonRepository;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,9 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-import static com.webtoon.core.common.exception.ErrorType.EPISODE_NOT_FOUND;
-import static com.webtoon.core.common.exception.ErrorType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
-import static com.webtoon.core.common.exception.ErrorType.WEBTOON_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.EPISODE_NOT_FOUND;
+import static com.webtoon.core.common.exception.ExceptionType.USER_IS_NOT_AUTHOR_OF_WEBTOON;
+import static com.webtoon.core.common.exception.ExceptionType.WEBTOON_NOT_FOUND;
 
 @Service
 public class EpisodeService {
@@ -50,7 +50,7 @@ public class EpisodeService {
 	@Transactional
 	public EpisodeDetailResponse findEpisodeDetail(Long webtoonIdx, int epNo){
 		Episode episode = episodeRepository.findByWebtoonIdxAndEpNo(webtoonIdx, epNo)
-										   .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
+										   .orElseThrow(EPISODE_NOT_FOUND::getException);
 		Webtoon webtoon = episode.getWebtoon();
 		webtoon.increaseHits();
 		episode.increaseHits();
@@ -60,14 +60,14 @@ public class EpisodeService {
 
 	public EpisodeResponse findEpisode(Long webtoonIdx, int epNo){
 		Episode episode = episodeRepository.findByWebtoonIdxAndEpNo(webtoonIdx, epNo)
-										   .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
+										   .orElseThrow(EPISODE_NOT_FOUND::getException);
 
 		return EpisodeResponse.of(episode);
 	}
 
 	public EpisodesViewPageResponse findAllEpisodeByPage(Long webtoonIdx, int pageNum) {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
-										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
+										   .orElseThrow(WEBTOON_NOT_FOUND::getException);
 
 		pageNum = pageNum == 0 ? 1 : pageNum;
 		Pageable pageable = PageRequest.of(pageNum - 1, PAGE_EPISODE_COUNT, Sort.Direction.DESC, "epNo");
@@ -84,10 +84,10 @@ public class EpisodeService {
 	public void create(Long webtoonIdx, User user, EpisodeCreateRequest request,
 					   MultipartFile thumbnailFile, MultipartFile[] contentImages) throws IOException {
 		Webtoon webtoon = webtoonRepository.findById(webtoonIdx)
-										   .orElseThrow(() -> new ApplicationException(WEBTOON_NOT_FOUND));
+										   .orElseThrow(WEBTOON_NOT_FOUND::getException);
 
 		if(!webtoon.wasDrawnBy(user)) {
-			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
+			throw USER_IS_NOT_AUTHOR_OF_WEBTOON.getException();
 		}
         
         int newEpNo = webtoon.getNewEpNo();
@@ -101,10 +101,10 @@ public class EpisodeService {
 	public void update(User user, Long webtoonIdx, int epNo, EpisodeUpdateRequest request,
 					   MultipartFile thumbnailFile, MultipartFile[] contentImages) throws IOException {
 		Episode episode = episodeRepository.findByWebtoonIdxAndEpNo(webtoonIdx, epNo)
-										   .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
+										   .orElseThrow(EPISODE_NOT_FOUND::getException);
 
 		if (!episode.wasDrawnBy(user)) {
-			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
+			throw USER_IS_NOT_AUTHOR_OF_WEBTOON.getException();
 		}
 
 		String thumbnail = fileUploader.uploadEpisodeThumbnail(thumbnailFile);
@@ -116,10 +116,10 @@ public class EpisodeService {
 	@Transactional
 	public void delete(Long webtoonIdx, int epNo, User user) {
 		Episode episode = episodeRepository.findByWebtoonIdxAndEpNo(webtoonIdx, epNo)
-										   .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
+										   .orElseThrow(EPISODE_NOT_FOUND::getException);
 
 		if (!episode.wasDrawnBy(user)) {
-			throw new ApplicationException(USER_IS_NOT_AUTHOR_OF_WEBTOON);
+			throw USER_IS_NOT_AUTHOR_OF_WEBTOON.getException();
 		}
 
 		episodeRepository.delete(episode);
