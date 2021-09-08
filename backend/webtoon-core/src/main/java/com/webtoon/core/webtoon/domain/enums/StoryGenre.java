@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public enum StoryGenre implements PersistableEnum<Integer> {
+
     DAILY(1),
     GAG(2),
     FANTASY(3),
@@ -18,4 +19,5 @@ public enum StoryGenre implements PersistableEnum<Integer> {
     StoryGenre(Integer databaseValue) {
         this.databaseValue = databaseValue;
     };
+
 }

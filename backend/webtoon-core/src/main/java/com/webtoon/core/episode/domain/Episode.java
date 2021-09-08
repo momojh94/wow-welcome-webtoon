@@ -3,10 +3,10 @@ package com.webtoon.core.episode.domain;
 import com.webtoon.core.common.entity.BaseTimeEntity;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.domain.Webtoon;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -17,10 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@NoArgsConstructor
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Episode extends BaseTimeEntity {
 	
 	@Id

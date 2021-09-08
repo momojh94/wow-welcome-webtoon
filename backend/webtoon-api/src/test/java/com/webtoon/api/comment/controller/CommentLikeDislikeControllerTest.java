@@ -1,16 +1,15 @@
 package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.ControllerTest;
+import com.webtoon.core.comment.domain.Comment;
+import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
+import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import com.webtoon.core.common.ApiResponse;
 import com.webtoon.core.episode.domain.Episode;
-
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
-import com.webtoon.core.comment.domain.Comment;
-import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
-import com.webtoon.core.comment.service.CommentLikeDislikeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +18,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.request.RequestDocumentation;
-
-
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
@@ -55,8 +52,7 @@ class CommentLikeDislikeControllerTest extends ControllerTest {
                          .idx(1L)
                          .title("웹툰 제목")
                          .storyType(StoryType.EPISODE)
-                         .storyGenre1(StoryGenre.DAILY)
-                         .storyGenre2(StoryGenre.GAG)
+                         .storyGenre(StoryGenre.DAILY)
                          .summary("웹툰 한줄 요약")
                          .plot("줄거리")
                          .thumbnail("thumbnailTest.jpg")
@@ -86,7 +82,7 @@ class CommentLikeDislikeControllerTest extends ControllerTest {
     void requestCommentLike() throws Exception {
         //given
         CommentLikeDislikeCountResponse responseData =
-                new CommentLikeDislikeCountResponse(comment.getLikeCount() + 1);
+                CommentLikeDislikeCountResponse.of(comment.getLikeCount() + 1);
 
         given(commentLikeDislikeService.requestLike(user, comment.getIdx())).willReturn(responseData);
 
@@ -120,7 +116,7 @@ class CommentLikeDislikeControllerTest extends ControllerTest {
     void requestCommentDislike() throws Exception {
         //given
         CommentLikeDislikeCountResponse responseData =
-                new CommentLikeDislikeCountResponse(comment.getDislikeCount() + 1);
+                CommentLikeDislikeCountResponse.of(comment.getDislikeCount() + 1);
 
         given(commentLikeDislikeService.requestDislike(user, comment.getIdx())).willReturn(responseData);
 

@@ -1,20 +1,19 @@
 package com.webtoon.api.comment.controller;
 
 import com.webtoon.api.ControllerTest;
-import com.webtoon.core.comment.dto.CommentResponse;
-import com.webtoon.core.common.ApiResponse;
-import com.webtoon.core.episode.domain.Episode;
-
-import com.webtoon.core.webtoon.domain.Webtoon;
-import com.webtoon.core.webtoon.domain.enums.EndFlag;
-import com.webtoon.core.webtoon.domain.enums.StoryGenre;
-import com.webtoon.core.webtoon.domain.enums.StoryType;
 import com.webtoon.core.comment.domain.Comment;
 import com.webtoon.core.comment.dto.CommentCreateRequest;
+import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.comment.dto.CommentsResponse;
 import com.webtoon.core.comment.dto.MyPageCommentResponse;
 import com.webtoon.core.comment.dto.MyPageCommentsResponse;
 import com.webtoon.core.comment.service.CommentService;
+import com.webtoon.core.common.ApiResponse;
+import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.webtoon.domain.Webtoon;
+import com.webtoon.core.webtoon.domain.enums.EndFlag;
+import com.webtoon.core.webtoon.domain.enums.StoryGenre;
+import com.webtoon.core.webtoon.domain.enums.StoryType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,8 +62,7 @@ public class CommentControllerTest extends ControllerTest {
                          .idx(1L)
                          .title("웹툰 제목")
                          .storyType(StoryType.EPISODE)
-                         .storyGenre1(StoryGenre.DAILY)
-                         .storyGenre2(StoryGenre.GAG)
+                         .storyGenre(StoryGenre.DAILY)
                          .summary("웹툰 한줄 요약")
                          .plot("줄거리")
                          .thumbnail("thumbnailTest.jpg")
@@ -105,12 +103,10 @@ public class CommentControllerTest extends ControllerTest {
                                    .createdDate(LocalDateTime.of(2021, 4, 22, (int)(idx + 0), 32))
                                    .build());
         }
-        CommentsResponse responseData = CommentsResponse.builder()
-                                                        .comments(commentList.stream()
-                                                                             .map(CommentResponse::new)
-                                                                             .collect(Collectors.toList()))
-                                                        .totalPages(1)
-                                                        .build();
+        CommentsResponse responseData =
+                CommentsResponse.of(commentList.stream()
+                                               .map(CommentResponse::of)
+                                               .collect(Collectors.toList()), 1);
 
         given(commentService.findComments(episode.getIdx(), pageNumber)).willReturn(responseData);
 
@@ -164,7 +160,7 @@ public class CommentControllerTest extends ControllerTest {
                                    .build());
         }
         List<CommentResponse> responseData = commentList.stream()
-                                                        .map(CommentResponse::new)
+                                                        .map(CommentResponse::of)
                                                         .collect(Collectors.toList());
 
         given(commentService.findBestComments(episode.getIdx()))
@@ -215,12 +211,9 @@ public class CommentControllerTest extends ControllerTest {
                                    .build());
         }
         MyPageCommentsResponse responseData
-                = MyPageCommentsResponse.builder()
-                                        .comments(commentList.stream()
-                                                             .map(MyPageCommentResponse::new)
-                                                             .collect(Collectors.toList()))
-                                        .totalPages(1)
-                                        .build();
+                = MyPageCommentsResponse.of(commentList.stream()
+                                                       .map(MyPageCommentResponse::of)
+                                                       .collect(Collectors.toList()), 1);
 
         given(commentService.findMyPageComments(user, pageNumber)).willReturn(responseData);
 

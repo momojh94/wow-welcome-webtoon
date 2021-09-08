@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 public interface EpisodeRepository extends JpaRepository<Episode, Long> {
+
 	Page<Episode> findAllByWebtoonIdx(Pageable pageable, @Param("webtoonIdx") Long webtoonIdx);
 
 	Optional<Episode> findByWebtoonIdxAndEpNo(@Param("webtoonIdx") Long webtoonIdx, @Param("epNo") int epNo);

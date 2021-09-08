@@ -3,7 +3,7 @@ package com.webtoon.core.common.exception;
 public enum ExceptionType {
 
     // 공통
-    INVALID_REQUEST_VALUE(new BadRequestException("C000", "적절하지 않은 요청 값 처리")),
+    INVALID_REQUEST_VALUE(new BadRequestException("C000", "요청한 데이터들의 값이 유효하지 않습니다.")),
     INTERNAL_SERVER(new InternalServerException("C001", "서버 에러입니다. 서버 관리자에게 문의해주세요.")),
 
     // 댓글

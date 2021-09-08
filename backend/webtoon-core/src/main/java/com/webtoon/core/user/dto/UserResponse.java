@@ -12,6 +12,7 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserResponse {
+
     private String account;
     private String name;
     private Date birth;

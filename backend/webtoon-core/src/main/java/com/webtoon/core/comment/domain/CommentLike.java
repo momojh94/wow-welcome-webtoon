@@ -14,9 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+
 @Getter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CommentLike {
 
     @Id

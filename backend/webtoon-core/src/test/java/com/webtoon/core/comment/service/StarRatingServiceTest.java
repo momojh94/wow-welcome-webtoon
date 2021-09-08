@@ -1,18 +1,17 @@
 package com.webtoon.core.comment.service;
 
+import com.webtoon.core.comment.domain.StarRating;
+import com.webtoon.core.comment.dto.EpisodeStarRatingResponse;
+import com.webtoon.core.comment.repository.StarRatingRepository;
+import com.webtoon.core.episode.domain.Episode;
+import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.user.domain.enums.Gender;
-import com.webtoon.core.user.repository.UserRepository;
-import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
 import com.webtoon.core.webtoon.domain.enums.StoryType;
-import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.webtoon.repository.WebtoonRepository;
-import com.webtoon.core.comment.domain.StarRating;
-import com.webtoon.core.comment.repository.StarRatingRepository;
-import com.webtoon.core.comment.dto.EpisodeStarRatingResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,9 +29,6 @@ import static org.mockito.BDDMockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class StarRatingServiceTest {
-
-    @Mock
-    private UserRepository userRepository;
 
     @Mock
     private EpisodeRepository episodeRepository;
@@ -53,33 +49,32 @@ public class StarRatingServiceTest {
     @BeforeEach
     void beforeEach() {
         user = User.builder()
-                .idx(1L)
-                .account("id1")
-                .name("철수")
-                .pw("1q2w3e4r")
-                .gender(Gender.MALE)
-                .email("test@email.com")
-                .build();
+                   .idx(1L)
+                   .account("id1")
+                   .name("철수")
+                   .pw("1q2w3e4r")
+                   .gender(Gender.MALE)
+                   .email("test@email.com")
+                   .build();
 
         webtoon = Webtoon.builder()
-                .idx(1L)
-                .title("웹툰 제목")
-                .storyType(StoryType.EPISODE)
-                .storyGenre1(StoryGenre.DAILY)
-                .storyGenre2(StoryGenre.GAG)
-                .summary("웹툰 한줄 요약")
-                .plot("줄거리")
-                .thumbnail("thumbnail.jpg")
-                .endFlag(EndFlag.ONGOING)
-                .build();
+                         .idx(1L)
+                         .title("웹툰 제목")
+                         .storyType(StoryType.EPISODE)
+                         .storyGenre(StoryGenre.DAILY)
+                         .summary("웹툰 한줄 요약")
+                         .plot("줄거리")
+                         .thumbnail("thumbnail.jpg")
+                         .endFlag(EndFlag.ONGOING)
+                         .build();
 
         episode = Episode.builder()
-                .idx(1L)
-                .epNo(1)
-                .title("에피소드 제목")
-                .webtoon(webtoon)
-                .authorComment("작가의 말")
-                .build();
+                         .idx(1L)
+                         .epNo(1)
+                         .title("에피소드 제목")
+                         .webtoon(webtoon)
+                         .authorComment("작가의 말")
+                         .build();
     }
 
     @DisplayName("별점 등록 성공")

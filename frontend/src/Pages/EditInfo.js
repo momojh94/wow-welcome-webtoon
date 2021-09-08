@@ -38,13 +38,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function checkPassword(password) {
-  var pattern_spc = /[#$%^&*()_+|<>?:{}]/; //특수 문자
-  if (pattern_spc.test(password)) {
-    return true;
-  }
-}
-
 export default function EditInfo() {
   const classes = useStyles();
 
@@ -81,10 +74,8 @@ export default function EditInfo() {
       console.log(gender);
     } else if (password !== passwordCheck) {
       alert("비밀번호가 일치하지 않습니다!!");
-    } else if (password.length < 8) {
-      alert("비밀번호는 8자리 이상으로 설정해주세요!");
-    } else if (checkPassword(password)) {
-      alert("비밀번호에 가능한 특수문자는 ~!@ 입니다");
+    } else if (password.length < 8 || password.length > 20) {
+      alert("비밀번호는 8자리 이상 20자 이하로 설정해주세요!");
     } else {
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");

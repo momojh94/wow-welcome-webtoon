@@ -2,7 +2,7 @@ package com.webtoon.core.common;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.webtoon.core.common.exception.ExceptionType;
+import com.webtoon.core.common.exception.CustomException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class ApiResponse<T> {
 
     public static final String SUCCESS = "success";
+    public static final ApiResponse<Void> SUCCESS_RESPONSE = new ApiResponse<Void>(null, SUCCESS, null);
 
     private String errorCode;
     private String message;
@@ -25,19 +26,23 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
-    public static <Void> ApiResponse<Void> succeed() {
-        return new ApiResponse<Void>(null, SUCCESS, null);
+    public static ApiResponse<Void> succeed() {
+        return SUCCESS_RESPONSE;
     }
 
     public static <T> ApiResponse<T> succeed(T data) {
         return new ApiResponse<>(null, SUCCESS, data);
     }
 
-    public static <Void> ApiResponse<Void> fail(ExceptionType exceptionType) {
-        return new ApiResponse<Void>(exceptionType.getErrorCode(), exceptionType.getMessage(), null);
+    public static <Void> ApiResponse<Void> fail(CustomException exception) {
+        return new ApiResponse<Void>(exception.getErrorCode(), exception.getMessage(), null);
     }
 
     public static <Void> ApiResponse<Void> fail(String errorCode, String message) {
         return new ApiResponse<Void>(errorCode, message, null);
+    }
+
+    public static <T> ApiResponse<T> fail(String errorCode, String message, T data) {
+        return new ApiResponse<T>(errorCode, message, data);
     }
 }

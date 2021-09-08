@@ -2,13 +2,12 @@ package com.webtoon.core.comment.service;
 
 
 import com.webtoon.core.comment.domain.StarRating;
-import com.webtoon.core.comment.repository.StarRatingRepository;
 import com.webtoon.core.comment.dto.EpisodeStarRatingResponse;
+import com.webtoon.core.comment.repository.StarRatingRepository;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.repository.WebtoonRepository;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +16,7 @@ import static com.webtoon.core.common.exception.ExceptionType.USER_HAVE_ALREADY_
 
 @Service
 public class StarRatingService {
+
     private EpisodeRepository episodeRepository;
     private WebtoonRepository webtoonRepository;
     private StarRatingRepository starRatingRepository;
@@ -49,12 +49,7 @@ public class StarRatingService {
         episodeRepository.updateRatingAvgAndPersonTotal(epIdx);
         webtoonRepository.updateRatingAvg(episode.getWebtoon().getIdx());
 
-        EpisodeStarRatingResponse result
-                = EpisodeStarRatingResponse.builder()
-                                           .ratingAvg(episode.getRatingAvg())
-                                           .personTotal(episode.getRatingPersonTotal())
-                                           .build();
 
-        return result;
+        return EpisodeStarRatingResponse.of(episode);
     }
 }

@@ -8,13 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 public class FileUploader {
     @Value("${custom.path.upload-images}")
     private String BASE_FILE_PATH;
-    // TODO : 설정 값으로 동적으로 관리하기 (server port도 달라짐)
     private static final String BASE_STATIC_RESOURCE_PATH = "http://localhost:8080/static";
     private static final String BASE_EPISODE_CONTENTS_PATH = "/ep_contents/";
     private static final String BASE_EPISODE_THUMBNAIL_PATH = "/ep_thumbnail/";

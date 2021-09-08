@@ -1,9 +1,9 @@
 package com.webtoon.core.user.service;
 
 import com.webtoon.core.user.domain.User;
-import com.webtoon.core.user.repository.UserRepository;
 import com.webtoon.core.user.dto.UserSignupRequest;
 import com.webtoon.core.user.dto.UserUpdateRequest;
+import com.webtoon.core.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

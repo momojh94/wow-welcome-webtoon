@@ -2,13 +2,12 @@ package com.webtoon.core.comment.service;
 
 import com.webtoon.core.comment.domain.Comment;
 import com.webtoon.core.comment.domain.CommentDislike;
-import com.webtoon.core.comment.repository.CommentDislikeRepository;
 import com.webtoon.core.comment.domain.CommentLike;
+import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
+import com.webtoon.core.comment.repository.CommentDislikeRepository;
 import com.webtoon.core.comment.repository.CommentLikeRepository;
 import com.webtoon.core.comment.repository.CommentRepository;
-import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
 import com.webtoon.core.user.domain.User;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +47,8 @@ public class CommentLikeDislikeService {
             commentRepository.updateLikeCount(comment.getIdx(), -1);
 
             CommentLikeDislikeCountResponse result =
-                    new CommentLikeDislikeCountResponse(comment.getLikeCount() - 1);
+                    CommentLikeDislikeCountResponse.of(comment.getLikeCount() - 1);
+
             return result;
         }
 
@@ -61,7 +61,7 @@ public class CommentLikeDislikeService {
         commentRepository.updateLikeCount(comment.getIdx(), 1);
 
         CommentLikeDislikeCountResponse result =
-                new CommentLikeDislikeCountResponse(comment.getLikeCount() + 1);
+                CommentLikeDislikeCountResponse.of(comment.getLikeCount() + 1);
 
         return result;
     }
@@ -84,7 +84,8 @@ public class CommentLikeDislikeService {
             commentRepository.updateDislikeCount(comment.getIdx(), -1);
 
             CommentLikeDislikeCountResponse result =
-                    new CommentLikeDislikeCountResponse(comment.getDislikeCount() - 1);
+                    CommentLikeDislikeCountResponse.of(comment.getDislikeCount() - 1);
+
             return result;
         }
 
@@ -97,7 +98,7 @@ public class CommentLikeDislikeService {
         commentRepository.updateDislikeCount(comment.getIdx(), 1);
 
         CommentLikeDislikeCountResponse result =
-                new CommentLikeDislikeCountResponse(comment.getDislikeCount() + 1);
+                CommentLikeDislikeCountResponse.of(comment.getDislikeCount() + 1);
 
         return result;
     }

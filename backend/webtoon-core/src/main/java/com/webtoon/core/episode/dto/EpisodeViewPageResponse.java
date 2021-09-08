@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EpisodeViewPageResponse {
+
 	private Long idx;
 	private int epNo;
 	private String title;

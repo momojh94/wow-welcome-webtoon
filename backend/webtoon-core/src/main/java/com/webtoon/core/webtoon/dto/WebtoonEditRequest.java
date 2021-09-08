@@ -1,6 +1,5 @@
 package com.webtoon.core.webtoon.dto;
 
-import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.domain.enums.EndFlag;
 import com.webtoon.core.webtoon.domain.enums.StoryGenre;
@@ -10,30 +9,35 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WebtoonEditRequest {
 
-    @NotBlank(message = "title을 입력해주세요")
+    @NotBlank
     private String title;
-    private StoryType storyType;
-    private StoryGenre storyGenre1;
-    private StoryGenre storyGenre2;
 
-    @NotBlank(message = "summary을 입력해주세요")
+    @NotNull
+    private StoryType storyType;
+
+    @NotNull
+    private StoryGenre storyGenre;
+
+    @NotBlank
     private String summary;
 
-    @NotBlank(message = "plot을 입력해주세요")
+    @NotBlank
     private String plot;
+
+    @NotNull
     private EndFlag endFlag;
 
-    public WebtoonEditRequest(String title, StoryType storyType, StoryGenre storyGenre1,
-                              StoryGenre storyGenre2, String summary, String plot, EndFlag endFlag) {
+    public WebtoonEditRequest(String title, StoryType storyType, StoryGenre storyGenre,
+                              String summary, String plot, EndFlag endFlag) {
         this.title = title;
         this.storyType = storyType;
-        this.storyGenre1 = storyGenre1;
-        this.storyGenre2 = storyGenre2;
+        this.storyGenre = storyGenre;
         this.summary = summary;
         this.plot = plot;
         this.endFlag = endFlag;
@@ -43,8 +47,7 @@ public class WebtoonEditRequest {
         return Webtoon.builder()
                       .title(title)
                       .storyType(storyType)
-                      .storyGenre1(storyGenre1)
-                      .storyGenre2(storyGenre2)
+                      .storyGenre(storyGenre)
                       .summary(summary)
                       .plot(plot)
                       .thumbnail(thumbnail)

@@ -2,17 +2,16 @@ package com.webtoon.core.episode.service;
 
 import com.webtoon.core.common.util.FileUploader;
 import com.webtoon.core.episode.domain.Episode;
-import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.episode.dto.EpisodeCreateRequest;
 import com.webtoon.core.episode.dto.EpisodeDetailResponse;
 import com.webtoon.core.episode.dto.EpisodeResponse;
 import com.webtoon.core.episode.dto.EpisodeUpdateRequest;
 import com.webtoon.core.episode.dto.EpisodeViewPageResponse;
 import com.webtoon.core.episode.dto.EpisodesViewPageResponse;
+import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import com.webtoon.core.webtoon.repository.WebtoonRepository;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.webtoon.core.common.exception.ExceptionType.EPISODE_NOT_FOUND;
@@ -30,6 +30,7 @@ import static com.webtoon.core.common.exception.ExceptionType.WEBTOON_NOT_FOUND;
 
 @Service
 public class EpisodeService {
+
 	private final WebtoonRepository webtoonRepository;
 	private final EpisodeRepository episodeRepository;
 	private final FileUploader fileUploader;
@@ -75,9 +76,11 @@ public class EpisodeService {
 
 		int totalPages = page.getTotalPages() == 0 ? 1 : page.getTotalPages();
 
-		return EpisodesViewPageResponse.of(page.stream()
-											   .map(EpisodeViewPageResponse::of)
-											   .collect(Collectors.toList()), webtoon, totalPages);
+		List<EpisodeViewPageResponse> episodes = page.stream()
+													 .map(EpisodeViewPageResponse::of)
+													 .collect(Collectors.toList());
+
+		return EpisodesViewPageResponse.of(episodes, webtoon, totalPages);
 	}
 	
 	@Transactional
