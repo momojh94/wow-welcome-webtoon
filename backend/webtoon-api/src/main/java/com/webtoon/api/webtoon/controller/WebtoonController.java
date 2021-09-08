@@ -62,10 +62,10 @@ public class WebtoonController {
 	@PostMapping("/webtoons")
 	public ApiResponse<Void> create(@AuthenticationPrincipal User user, @RequestPart("thumbnail") MultipartFile thumbnailFile,
 									@RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
-									@RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2,
-									@RequestParam("summary") String summary, @RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
-		WebtoonCreateRequest request = new WebtoonCreateRequest(title, storyType, storyGenre1,
-				storyGenre2, summary, plot, endFlag);
+									@RequestParam("story_genre") StoryGenre storyGenre, @RequestParam("summary") String summary,
+									@RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
+		WebtoonCreateRequest request = new WebtoonCreateRequest(title, storyType, storyGenre,
+				summary, plot, endFlag);
 		webtoonService.create(user, thumbnailFile, request);
 		return ApiResponse.succeed();
 	}
@@ -74,11 +74,12 @@ public class WebtoonController {
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/webtoons/{webtoonIdx}")
 	public ApiResponse<Void> update(@AuthenticationPrincipal User user, @PathVariable("webtoonIdx") Long webtoonIdx,
-									@RequestPart("thumbnail") MultipartFile thumbnailFile, @RequestParam("title") String title, @RequestParam("story_type") StoryType storyType,
-									@RequestParam("story_genre1") StoryGenre storyGenre1, @RequestParam("story_genre2") StoryGenre storyGenre2, @RequestParam("summary") String summary,
-									@RequestParam("plot") String plot, @RequestParam("end_flag") EndFlag endFlag) throws IOException {
-		WebtoonEditRequest request = new WebtoonEditRequest(title, storyType, storyGenre1,
-				storyGenre2, summary, plot, endFlag);
+									@RequestPart("thumbnail") MultipartFile thumbnailFile, @RequestParam("title") String title,
+									@RequestParam("story_type") StoryType storyType, @RequestParam("story_genre") StoryGenre storyGenre,
+									@RequestParam("summary") String summary, @RequestParam("plot") String plot,
+									@RequestParam("end_flag") EndFlag endFlag) throws IOException {
+		WebtoonEditRequest request = new WebtoonEditRequest(title, storyType, storyGenre,
+				summary, plot, endFlag);
 		webtoonService.update(user, webtoonIdx, thumbnailFile, request);
 		return ApiResponse.succeed();
 	}

@@ -15,21 +15,18 @@ public class WebtoonMainPageResponse {
 	private String title;
 	private String author;
 	private String thumbnail;
-	private StoryGenre storyGenre1;
-	private StoryGenre storyGenre2;
+	private StoryGenre storyGenre;
 	private Long hits;
 	private float ratingAvg;
 
 	@Builder
 	private WebtoonMainPageResponse(Long idx, String title, String author, String thumbnail,
-								   StoryGenre storyGenre1, StoryGenre storyGenre2, Long hits,
-								   float ratingAvg) {
+									StoryGenre storyGenre, Long hits, float ratingAvg) {
 		this.idx = idx;
 		this.title = title;
 		this.author = author;
 		this.thumbnail = thumbnail;
-		this.storyGenre1 = storyGenre1;
-		this.storyGenre2 = storyGenre2;
+		this.storyGenre = storyGenre;
 		this.hits = hits;
 		this.ratingAvg = ratingAvg;
 	}
@@ -43,8 +40,7 @@ public class WebtoonMainPageResponse {
 									  .title(webtoon.getTitle())
 									  .author(webtoon.getAuthor())
 									  .thumbnail(webtoon.getThumbnail())
-									  .storyGenre1(webtoon.getStoryGenre1())
-									  .storyGenre2(webtoon.getStoryGenre2())
+									  .storyGenre(webtoon.getStoryGenre())
 									  .hits(webtoon.getHits())
 									  .ratingAvg(webtoon.getRatingAvg())
 									  .build();

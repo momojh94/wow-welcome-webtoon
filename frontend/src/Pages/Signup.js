@@ -45,13 +45,6 @@ function checkId(account) {
   }
 }
 
-function checkPassword(password) {
-  var pattern_spc = /[#$%^&*()_+|<>?:{}]/; //특수 문자
-  if (pattern_spc.test(password)) {
-    return true;
-  }
-}
-
 function checkEmail(email) {
   var exptext = /^[A-Za-z0-9_.-]+@[A-Za-z0-9-]+\.[A-Za-z0-9-]+/;
   if (exptext.test(email) === false) {
@@ -110,8 +103,6 @@ export default function Signup() {
       alert("비밀번호가 일치하지 않습니다!!");
     } else if (password.length < 8) {
       alert("비밀번호는 8자리 이상으로 설정해주세요!");
-    } else if (checkPassword(password)) {
-      alert("비밀번호에 가능한 특수문자는 ~!@ 입니다");
     } else if (checkEmail(email)) {
       alert("이메일 형식이 올바르지 않습니다!");
     } else {

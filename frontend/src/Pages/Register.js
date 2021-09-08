@@ -9,8 +9,6 @@ import TextField from "@material-ui/core/TextField";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-//체크박스
-import Checkbox from "@material-ui/core/Checkbox";
 import { grey } from "@material-ui/core/colors";
 // 토큰 재발급
 var ReToken = require("../AuthRoute");
@@ -46,38 +44,11 @@ export default function Register() {
   const classes = useStyles();
   const [title, setTitle] = React.useState("");
   const [type, setType] = React.useState("");
-  const [genre, setGenre] = React.useState({
-    DAILY: false,
-    GAG: false,
-    FANTASY: false,
-    ACTION: false,
-    DRAMA: false,
-    PURE: false,
-    EMOTION: false,
-  });
+  const [genre, setGenre] = React.useState("");
   const [summary, setSummary] = React.useState("");
   const [plot, setPlot] = React.useState("");
   const [thumbnail, setThumbnail] = React.useState("");
   const [thumbnailstr, setThumbnailstr] = React.useState("");
-
-  const genreStr = [
-    "DAILY",
-    "GAG",
-    "FANTASY",
-    "ACTION",
-    "DRAMA",
-    "PURE",
-    "EMOTION",
-  ];
-  const genreArray = [
-    genre.DAILY,
-    genre.GAG,
-    genre.FANTASY,
-    genre.ACTION,
-    genre.DRAMA,
-    genre.PURE,
-    genre.EMOTION,
-  ];
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -85,8 +56,8 @@ export default function Register() {
   const handleTypeChange = (event) => {
     setType(event.target.value);
   };
-  const handleGenreChange = (name) => (event) => {
-    setGenre({ ...genre, [name]: event.target.checked });
+  const handleGenreChange = (event) => {
+    setGenre(event.target.value);
   };
   const handleSummaryChange = (e) => {
     setSummary(e.target.value);
@@ -127,89 +98,57 @@ export default function Register() {
   const handleCancleBtnClick = () => {
     alert("변경된 내용이 저장되지 않습니다.");
   };
+
   const handleSubmit = () => {
-    let genreNum = 0;
-    for (var i = 0; i < genreArray.length; i++) {
-      if (genreArray[i] === true) {
-        genreNum += 1;
-      }
-    }
-
-    if (title === "" || type === "" || summary === "" || plot === "") {
+    if (title === "" || type === "" || genre === "" || summary === "" || plot === "" || thumbnail === "") {
       alert("정보를 모두 입력해주세요!!");
-    } else if (genreNum > 2) {
-      alert("장르는 2개까지 선택해주세요.");
-    } else {
-      // 장르 2개 넘겨주기
-      const genreTrue = [];
-      let genre1 = 0;
-      let genre2 = 0;
-      var j = 0;
-      for (var k = 0; k < genreArray.length; k++) {
-        if (genreArray[k] === true) {
-          genreTrue[j] = genreStr[k];
-          j++;
-        }
-      }
-      if (j === 0) {
-        genre1 = 0;
-        genre2 = 0;
-      } else if (j === 1) {
-        genre1 = genreTrue[0];
-        genre2 = 0;
-      } else {
-        genre1 = genreTrue[0];
-        genre2 = genreTrue[1];
-      }
+      return;
+    } 
 
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${localStorage.getItem("authorization")}`);
 
-      var formdata = new FormData();
-      formdata.append("thumbnail", thumbnail);
-      formdata.append("title", title);
-      formdata.append("story_type", type);
-      formdata.append("story_genre1", genre1);
-      formdata.append("story_genre2", genre2);
-      formdata.append("summary", summary);
-      formdata.append("plot", plot);
-      formdata.append("end_flag", "ONGOING");
+    var formdata = new FormData();
+    formdata.append("thumbnail", thumbnail);
+    formdata.append("title", title);
+    formdata.append("story_type", type);
+    formdata.append("story_genre", genre);
+    formdata.append("summary", summary);
+    formdata.append("plot", plot);
+    formdata.append("end_flag", "ONGOING");
 
-      console.log(thumbnail, title, type, genre1, genre2, summary, plot);
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
 
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow",
-      };
-
-      fetch("/api/webtoons", requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-          console.log(result);
-          if (result.error_code !== null) {
-            if (result.error_code === "A005") {
-              ReToken.ReToken();
-              return;
-            }
-
-            if (!(localStorage.getItem("AUTHORIZATION"))) {
-              alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.")
-              window.location.href = "/login";
-              return;
-            }
-  
-            alert("잘못된 접근입니다");
+    fetch("/api/webtoons", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        if (result.error_code !== null) {
+          if (result.error_code === "A005") {
+            ReToken.ReToken();
             return;
           }
 
-          alert("새로운 웹툰이 등록되었습니다.");
-          window.location.href = "/mypage";
-        })
-        .catch((error) => console.log("error", error));
-    }
-  };
+          if (!(localStorage.getItem("AUTHORIZATION"))) {
+            alert("로그인이 필요한 기능입니다, 로그인 페이지로 이동합니다.")
+            window.location.href = "/login";
+            return;
+          }
+
+          alert("잘못된 접근입니다");
+          return;
+        }
+
+        alert("새로운 웹툰이 등록되었습니다.");
+        window.location.href = "/mypage";
+      })
+      .catch((error) => console.log("error", error));
+  }
 
   return (
     <div>
@@ -274,83 +213,56 @@ export default function Register() {
           </div>
           <div style={{ display: "flex" }}>
             <h5>장르&emsp;&emsp;&emsp;&emsp;</h5>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={genre.daily}
-                  onChange={handleGenreChange("DAILY")}
-                  value="DAILY"
-                  color="primary"
-                />
-              }
-              label="일상"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={genre.gag}
-                  onChange={handleGenreChange("GAG")}
-                  value="GAG"
-                  color="primary"
-                />
-              }
-              label="개그"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={genre.fantasy}
-                  onChange={handleGenreChange("FANTASY")}
-                  value="FANTASY"
-                  color="primary"
-                />
-              }
-              label="판타지"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={genre.action}
-                  onChange={handleGenreChange("ACTION")}
-                  value="ACTION"
-                  color="primary"
-                />
-              }
-              label="액션"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={genre.drama}
-                  onChange={handleGenreChange("DRAMA")}
-                  value="DRAMA"
-                  color="primary"
-                />
-              }
-              label="드라마"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={genre.pure}
-                  onChange={handleGenreChange("PURE")}
-                  value="PURE"
-                  color="primary"
-                />
-              }
-              label="순정"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={genre.emotion}
-                  onChange={handleGenreChange("EMOTION")}
-                  value="EMOTION"
-                  color="primary"
-                />
-              }
-              label="감성"
-            />
+            <RadioGroup
+              aria-label="position"
+              name="genre"
+              value={genre}
+              onChange={handleGenreChange}
+              row
+            >
+              <FormControlLabel
+                value="DAILY"
+                control={<Radio color="primary" />}
+                label="일상"
+                labelPlacement="end"
+              />
+              <FormControlLabel
+                value="GAG"
+                control={<Radio color="primary" />}
+                label="개그"
+                labelPlacement="end"
+              />
+              <FormControlLabel
+                value="FANTASY"
+                control={<Radio color="primary" />}
+                label="판타지"
+                labelPlacement="end"
+              />
+              <FormControlLabel
+                value="ACTION"
+                control={<Radio color="primary" />}
+                label="액션"
+                labelPlacement="end"
+              />
+              <FormControlLabel
+                value="DRAMA"
+                control={<Radio color="primary" />}
+                label="드라마"
+                labelPlacement="end"
+              />
+              <FormControlLabel
+                value="PURE"
+                control={<Radio color="primary" />}
+                label="순정"
+                labelPlacement="end"
+              />
+              <FormControlLabel
+                value="EMOTION"
+                control={<Radio color="primary" />}
+                label="감성"
+                labelPlacement="end"
+              />
+            </RadioGroup>
           </div>
           <div style={{ display: "flex" }}>
             <h5>작품 요약&emsp;</h5>

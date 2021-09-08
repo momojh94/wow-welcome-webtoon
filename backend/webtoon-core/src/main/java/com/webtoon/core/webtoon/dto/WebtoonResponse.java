@@ -14,8 +14,7 @@ public class WebtoonResponse {
 
     private String title;
     private StoryType storyType;
-    private StoryGenre storyGenre1;
-    private StoryGenre storyGenre2;
+    private StoryGenre storyGenre;
     private String summary;
     private String plot;
     private String thumbnail;
@@ -24,8 +23,7 @@ public class WebtoonResponse {
     public WebtoonResponse(Webtoon webtoon) {
         this.title = webtoon.getTitle();
         this.storyType = webtoon.getStoryType();
-        this.storyGenre1 = webtoon.getStoryGenre1();
-        this.storyGenre2 = webtoon.getStoryGenre2();
+        this.storyGenre = webtoon.getStoryGenre();
         this.summary = webtoon.getSummary();
         this.plot = webtoon.getPlot();
         this.thumbnail = webtoon.getThumbnail();

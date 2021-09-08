@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -28,7 +30,7 @@ public class UserController {
 
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping
-	public ApiResponse<Void> signup(@RequestBody UserSignupRequest request) {
+	public ApiResponse<Void> signup(@RequestBody @Valid UserSignupRequest request) {
 		userService.signup(request);
 		return ApiResponse.succeed();
 	}
@@ -36,7 +38,7 @@ public class UserController {
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping
 	public ApiResponse<Void> update(@AuthenticationPrincipal User user,
-									@RequestBody UserUpdateRequest request) {
+									@RequestBody @Valid UserUpdateRequest request) {
 		userService.update(user, request);
 		return ApiResponse.succeed();
 	}

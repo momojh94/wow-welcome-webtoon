@@ -44,10 +44,7 @@ public class Webtoon extends BaseTimeEntity {
 	private StoryType storyType;
 
 	@Column
-	private StoryGenre storyGenre1;
-
-	@Column
-	private StoryGenre storyGenre2;
+	private StoryGenre storyGenre;
 
 	@Column
 	private String summary;
@@ -77,14 +74,13 @@ public class Webtoon extends BaseTimeEntity {
 	private User user;
 
 	@Builder
-	public Webtoon(Long idx, String title, StoryType storyType, StoryGenre storyGenre1, StoryGenre storyGenre2,
+	public Webtoon(Long idx, String title, StoryType storyType, StoryGenre storyGenre,
 				   String summary, String plot, String thumbnail, EndFlag endFlag,
 				   User user, float ratingAvg) {
 		this.idx = idx;
 		this.title = title;
 		this.storyType = storyType;
-		this.storyGenre1 = storyGenre1;
-		this.storyGenre2 = storyGenre2;
+		this.storyGenre = storyGenre;
 		this.summary = summary;
 		this.plot = plot;
 		this.thumbnail = thumbnail;
@@ -127,8 +123,7 @@ public class Webtoon extends BaseTimeEntity {
 	public Webtoon update(Webtoon requestWebtoon) {
 		this.title = requestWebtoon.title;
 		this.storyType = requestWebtoon.storyType;
-		this.storyGenre1 = requestWebtoon.storyGenre1;
-		this.storyGenre2 = requestWebtoon.storyGenre2;
+		this.storyGenre = requestWebtoon.storyGenre;
 		this.summary = requestWebtoon.summary;
 		this.plot = requestWebtoon.plot;
 		this.thumbnail = requestWebtoon.thumbnail;

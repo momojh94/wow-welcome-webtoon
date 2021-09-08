@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,9 +17,12 @@ public class WebtoonEditRequest {
 
     @NotBlank(message = "title을 입력해주세요")
     private String title;
+
+    @NotNull(message = "storyType을 입력해주세요")
     private StoryType storyType;
-    private StoryGenre storyGenre1;
-    private StoryGenre storyGenre2;
+
+    @NotNull(message = "storyGenre을 입력해주세요")
+    private StoryGenre storyGenre;
 
     @NotBlank(message = "summary을 입력해주세요")
     private String summary;
@@ -27,12 +31,11 @@ public class WebtoonEditRequest {
     private String plot;
     private EndFlag endFlag;
 
-    public WebtoonEditRequest(String title, StoryType storyType, StoryGenre storyGenre1,
-                              StoryGenre storyGenre2, String summary, String plot, EndFlag endFlag) {
+    public WebtoonEditRequest(String title, StoryType storyType, StoryGenre storyGenre,
+                              String summary, String plot, EndFlag endFlag) {
         this.title = title;
         this.storyType = storyType;
-        this.storyGenre1 = storyGenre1;
-        this.storyGenre2 = storyGenre2;
+        this.storyGenre = storyGenre;
         this.summary = summary;
         this.plot = plot;
         this.endFlag = endFlag;
@@ -42,8 +45,7 @@ public class WebtoonEditRequest {
         return Webtoon.builder()
                       .title(title)
                       .storyType(storyType)
-                      .storyGenre1(storyGenre1)
-                      .storyGenre2(storyGenre2)
+                      .storyGenre(storyGenre)
                       .summary(summary)
                       .plot(plot)
                       .thumbnail(thumbnail)
