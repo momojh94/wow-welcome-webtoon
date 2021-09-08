@@ -121,7 +121,7 @@ public class CommentServiceTest {
         //given
         Long epIdx = episode.getIdx();
 
-        given(episodeRepository.findById(epIdx)).willReturn(Optional.of(episode));
+        //given(episodeRepository.findById(epIdx)).willReturn(Optional.of(episode));
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
 
         //when
