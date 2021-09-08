@@ -1,6 +1,7 @@
 package com.webtoon.core.comment.dto;
 
 import com.webtoon.core.comment.domain.Comment;
+import com.webtoon.core.common.util.DateUtils;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.webtoon.domain.Webtoon;
 import lombok.AccessLevel;
@@ -41,11 +42,6 @@ public class MyPageCommentResponse {
         this.createdDate = createdDate;
     }
 
-    private static String toStringDateTime(LocalDateTime localDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return formatter.format(localDateTime);
-    }
-
     public static MyPageCommentResponse of(Comment comment) {
         Episode episode = comment.getEp();
         Webtoon webtoon = episode.getWebtoon();
@@ -58,7 +54,7 @@ public class MyPageCommentResponse {
                                     .likeCount(comment.getLikeCount())
                                     .dislikeCount(comment.getDislikeCount())
                                     .content(comment.getContent())
-                                    .createdDate(toStringDateTime(comment.getCreatedDate()))
+                                    .createdDate(DateUtils.toStringDateTime(comment.getCreatedDate()))
                                     .build();
     }
 }

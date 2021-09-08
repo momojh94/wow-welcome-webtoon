@@ -2,6 +2,7 @@ package com.webtoon.core.comment.dto;
 
 
 import com.webtoon.core.comment.domain.Comment;
+import com.webtoon.core.common.util.DateUtils;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,11 +36,6 @@ public class CommentResponse {
         this.createdDate = createdDate;
     }
 
-    private static String toStringDateTime(LocalDateTime localDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return formatter.format(localDateTime);
-    }
-
     public static CommentResponse of(Comment comment){
         return CommentResponse.builder()
                               .idx(comment.getIdx())
@@ -47,7 +43,7 @@ public class CommentResponse {
                               .likeCount(comment.getLikeCount())
                               .dislikeCount(comment.getDislikeCount())
                               .content(comment.getContent())
-                              .createdDate(toStringDateTime(comment.getCreatedDate()))
+                              .createdDate(DateUtils.toStringDateTime(comment.getCreatedDate()))
                               .build();
 
     }
