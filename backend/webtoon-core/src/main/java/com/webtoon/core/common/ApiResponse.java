@@ -34,11 +34,7 @@ public class ApiResponse<T> {
     }
 
     public static <Void> ApiResponse<Void> fail(ExceptionType exceptionType) {
-        return new ApiResponse<>(exceptionType.getCode(), exceptionType.getMessage(), null);
-    }
-
-    public static <Void> ApiResponse<Void> fail(ExceptionType exceptionType, String errors) {
-        return new ApiResponse<>(exceptionType.getCode(), errors, null);
+        return new ApiResponse<Void>(exceptionType.getErrorCode(), exceptionType.getMessage(), null);
     }
 
     public static <Void> ApiResponse<Void> fail(String errorCode, String message) {

@@ -1,7 +1,6 @@
 
 package com.webtoon.core.security.service;
 
-import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.security.AuthorizationExtractor;
 import com.webtoon.core.security.enums.TokenStatus;
 import com.webtoon.core.security.provider.JwtTokenProvider;
@@ -40,10 +39,10 @@ public class AuthService {
 
     public UserLoginResponse login(String account, String password) {
         User user = userRepository.findByAccount(account)
-                                  .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                                  .orElseThrow(USER_NOT_FOUND::getException);
 
         if (!passwordEncoder.matches(password, user.getPw())) {
-            throw new ApplicationException(WRONG_PASSWORD);
+            throw WRONG_PASSWORD.getException();
         }
 
         user.updateLoginDate();
@@ -56,14 +55,14 @@ public class AuthService {
         TokenStatus refreshTokenStatus = jwtTokenProvider.validateRefreshTokenStatus(refreshToken);
 
         if (refreshTokenStatus == INVALID) {
-            throw new ApplicationException(INVALID_TOKEN);
+            throw INVALID_TOKEN.getException();
         }
 
         ValueOperations<Long, String> vop = redisTemplate.opsForValue();
         String refreshTokenInRedis = vop.get(user.getIdx());
 
         if (refreshTokenStatus == EXPIRED || StringUtils.isEmpty(refreshTokenInRedis)) {
-            throw new ApplicationException(ALREADY_LOGOUT);
+            throw ALREADY_LOGOUT.getException();
         }
 
         jwtTokenProvider.expireToken(user);
@@ -74,22 +73,22 @@ public class AuthService {
         TokenStatus refreshTokenStatus = jwtTokenProvider.validateRefreshTokenStatus(refreshToken);
 
         if (refreshTokenStatus == EXPIRED) {
-            throw new ApplicationException(LOGIN_REQUIRED);
+            throw LOGIN_REQUIRED.getException();
         }
 
         if (refreshTokenStatus == INVALID) {
-            throw new ApplicationException(INVALID_TOKEN);
+            throw INVALID_TOKEN.getException();
         }
 
         ValueOperations<Long, String> vop = redisTemplate.opsForValue();
         String refreshTokenInRedis = vop.get(userIdx);
 
         if (StringUtils.isEmpty(refreshTokenInRedis)) {
-            throw new ApplicationException(LOGIN_REQUIRED);
+            throw LOGIN_REQUIRED.getException();
         }
 
         if (!refreshToken.equals(refreshTokenInRedis)) {
-            throw new ApplicationException(INVALID_TOKEN);
+            throw INVALID_TOKEN.getException();
         }
 
         String reissuedAccessToken = jwtTokenProvider.createAccessToken(userIdx);

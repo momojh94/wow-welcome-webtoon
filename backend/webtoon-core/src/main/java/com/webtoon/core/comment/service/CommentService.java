@@ -8,10 +8,10 @@ import com.webtoon.core.comment.dto.CommentResponse;
 import com.webtoon.core.comment.dto.CommentsResponse;
 import com.webtoon.core.comment.dto.MyPageCommentResponse;
 import com.webtoon.core.comment.dto.MyPageCommentsResponse;
-import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -93,7 +93,7 @@ public class CommentService {
     @Transactional
     public void create(User user, Long epIdx, String content) {
         Episode episode = episodeRepository.findById(epIdx)
-                                           .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
+                                           .orElseThrow(EPISODE_NOT_FOUND::getException);
 
         Comment comment = Comment.builder()
                                  .user(user)
@@ -107,10 +107,10 @@ public class CommentService {
     @Transactional
     public void delete(User user, Long commentIdx) {
         Comment comment = commentRepository.findById(commentIdx)
-                                           .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
+                                           .orElseThrow(COMMENT_NOT_FOUND::getException);
 
         if (!comment.wasWrittenBy(user)) {
-            throw new ApplicationException(USER_IS_NOT_COMMENTER);
+            throw USER_IS_NOT_COMMENTER.getException();
         }
 
         commentLikeRepository.deleteAllByCommentIdx(commentIdx);

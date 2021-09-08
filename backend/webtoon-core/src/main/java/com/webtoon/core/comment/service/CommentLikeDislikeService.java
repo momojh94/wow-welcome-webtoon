@@ -7,8 +7,8 @@ import com.webtoon.core.comment.domain.CommentLike;
 import com.webtoon.core.comment.repository.CommentLikeRepository;
 import com.webtoon.core.comment.repository.CommentRepository;
 import com.webtoon.core.comment.dto.CommentLikeDislikeCountResponse;
-import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.user.domain.User;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,10 +34,10 @@ public class CommentLikeDislikeService {
     @Transactional
     public CommentLikeDislikeCountResponse requestLike(User user, Long commentIdx) {
         Comment comment = commentRepository.findById(commentIdx)
-                                           .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
+                                           .orElseThrow(COMMENT_NOT_FOUND::getException);
 
         if (comment.wasWrittenBy(user)) {
-            throw new ApplicationException(BAD_COMMENT_LIKE_REQUEST);
+            throw BAD_COMMENT_LIKE_REQUEST.getException();
         }
 
         // 이미 눌렀던 좋아요 취소
@@ -70,10 +70,10 @@ public class CommentLikeDislikeService {
     @Transactional
     public CommentLikeDislikeCountResponse requestDislike(User user, Long commentIdx) {
         Comment comment = commentRepository.findById(commentIdx)
-                                           .orElseThrow(() -> new ApplicationException(COMMENT_NOT_FOUND));
+                                           .orElseThrow(COMMENT_NOT_FOUND::getException);
 
         if (comment.wasWrittenBy(user)) {
-            throw new ApplicationException(BAD_COMMENT_DISLIKE_REQUEST);
+            throw BAD_COMMENT_DISLIKE_REQUEST.getException();
         }
 
         // 이미 눌렀던 싫어요 취소

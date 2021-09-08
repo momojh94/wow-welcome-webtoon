@@ -1,8 +1,9 @@
 package com.webtoon.core.security.filter;
 
-import com.webtoon.core.common.exception.ApplicationException;
+import com.webtoon.core.common.exception.UnauthorizedException;
 import com.webtoon.core.security.AuthorizationExtractor;
 import com.webtoon.core.security.provider.JwtTokenProvider;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,9 +60,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext()
                                      .setAuthentication(authentication);
             }
-        } catch (ApplicationException ex) {
-            ex.printStackTrace();
-            request.setAttribute(AUTH_EXCEPTION, ex.getErrorType());
+        } catch (UnauthorizedException exception) {
+            exception.printStackTrace();
+            request.setAttribute(AUTH_EXCEPTION, exception);
         }
 
         filterChain.doFilter(request, response);

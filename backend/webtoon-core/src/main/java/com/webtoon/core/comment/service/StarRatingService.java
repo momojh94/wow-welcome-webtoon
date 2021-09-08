@@ -4,11 +4,11 @@ package com.webtoon.core.comment.service;
 import com.webtoon.core.comment.domain.StarRating;
 import com.webtoon.core.comment.repository.StarRatingRepository;
 import com.webtoon.core.comment.dto.EpisodeStarRatingResponse;
-import com.webtoon.core.common.exception.ApplicationException;
 import com.webtoon.core.episode.domain.Episode;
 import com.webtoon.core.episode.repository.EpisodeRepository;
 import com.webtoon.core.user.domain.User;
 import com.webtoon.core.webtoon.repository.WebtoonRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +32,11 @@ public class StarRatingService {
     @Transactional
     public EpisodeStarRatingResponse create(Long epIdx, User user, float rating) {
         if (starRatingRepository.existsByEpIdxAndUser(epIdx, user)) {
-            throw new ApplicationException(USER_HAVE_ALREADY_RATED_EPISODE);
+            throw USER_HAVE_ALREADY_RATED_EPISODE.getException();
         }
 
         Episode episode = episodeRepository.findById(epIdx)
-                                           .orElseThrow(() -> new ApplicationException(EPISODE_NOT_FOUND));
+                                           .orElseThrow(EPISODE_NOT_FOUND::getException);
 
         StarRating starRating = StarRating.builder()
                                           .user(user)
