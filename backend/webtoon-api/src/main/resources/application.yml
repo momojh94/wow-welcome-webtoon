@@ -32,9 +32,9 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
 management:
-  endpoint:
-    health:
-      show-details: always
+  endpoints:
+    web:
+      base-path: /monitoring
 
 custom:
   path:
