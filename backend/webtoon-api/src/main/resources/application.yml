@@ -35,6 +35,12 @@ management:
   endpoints:
     web:
       base-path: /monitoring
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
 
 custom:
   path:
