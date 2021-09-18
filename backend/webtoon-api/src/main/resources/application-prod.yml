@@ -7,7 +7,7 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-  #shutdown: graceful
+  shutdown: graceful
 
 spring:
   datasource:
@@ -23,6 +23,9 @@ spring:
       max-request-size: 50MB
   jackson:
     property-naming-strategy: SNAKE_CASE
+# 기본값 30초
+#  lifecycle:
+#    timeout-per-shutdown-phase: 30s
 
 management:
   endpoints:
