@@ -7,7 +7,8 @@ public class SecurityFixture {
     public static final String[] PERMIT_GET_URI = {
             "/episode/**",
             "/webtoons/**",
-            "/monitoring/**"
+            "/monitoring/**",
+            "/pause"
     };
 
     public static final String[] PERMIT_POST_URI = {
