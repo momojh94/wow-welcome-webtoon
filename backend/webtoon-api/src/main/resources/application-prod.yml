@@ -3,6 +3,10 @@ server:
   port: 8080
   servlet:
     context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
   datasource:
@@ -11,11 +15,6 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     show-sql: true
-  http:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
   servlet:
     multipart:
       enabled: true
