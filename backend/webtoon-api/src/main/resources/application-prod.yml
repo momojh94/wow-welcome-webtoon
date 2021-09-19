@@ -3,6 +3,11 @@ server:
   port: 8080
   servlet:
     context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  shutdown: graceful
 
 spring:
   datasource:
@@ -11,11 +16,6 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     show-sql: true
-  http:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
   servlet:
     multipart:
       enabled: true
@@ -23,6 +23,9 @@ spring:
       max-request-size: 50MB
   jackson:
     property-naming-strategy: SNAKE_CASE
+# 기본값 30초
+#  lifecycle:
+#    timeout-per-shutdown-phase: 30s
 
 management:
   endpoints:
@@ -30,3 +33,6 @@ management:
       base-path: /monitoring
       exposure:
         include: health
+  endpoint:
+    health:
+      show-details: never

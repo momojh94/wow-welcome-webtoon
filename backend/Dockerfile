@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jre-alpine
 VOLUME /tmp
 ARG JAR_FILE=webtoon-api/build/libs/webtoon-api-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
