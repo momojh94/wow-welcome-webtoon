@@ -1,6 +1,9 @@
 FROM openjdk:8-jre-alpine
+
 VOLUME /tmp
 ARG JAR_FILE=webtoon-api/build/libs/webtoon-api-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
 EXPOSE 8080
+
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod","-jar", "/app.jar"]
+HEALTHCHECK --interval=10s --timeout=3s --retries=2 CMD wget --spider http://localhost:8080/api/monitoring/health || exit 1

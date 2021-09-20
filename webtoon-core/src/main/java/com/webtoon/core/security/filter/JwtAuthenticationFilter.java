@@ -19,6 +19,7 @@ import java.util.Arrays;
 
 import static com.webtoon.core.security.fixture.SecurityFixture.AUTH_EXCEPTION;
 import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_GET_URI;
+import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_HEAD_URI;
 import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_POST_URI;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -35,6 +36,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        if (HttpMethod.HEAD.matches(request.getMethod())) {
+            return Arrays.stream(PERMIT_HEAD_URI)
+                         .anyMatch(path -> pathMatcher.match(path, request.getServletPath()));
+        }
+
         if (HttpMethod.GET.matches(request.getMethod())) {
             return Arrays.stream(PERMIT_GET_URI)
                          .anyMatch(path -> pathMatcher.match(path, request.getServletPath()));

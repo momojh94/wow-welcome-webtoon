@@ -20,6 +20,9 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     generate-ddl: true
     show-sql: true
+    hibernate:
+      ddl-auto: create
+
   redis:
     port: 6379
     host: localhost
