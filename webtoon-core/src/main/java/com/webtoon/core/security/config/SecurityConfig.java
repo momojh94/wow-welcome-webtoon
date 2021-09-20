@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_GET_URI;
+import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_HEAD_URI;
 import static com.webtoon.core.security.fixture.SecurityFixture.PERMIT_POST_URI;
 
 @Configuration
@@ -37,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
+				.antMatchers(HttpMethod.HEAD, PERMIT_HEAD_URI).permitAll()
 				.antMatchers(HttpMethod.GET, PERMIT_GET_URI).permitAll()
 				.antMatchers(HttpMethod.POST, PERMIT_POST_URI).permitAll()
 				.antMatchers(HttpMethod.OPTIONS).permitAll()

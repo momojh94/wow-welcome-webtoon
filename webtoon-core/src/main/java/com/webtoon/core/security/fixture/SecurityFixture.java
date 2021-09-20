@@ -10,6 +10,10 @@ public class SecurityFixture {
             "/monitoring/**"
     };
 
+    public static final String[] PERMIT_HEAD_URI = {
+            "/monitoring/**"
+    };
+
     public static final String[] PERMIT_POST_URI = {
             "/auth/**",
             "/users"
