@@ -3,8 +3,15 @@ pipeline {
     agent any
 
     stages {
+        stage('Git Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build') {
             steps {
+                sh 'chmod +x gradlew'
                 sh './gradlew clean build --exclude-task test --exclude-task asciidoctor'
                 echo 'build success'
             }
