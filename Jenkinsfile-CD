@@ -1,0 +1,70 @@
+#!groovy
+pipeline {
+    agent any
+
+    environmnet {
+        IMAGE_NAME = "mjh77/webtoon"
+        DOCKER_HUB_CREDENTIAL = 'docker-hub'
+        dockerImage = ''
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'chmod +x gradlew'
+                sh './gradlew clean build --exclude-task test'
+                echo 'build success'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh './gradlew test'
+                echo 'test success'
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                echo 'docker build'
+
+                dockerImage = docker.build IMAGE_NAME
+            }
+        }
+
+        stage('Deploy Image') {
+            steps {
+                echo 'docker push'
+
+                docker.withRegistry('', DOCKER_HUB_CREDENTIAL) {
+                    dockerImage.push("$BUILD_NUMBER")
+                    dockerImage.push("latest")
+                }
+            }
+        }
+
+        stage('Remove Unused Docker Image') {
+            steps {
+                echo 'docker rmi'
+
+                sh "docker rmi $IMAGE_NAME:$BUILD_NUMBER"
+                sh "docker rmi $IMAGE_NAME:latest"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'TODO'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'success'
+        }
+        failure {
+            echo 'failure'
+        }
+    }
+}
