@@ -2,7 +2,7 @@
 pipeline {
     agent any
 
-    environmnet {
+    environment {
         IMAGE_NAME = "mjh77/webtoon"
         DOCKER_HUB_CREDENTIAL = 'docker-hub'
         dockerImage = ''
