@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "mjh77/webtoon"
-        DOCKER_HUB_CREDENTIAL = 'docker-hub'
+        REGISTRY_CREDENTIAL = 'docker-hub'
         dockerImage = ''
     }
 
@@ -29,7 +29,7 @@ pipeline {
                 echo 'docker build'
 
                 script {
-                    dockerImage = docker.build IMAGE_NAME
+                    dockerImage = docker.build(IMAGE_NAME)
                 }
             }
         }
@@ -39,7 +39,7 @@ pipeline {
                 echo 'docker push'
 
                 script {
-                    docker.withRegistry('', DOCKER_HUB_CREDENTIAL) {
+                    docker.withRegistry('', REGISTRY_CREDENTIAL) {
                         dockerImage.push("$BUILD_NUMBER")
                         dockerImage.push("latest")
                     }
