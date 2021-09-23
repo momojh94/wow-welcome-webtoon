@@ -12,7 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'chmod +x gradlew'
-                sh './gradlew clean build --exclude-task test'
+                sh './gradlew clean build --exclude-task test --exclude-task asciidoctor'
                 echo 'build success'
             }
         }
